@@ -1,18 +1,15 @@
 
-import './App.css'
-
+import './App.scss'
+import {Route, Routes} from 'react-router-dom';
+import Registration from './Components/Form/Registration';
 function App() {
-const zapros=async ()=>{
-  const response=await  fetch("http://127.0.0.1:8000/user")
-  const res=await  response.json()
-  console.log(res)
 
-}
-zapros()
 
   return (
     <>
-
+<Routes>
+<Route path="/" element={<Registration/>}/>        
+</Routes>
     </>
   )
 }

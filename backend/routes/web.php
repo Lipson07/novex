@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\AuthController;
 
-Route::get('/user', [UserController::class, 'index']);
+Route::post('/create', [AuthController::class, 'create']);
