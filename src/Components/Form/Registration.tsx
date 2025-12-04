@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setUserData } from '../../store/user';
 
 interface FormData {
+  id:number;
   name: string;
   email: string;
   password: string;
@@ -19,6 +20,7 @@ interface RegistrationProps {
 
 function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationProps) {
   const [formData, setFormData] = useState<FormData>({
+    id:null,
     name: '',
     email: '',
     password: '',
@@ -79,11 +81,12 @@ function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationPro
 
     try {
       dispatch(setUserData({
+        id:null,
         name: formData.name,
         email: formData.email,
         password: formData.password,
         status: formData.status,
-        isVerified: false // ДОБАВЛЕНО
+        isVerified: false 
       }));
 
       const checkResponse = await fetch(`http://127.0.0.1:8000/api/check-user?email=${encodeURIComponent(formData.email)}&name=${encodeURIComponent(formData.name)}`, {

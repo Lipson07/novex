@@ -379,15 +379,10 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #001eff;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 30, 255, 1) 50%,
-    rgba(153, 167, 99, 1) 51%,
-    rgba(251, 255, 0, 1) 100%
-  );
-  display: grid;
-  place-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 500;
   color: white;
   font-size: 16px;

@@ -3,6 +3,7 @@ import style from "../../style/Form/Vhod.module.scss";
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../../store/user';
 
+
 interface FormData {
   email: string;
   password: string;
@@ -44,7 +45,7 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
     setErrors({});
 
     try {
-      // Логика входа
+    
       const loginResponse = await fetch('http://127.0.0.1:8000/api/login', {
         method: 'POST',
         headers: {
@@ -66,10 +67,11 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
 
       if (loginData.success) {
         dispatch(setUserData({
+          id:loginData.user.id,
           name: loginData.user.name,
           email: loginData.user.email,
           password: formData.password,
-          status: 'active', // ДОБАВЛЕНО
+          status: 'Free',
           isVerified: true
         }));
         onSuccess();

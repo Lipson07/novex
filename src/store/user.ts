@@ -3,6 +3,7 @@ import { createSlice} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
+  id:number
   name: string;
   email: string;
   password: string;
@@ -13,6 +14,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  id:null,
   name: "",
   email: "",
   password: "",
@@ -35,7 +37,8 @@ const userSlice = createSlice({
     setPassword: (state: UserState, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
-    setUserData: (state: UserState, action: PayloadAction<{name: string; email: string; password: string;status:string;isVerified:boolean}>) => {
+    setUserData: (state: UserState, action: PayloadAction<{id:number;name: string; email: string; password: string;status:string;isVerified:boolean}>) => {
+      state.id=action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.password = action.payload.password;

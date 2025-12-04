@@ -7,7 +7,7 @@ import user from "./user";
 const persistUser = {
   key: "user",
   storage,
-  whitelist: ["name", "email", "password", "isVerified"],
+  whitelist: ["id","name", "email", "password", "isVerified"],
 };
 
 const persistUserReducer = persistReducer(persistUser, user);
