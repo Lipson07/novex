@@ -1,14 +1,14 @@
 import React, { useState} from "react";
-import style from "../../style/Main/Osnova.module.scss";
+import style from "../../style/Main/Hero.module.scss";
 import { osnovaIcons } from "../../assets/LeftPanel/index.js";
 import { 
   quickActionsData, 
   statusBlocksData, 
   projectsData, 
   activitiesData 
-} from "../../assets/Osnova/index.js";
+} from "../../assets/Hero/index.js";
 
-const Osnova = () => {
+const Hero = () => {
   const [activeProject, setActiveProject] = useState<number | null>(null);
 
   const statIcons = {
@@ -248,4 +248,4 @@ const Osnova = () => {
   );
 };
 
-export default Osnova;
+export default Hero;
