@@ -1,0 +1,944 @@
+.dashboard {
+  flex: none;
+
+  background-color: #161617;
+  color: white;
+  font-family: "Inter", sans-serif;
+  min-height: auto; // Добавлено
+}
+
+.dashboardContent {
+  padding: 24px;
+}
+
+.dashboardRow {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
+}
+
+.panel {
+  flex: 1;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
+}
+
+// Neural Network Panel
+.neuralNetworkPanel {
+  .panelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .titleContainer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .neuralIcon {
+        width: 20px;
+        height: 20px;
+        position: relative;
+
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          border: 1.67px solid #667eea;
+        }
+
+        &::before {
+          left: 66.67%;
+          right: 8.33%;
+          top: 66.67%;
+          bottom: 8.33%;
+        }
+
+        &::after {
+          left: 8.33%;
+          right: 66.67%;
+          top: 66.67%;
+          bottom: 8.33%;
+        }
+      }
+
+      h2 {
+        font-size: 18.6px;
+        font-weight: 400;
+        line-height: 28px;
+        margin: 0;
+        color: #fff;
+      }
+    }
+
+    .iconButton {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .closeIcon {
+        width: 16px;
+        height: 16px;
+        position: relative;
+
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          border: 1.33px solid rgba(255, 255, 255, 0.6);
+        }
+
+        &::before {
+          left: 62.5%;
+          right: 12.5%;
+          top: 12.5%;
+          bottom: 62.5%;
+        }
+
+        &::after {
+          left: 12.5%;
+          right: 62.5%;
+          top: 62.5%;
+          bottom: 12.5%;
+        }
+      }
+    }
+  }
+
+  .graphContainer {
+    position: relative;
+    margin-bottom: 16px;
+    flex: 1;
+
+    .graphImage {
+      width: 100%;
+      height: 300px;
+      background: rgba(10, 10, 10, 0.5);
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .graphOverlay {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .overlayItem {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 12px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        width: 105px;
+
+        .colorDot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+        }
+
+        span {
+          font-size: 11.3px;
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
+    }
+  }
+
+  .statsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    .statItem {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .statValue {
+        font-size: 24px;
+        line-height: 32px;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+
+      .statLabel {
+        font-size: 11.1px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+  }
+}
+
+// Smart Suggestions Panel
+.suggestionsPanel {
+  .panelHeader {
+    margin-bottom: 24px;
+
+    .titleContainer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .suggestionsIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+      }
+
+      h2 {
+        font-size: 18.8px;
+        font-weight: 400;
+        line-height: 28px;
+        margin: 0;
+        color: #fff;
+      }
+
+      .subtitle {
+        font-size: 11.1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+      }
+    }
+  }
+
+  .suggestionsList {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+
+    .suggestionItem {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .suggestionHeader {
+        display: flex;
+        gap: 12px;
+
+        .suggestionIcon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          background: rgba(102, 126, 234, 0.1);
+          border-radius: 10px;
+          margin-top: 4px;
+          border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .suggestionContent {
+          flex: 1;
+
+          .suggestionTitleRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+
+            h3 {
+              font-size: 13.2px;
+              font-weight: 400;
+              line-height: 20px;
+              color: rgba(255, 255, 255, 0.9);
+              margin: 0;
+            }
+
+            .priorityBadge {
+              padding: 4px 8px;
+              border-radius: 4px;
+              border: 1px solid;
+
+              span {
+                font-size: 11.3px;
+              }
+            }
+          }
+
+          .suggestionDescription {
+            font-size: 11.1px;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0 0 8px 0;
+          }
+
+          .suggestionFooter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 4px;
+
+            .timeTag {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+
+              .clockIcon {
+                width: 12px;
+                height: 12px;
+              }
+
+              span {
+                font-size: 11.8px;
+                color: rgba(255, 255, 255, 0.4);
+              }
+            }
+
+            .categoryTag {
+              padding: 2px 8px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 4px;
+
+              span {
+                font-size: 10.9px;
+                color: rgba(255, 255, 255, 0.4);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .panelFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .footerText {
+      font-size: 11.1px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .viewAllButton {
+      background: transparent;
+      border: none;
+      color: #667eea;
+      font-size: 11.4px;
+      cursor: pointer;
+
+      &:hover {
+        color: #7a92f0;
+      }
+    }
+  }
+}
+
+// Knowledge Graph Panel
+.knowledgePanel {
+  .panelHeader {
+    margin-bottom: 24px;
+
+    .titleContainer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .knowledgeIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+      }
+
+      h2 {
+        font-size: 18.9px;
+        font-weight: 400;
+        line-height: 28px;
+        margin: 0;
+        color: #fff;
+      }
+
+      .subtitle {
+        font-size: 11.1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+      }
+    }
+  }
+
+  .filtersContainer {
+    margin-bottom: 24px;
+
+    .quickFilters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      .filterIcon {
+        width: 16px;
+        height: 16px;
+      }
+
+      span {
+        font-size: 11.4px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .filterButtons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .filterButton {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 11.8px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        &.active {
+          background: rgba(43, 127, 255, 0.2);
+          border-color: rgba(43, 127, 255, 0.3);
+          color: #fff;
+
+          .count {
+            color: #fff;
+          }
+        }
+
+        .count {
+          font-size: 12px;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+
+  .documentsList {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+
+    .documentItem {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .documentHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+
+        h3 {
+          font-size: 12.8px;
+          font-weight: 400;
+          line-height: 20px;
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0;
+        }
+
+        .documentIcon {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .documentDescription {
+        font-size: 11.1px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 0 8px 0;
+      }
+
+      .documentFooter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 4px;
+
+        .documentTags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+
+          .typeTag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.2);
+
+            span {
+              font-size: 11.1px;
+            }
+          }
+
+          .hashTag {
+            padding: 2px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+
+            span {
+              font-size: 10.7px;
+              color: rgba(255, 255, 255, 0.4);
+            }
+          }
+        }
+
+        .documentMeta {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .connections {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            .connectionIcon {
+              width: 12px;
+              height: 12px;
+            }
+
+            span {
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.4);
+            }
+          }
+
+          .timeAgo {
+            font-size: 11.1px;
+            color: rgba(255, 255, 255, 0.4);
+          }
+        }
+      }
+    }
+  }
+
+  .panelFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .footerText {
+      font-size: 11.1px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .exploreButton {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      color: #667eea;
+      font-size: 15.1px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #7a92f0;
+      }
+
+      .exploreIcon {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+// Flow Dashboard Panel
+.flowPanel {
+  .panelHeader {
+    margin-bottom: 24px;
+
+    .titleContainer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .flowIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+      }
+
+      h2 {
+        font-size: 18.9px;
+        font-weight: 400;
+        line-height: 28px;
+        margin: 0;
+        color: #fff;
+      }
+
+      .subtitle {
+        font-size: 11.1px;
+        color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+      }
+    }
+  }
+
+  .metricsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    .metricCard {
+      flex: 1;
+      padding: 13px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      position: relative;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .metricIcon {
+        width: 100%;
+        height: 80px;
+        border-radius: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0.8;
+          border-radius: 14px;
+          z-index: 1;
+        }
+
+        &[data-gradient="blue"]::before {
+          background: linear-gradient(135deg, #2b7fff 0%, #00b8db 100%);
+        }
+
+        &[data-gradient="purple"]::before {
+          background: linear-gradient(135deg, #ad46ff 0%, #f6339a 100%);
+        }
+
+        &[data-gradient="orange"]::before {
+          background: linear-gradient(135deg, #ff6900 0%, #fb2c36 100%);
+        }
+
+        &[data-gradient="green"]::before {
+          background: linear-gradient(135deg, #00c950 0%, #00bc7d 100%);
+        }
+
+        &[data-gradient="default"]::before {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        &:hover {
+          &::before {
+            opacity: 0.75;
+          }
+        }
+
+        .iconInner {
+          z-index: 22;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+
+          svg {
+            width: 60px;
+            height: 60px;
+          }
+        }
+      }
+
+      .metricValue {
+        font-size: 22.7px;
+        line-height: 32px;
+        margin-top: 56px;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+
+      .metricLabel {
+        font-size: 11.4px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 4px;
+      }
+
+      .metricTrend {
+        font-size: 11.4px;
+        color: #05df72;
+      }
+    }
+  }
+
+  .activityContainer {
+    margin-bottom: 24px;
+
+    .activityHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      .activityIcon {
+        width: 16px;
+        height: 16px;
+      }
+
+      h3 {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 20px;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+      }
+
+      .timeRange {
+        font-size: 11.3px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .weeklyChart {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 128px;
+
+      .chartColumn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+
+        .chartBar {
+          width: 100%;
+          background: rgba(102, 126, 234, 0.3);
+          border: 1px solid rgba(102, 126, 234, 0.4);
+          border-radius: 10px 10px 0 0;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background: rgba(102, 126, 234, 0.4);
+          }
+        }
+
+        .chartLabel {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+
+  .tagsContainer {
+    margin-bottom: 16px;
+
+    .tagsHeader {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      .tagsIcon {
+        width: 16px;
+        height: 16px;
+      }
+
+      h3 {
+        font-size: 12.8px;
+        font-weight: 400;
+        line-height: 20px;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+      }
+    }
+
+    .tagsList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .activityTag {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .tagColor {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+        }
+
+        .tagName {
+          font-size: 11.4px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .tagCount {
+          font-size: 10.9px;
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+
+  .panelFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .footerText {
+      font-size: 11.1px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .viewDetailsButton {
+      background: transparent;
+      border: none;
+      color: #667eea;
+      font-size: 14.9px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #7a92f0;
+      }
+    }
+  }
+}
+
+// Стили скроллбара
+.dashboard::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.dashboard::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+// Стили для внутренних скроллов
+.suggestionsList,
+.documentsList {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

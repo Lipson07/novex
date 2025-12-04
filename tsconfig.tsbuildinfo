@@ -1,1 +1,18 @@
-{"root":["./src/store/index.ts","./src/store/user.ts","./src/app.tsx","./src/main.tsx","./src/components/errors/notfound404.tsx","./src/components/form/emailcheck.tsx","./src/components/form/registration.tsx","./src/components/form/regmodule.tsx","./src/components/form/vhod.tsx","./src/components/main/leftpanel.tsx","./src/components/main/mainpage.tsx","./src/components/main/osnova.tsx"],"errors":true,"version":"5.9.3"}
+{
+  "root": [
+    "./src/store/index.ts",
+    "./src/store/user.ts",
+    "./src/app.tsx",
+    "./src/main.tsx",
+    "./src/components/errors/notfound404.tsx",
+    "./src/components/form/emailcheck.tsx",
+    "./src/components/form/registration.tsx",
+    "./src/components/form/regmodule.tsx",
+    "./src/components/form/vhod.tsx",
+    "./src/components/main/leftpanel.tsx",
+    "./src/components/main/mainpage.tsx",
+    "./src/components/main/Hero.tsx"
+  ],
+  "errors": true,
+  "version": "5.9.3"
+}

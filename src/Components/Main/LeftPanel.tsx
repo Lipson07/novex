@@ -10,7 +10,6 @@ function LeftPanel() {
     "Обзор дорожной карты Q4",
     "Обновить документацию дизайн-системы",
     "Запланировать синхронизацию команды",
-    "Спросить Synapse...",
   ];
 
   const handleChatSubmit = (e: React.FormEvent) => {
