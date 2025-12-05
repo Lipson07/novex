@@ -405,7 +405,7 @@ function LeftPanel() {
                   }}
                   placeholder="Введите название проекта"
                   style={{
-                    width: "100%",
+                    width: "90%",
                     padding: "12px 16px",
                     background: "rgba(255, 255, 255, 0.08)",
                     border: error
@@ -449,7 +449,7 @@ function LeftPanel() {
                   placeholder="Опишите ваш проект..."
                   rows={4}
                   style={{
-                    width: "100%",
+                    width: "90%",
                     padding: "12px 16px",
                     background: "rgba(255, 255, 255, 0.08)",
                     border: "1px solid rgba(255, 255, 255, 0.1)",
