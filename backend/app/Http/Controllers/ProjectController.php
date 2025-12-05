@@ -9,8 +9,6 @@ class ProjectController
 {
     public function create(Request $request)
     {
-
-
             $project = Project::create([
                 'tittle' =>$request->tittle,
                 'description' => $request->description,

@@ -46,7 +46,7 @@ interface DataItem {
   gradient: "blue" | "purple" | "orange" | "green" | "default";
   icon: string;
 }
-
+// api for fetch http://127.0.0.1:8000/api/createProj
 const Dashboard: React.FC = () => {
   const suggestions: Suggestion[] = [
     {
