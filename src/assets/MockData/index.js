@@ -269,6 +269,21 @@ export const ProjectService = {
 
     return newProject;
   },
+
+  // Получить проект по ID (мок версия)
+  getProjectById: async (projectId) => {
+    console.log(`[Mock API] Получение проекта ${projectId}`);
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const project = mockProjects.find((p) => p.id === projectId);
+    
+    if (!project) {
+      throw new Error("Проект не найден");
+    }
+
+    return project;
+  },
 };
 
 // Хелпер функции

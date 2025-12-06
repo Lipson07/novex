@@ -58,27 +58,6 @@
         width: 20px;
         height: 20px;
         position: relative;
-
-        &::before,
-        &::after {
-          content: "";
-          position: absolute;
-          border: 1.67px solid #667eea;
-        }
-
-        &::before {
-          left: 66.67%;
-          right: 8.33%;
-          top: 66.67%;
-          bottom: 8.33%;
-        }
-
-        &::after {
-          left: 8.33%;
-          right: 66.67%;
-          top: 66.67%;
-          bottom: 8.33%;
-        }
       }
 
       h2 {
@@ -273,8 +252,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 32px;
-          height: 32px;
+          width: 39px;
+          height: 39px;
           background: rgba(102, 126, 234, 0.1);
           border-radius: 10px;
           margin-top: 4px;

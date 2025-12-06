@@ -103,3 +103,125 @@ export const progressStatusIcons = {
 <path d="M13.3333 4L5.99996 11.3333L2.66669 8" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
 };
+
+// Данные для Dashboard
+export const NeuralNetworkData = [
+  {
+    title: "Нейросеть знаний",
+    gradient: "purple",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+<circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="2"/>
+<circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="2"/>
+<circle cx="5" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
+<circle cx="19" cy="19" r="2" stroke="currentColor" stroke-width="2"/>
+<line x1="12" y1="9" x2="7" y2="7" stroke="currentColor" stroke-width="1.5"/>
+<line x1="12" y1="9" x2="17" y2="7" stroke="currentColor" stroke-width="1.5"/>
+<line x1="12" y1="15" x2="7" y2="17" stroke="currentColor" stroke-width="1.5"/>
+<line x1="12" y1="15" x2="17" y2="17" stroke="currentColor" stroke-width="1.5"/>
+</svg>`,
+  },
+  {
+    title: "",
+    gradient: "purple",
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>`,
+  },
+];
+
+export const SmartSuggestionData = [
+  {
+    title: "Умные предложения",
+    gradient: "blue",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    title: "Оптимизация",
+    gradient: "orange",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    title: "Документы",
+    gradient: "blue",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    title: "Команды",
+    gradient: "green",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+<path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    title: "Проверка",
+    gradient: "orange",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+];
+
+export const KnolageGraphData = [
+  {
+    title: "Граф знаний",
+    gradient: "purple",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+<path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>`,
+  },
+  {
+    title: "Быстрые фильтры",
+    gradient: "blue",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>`,
+  },
+];
+
+export const FlowDashboardData = [
+  {
+    id: 1,
+    title: "Поток работы",
+    gradient: "blue",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    id: 2,
+    title: "Глубокий фокус",
+    gradient: "purple",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+<path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>`,
+  },
+  {
+    id: 3,
+    title: "Завершено задач",
+    gradient: "green",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+  {
+    id: 4,
+    title: "Эффективность",
+    gradient: "orange",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 7l-5 5-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  },
+];

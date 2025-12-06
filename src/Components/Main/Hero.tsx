@@ -24,6 +24,18 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [collapsedSections, setCollapsedSections] = useState<{
+    projects: boolean;
+    team: boolean;
+    deadlines: boolean;
+    quickAccess: boolean;
+  }>({
+    projects: false,
+    team: false,
+    deadlines: false,
+    quickAccess: false,
+  });
   const user = useSelector(selectUser);
 
   const statIcons = {
@@ -168,10 +180,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
     setIsActivityModalOpen(false);
   };
 
-  const handleQuickActionClick = (id: number) => {
-    console.log(`Быстрое действие: ${id}`);
-  };
-
   const handleProjectClick = (id: number) => {
     console.log(`Выбран проект: ${id}`);
   };
@@ -181,6 +189,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
     if (onNavigateToProjects) {
       onNavigateToProjects();
     }
+  };
+
+  const toggleSection = (section: keyof typeof collapsedSections) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
   // Получаем информацию о текущем пользователе
@@ -377,21 +392,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
     </div>
   );
 
-  // Рендер информации о пользователе
-  const renderUserInfo = () => (
-    <div className={style.userInfoSection}>
-      <div className={style.userAvatar}>
-        <div className={style.avatarCircle}>{currentUser.avatar}</div>
-        {currentUser.online && <div className={style.onlineIndicator} />}
-      </div>
-      <div className={style.userDetails}>
-        <h3 className={style.userName}>{currentUser.name}</h3>
-        <p className={style.userPosition}>{currentUser.position}</p>
-        <span className={style.userDepartment}>{currentUser.department}</span>
-      </div>
-    </div>
-  );
-
   // Рендер участника команды
   const renderTeamMember = (member: any) => (
     <div key={member.id} className={style.teamMember}>
@@ -407,32 +407,90 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
   );
 
   // Рендер дедлайна
-  const renderDeadline = (deadline: any) => (
-    <div key={deadline.id} className={style.deadlineItem}>
+  const renderDeadline = (deadline: any) => {
+    const deadlineDate = new Date(deadline.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const daysUntil = Math.ceil(
+      (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    const isUrgent = daysUntil <= 1;
+    const isSoon = daysUntil <= 3 && daysUntil > 1;
+
+    return (
       <div
-        className={style.deadlineDate}
-        style={{
-          backgroundColor: `${getPriorityColor(deadline.priority)}20`,
-          borderColor: `${getPriorityColor(deadline.priority)}30`,
-        }}
+        key={deadline.id}
+        className={`${style.deadlineItem} ${isUrgent ? style.urgent : ""} ${
+          isSoon ? style.soon : ""
+        }`}
       >
-        {formatDeadlineDate(deadline.date)}
-      </div>
-      <div className={style.deadlineInfo}>
-        <span className={style.deadlineTitle}>{deadline.title}</span>
-        <span
-          className={style.deadlinePriority}
-          style={{ color: getPriorityColor(deadline.priority) }}
+        <div
+          className={style.deadlineDate}
+          style={{
+            backgroundColor: `${getPriorityColor(deadline.priority)}20`,
+            borderColor: `${getPriorityColor(deadline.priority)}30`,
+          }}
         >
-          {deadline.priority === "high"
-            ? "Высокий"
-            : deadline.priority === "medium"
-            ? "Средний"
-            : "Низкий"}
-        </span>
+          {formatDeadlineDate(deadline.date)}
+        </div>
+        <div className={style.deadlineInfo}>
+          <div className={style.deadlineTitleRow}>
+            <span className={style.deadlineTitle}>{deadline.title}</span>
+            {isUrgent && (
+              <span className={style.urgentBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2L2 7L12 12L22 7L12 2Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 17L12 22L22 17"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12L12 17L22 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Срочно
+              </span>
+            )}
+          </div>
+          <div className={style.deadlineMeta}>
+            <span
+              className={style.deadlinePriority}
+              style={{ color: getPriorityColor(deadline.priority) }}
+            >
+              {deadline.priority === "high"
+                ? "Высокий"
+                : deadline.priority === "medium"
+                ? "Средний"
+                : "Низкий"}
+            </span>
+            {daysUntil >= 0 && (
+              <span className={style.deadlineDays}>
+                {daysUntil === 0
+                  ? "Сегодня"
+                  : daysUntil === 1
+                  ? "Завтра"
+                  : `Через ${daysUntil} дн.`}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Рендер быстрого доступа
   const renderQuickAccess = (item: any) => (
@@ -454,125 +512,288 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
       <div className={style.container}>
         <header className={style.header}>
           <div className={style.topBar}>
-            <div className={style.logo}>
-              <h1 className={style.title}>Novex</h1>
-              <p className={style.subtitle}>
-                Интеллектуальное рабочее пространство для современных команд
-              </p>
-            </div>
+            {/* Логотип и поиск */}
+            <div className={style.leftSection}>
+              <div className={style.logo}>
+                <h1 className={style.title}>Novex</h1>
+              </div>
 
-            <div className={style.topButtons}>
-              {HeroIcons.map((icon) => (
-                <button
-                  key={icon.name}
-                  className={style.topButton}
-                  onClick={() => handleTopButtonClick(icon.name)}
+              {/* Поиск */}
+              <div className={style.searchBar}>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  className={style.searchIcon}
                 >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d={icon.icon}
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              ))}
+                  <path
+                    d="M6 0C9.3136 1.28863e-07 11.9998 2.68644 12 6C12 7.41644 11.5074 8.7168 10.6865 9.74316L13.1377 12.1953C13.398 12.4557 13.398 12.8773 13.1377 13.1377C12.8773 13.398 12.4557 13.398 12.1953 13.1377L9.74316 10.6865C8.7168 11.5074 7.41644 12 6 12C2.68644 11.9998 1.28867e-07 9.3136 0 6C0.000175991 2.68655 2.68655 0.000175988 6 0ZM6 1.33398C3.42293 1.33416 1.33416 3.42293 1.33398 6C1.33398 8.57722 3.42282 10.6668 6 10.667C8.57733 10.667 10.667 8.57733 10.667 6C10.6668 3.42282 8.57722 1.33398 6 1.33398Z"
+                    fill="currentColor"
+                    fillOpacity="0.4"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Поиск проектов, задач, людей..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={style.searchInput}
+                />
+                {searchQuery && (
+                  <button
+                    className={style.searchClear}
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M18 6L6 18M6 6L18 18"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className={style.bottomBar}>
-            {statusBlocksData.map(renderStatusBlock)}
+            {/* Правая часть: кнопки и профиль */}
+            <div className={style.rightSection}>
+              {/* Статус-блоки (компактные) */}
+              <div className={style.statusBlocksCompact}>
+                {statusBlocksData.map(renderStatusBlock)}
+              </div>
+
+              {/* Кнопки действий */}
+              <div className={style.topButtons}>
+                {HeroIcons.filter((icon) => icon.name !== "profile").map(
+                  (icon) => (
+                    <button
+                      key={icon.name}
+                      className={style.topButton}
+                      onClick={() => handleTopButtonClick(icon.name)}
+                      title={
+                        icon.name === "notifications"
+                          ? "Уведомления"
+                          : icon.name === "settings"
+                          ? "Настройки"
+                          : ""
+                      }
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d={icon.icon}
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  )
+                )}
+              </div>
+
+              {/* Информация о пользователе */}
+              <div className={style.userProfileHeader}>
+                <div className={style.userAvatarHeader}>
+                  <div className={style.avatarCircleHeader}>
+                    {currentUser.avatar}
+                  </div>
+                  {currentUser.online && (
+                    <div className={style.onlineIndicatorHeader} />
+                  )}
+                </div>
+                <div className={style.userInfoHeader}>
+                  <span className={style.userNameHeader}>
+                    {currentUser.name}
+                  </span>
+                  <span className={style.userPositionHeader}>
+                    {currentUser.position}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 
-        {/* Секция информации о пользователе */}
-        <div className={style.userSection}>
-          <div className={style.sectionHeader}>
-            <div className={style.sectionTitle}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4" stroke="#667EEA" strokeWidth="2" />
-                <path
-                  d="M4 20C4 16.6863 7.58172 14 12 14C16.4183 14 20 16.6863 20 20"
-                  stroke="#667EEA"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <h2>Мой профиль</h2>
-            </div>
-          </div>
-          {renderUserInfo()}
-        </div>
+        {/* Основной контент - группировка секций */}
+        <div className={style.mainContent}>
+          {/* Группа: Проекты и команда */}
+          <div className={style.projectsGroup}>
+            {/* Секция активных проектов */}
+            <div className={style.projectsSection}>
+              <div className={style.sectionHeader}>
+                <div
+                  className={style.sectionTitle}
+                  onClick={() => toggleSection("projects")}
+                >
+                  {sectionIcons.projects}
+                  <h2>Активные проекты</h2>
+                  <button
+                    className={style.collapseButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSection("projects");
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className={`${style.collapseIcon} ${
+                        collapsedSections.projects ? style.collapsed : ""
+                      }`}
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                </div>
+                <button
+                  className={style.viewAll}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewAllClick();
+                  }}
+                >
+                  Смотреть все →
+                </button>
+              </div>
 
-        {/* Секция активных проектов */}
-        <div className={style.projectsSection}>
-          <div className={style.sectionHeader}>
-            <div className={style.sectionTitle}>
-              {sectionIcons.projects}
-              <h2>Активные проекты</h2>
+              {!collapsedSections.projects && (
+                <div className={style.projectCards}>
+                  {projectsData.length > 0 ? (
+                    projectsData.map(renderProjectCard)
+                  ) : (
+                    <div className={style.noProjects}>
+                      <p>Нет активных проектов</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <button className={style.viewAll} onClick={handleViewAllClick}>
-              Смотреть все →
-            </button>
-          </div>
 
-          <div className={style.projectCards}>
-            {projectsData.length > 0 ? (
-              projectsData.map(renderProjectCard)
-            ) : (
-              <div className={style.noProjects}>
-                <p>Нет активных проектов</p>
+            {/* Секция команды проекта */}
+            {teamMembers.length > 0 && (
+              <div className={style.teamSection}>
+                <div
+                  className={style.sectionHeader}
+                  onClick={() => toggleSection("team")}
+                >
+                  <div className={style.sectionTitle}>
+                    {sectionIcons.team}
+                    <h2>Команда проекта</h2>
+                    <button className={style.collapseButton}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className={`${style.collapseIcon} ${
+                          collapsedSections.team ? style.collapsed : ""
+                        }`}
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+                  </div>
+                  <span className={style.teamCount}>
+                    {teamMembers.length} участников
+                  </span>
+                </div>
+                {!collapsedSections.team && (
+                  <div className={style.teamList}>
+                    {teamMembers.map(renderTeamMember)}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        </div>
 
-        {/* Секция команды проекта */}
-        {teamMembers.length > 0 && (
-          <div className={style.teamSection}>
-            <div className={style.sectionHeader}>
-              <div className={style.sectionTitle}>
-                {sectionIcons.team}
-                <h2>Команда проекта</h2>
+          {/* Группа: Дедлайны и быстрый доступ */}
+          <div className={style.secondaryGroup}>
+            {/* Секция ближайших дедлайнов */}
+            {upcomingDeadlines.length > 0 && (
+              <div className={style.deadlinesSection}>
+                <div
+                  className={style.sectionHeader}
+                  onClick={() => toggleSection("deadlines")}
+                >
+                  <div className={style.sectionTitle}>
+                    {sectionIcons.deadlines}
+                    <h2>Ближайшие дедлайны</h2>
+                    <button className={style.collapseButton}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className={`${style.collapseIcon} ${
+                          collapsedSections.deadlines ? style.collapsed : ""
+                        }`}
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+                  </div>
+                  <span className={style.deadlinesCount}>
+                    {upcomingDeadlines.length}
+                  </span>
+                </div>
+                {!collapsedSections.deadlines && (
+                  <div className={style.deadlinesList}>
+                    {upcomingDeadlines.map(renderDeadline)}
+                  </div>
+                )}
               </div>
-              <span className={style.teamCount}>
-                {teamMembers.length} участников
-              </span>
-            </div>
-            <div className={style.teamList}>
-              {teamMembers.map(renderTeamMember)}
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* Секция ближайших дедлайнов */}
-        {upcomingDeadlines.length > 0 && (
-          <div className={style.deadlinesSection}>
-            <div className={style.sectionHeader}>
-              <div className={style.sectionTitle}>
-                {sectionIcons.deadlines}
-                <h2>Ближайшие дедлайны</h2>
+            {/* Секция быстрого доступа */}
+            <div className={style.quickAccessSection}>
+              <div
+                className={style.sectionHeader}
+                onClick={() => toggleSection("quickAccess")}
+              >
+                <div className={style.sectionTitle}>
+                  {sectionIcons.quickAccess}
+                  <h2>Быстрый доступ</h2>
+                  <button className={style.collapseButton}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className={`${style.collapseIcon} ${
+                        collapsedSections.quickAccess ? style.collapsed : ""
+                      }`}
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                </div>
               </div>
+              {!collapsedSections.quickAccess && (
+                <div className={style.quickAccessGrid}>
+                  {quickAccessData.map(renderQuickAccess)}
+                </div>
+              )}
             </div>
-            <div className={style.deadlinesList}>
-              {upcomingDeadlines.map(renderDeadline)}
-            </div>
-          </div>
-        )}
-
-        {/* Секция быстрого доступа */}
-        <div className={style.quickAccessSection}>
-          <div className={style.sectionHeader}>
-            <div className={style.sectionTitle}>
-              {sectionIcons.quickAccess}
-              <h2>Быстрый доступ</h2>
-            </div>
-          </div>
-          <div className={style.quickAccessGrid}>
-            {quickAccessData.map(renderQuickAccess)}
           </div>
         </div>
       </div>

@@ -1,0 +1,435 @@
+@import "./variables.module";
+
+.projectDetailPage {
+  background-color: $bg-content;
+  color: $text-main;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content {
+  width: 100%;
+  padding: 32px 40px;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    padding: 32px 30px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+  }
+}
+
+/* --- Загрузка и Ошибки --- */
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  text-align: center;
+  width: 100%;
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-lg;
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error p {
+  color: $accent-red;
+  font-size: $font-size-xl;
+}
+
+/* --- Кнопка назад --- */
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  margin-bottom: 24px;
+  font-family: inherit;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $text-main;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 14px;
+    font-size: $font-size-sm;
+    margin-bottom: 20px;
+  }
+}
+
+/* --- Заголовок проекта --- */
+.projectHeader {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: $shadow-card;
+
+  @media (max-width: 768px) {
+    padding: 24px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px;
+  }
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.projectTitleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.projectTitle {
+  margin: 0;
+  font-size: $font-size-4xl;
+  line-height: 1.2;
+  font-weight: 600;
+  color: $text-main;
+
+  @media (max-width: 1200px) {
+    font-size: $font-size-3xl;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 24px;
+  }
+}
+
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  align-self: flex-start;
+  white-space: nowrap;
+  display: inline-block;
+
+  @media (max-width: 768px) {
+    padding: 4px 10px;
+    font-size: $font-size-xs;
+  }
+}
+
+.projectMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    font-size: $font-size-xs;
+  }
+}
+
+.projectDescription {
+  margin-bottom: 24px;
+  padding-top: 20px;
+  border-top: 1px solid $border-light;
+
+  p {
+    margin: 0;
+    font-size: $font-size-lg;
+    line-height: 1.6;
+    color: $text-secondary;
+
+    @media (max-width: 768px) {
+      font-size: $font-size-md;
+    }
+  }
+}
+
+/* --- Статистика проекта --- */
+.projectStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid $border-light;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+  }
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-lg;
+  transition: $transition-default;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 10px;
+  }
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba($primary-purple, 0.1);
+  border-radius: $border-radius-md;
+  color: $primary-purple;
+  flex-shrink: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.statValue {
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 1;
+
+  @media (max-width: 768px) {
+    font-size: $font-size-xl;
+  }
+}
+
+.statLabel {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+
+  @media (max-width: 768px) {
+    font-size: $font-size-xs;
+  }
+}
+
+/* --- Кнопки действий --- */
+.actionButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  color: $text-main;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-smooth;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: $transition-default;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+
+  &:hover {
+    background: rgba(30, 30, 30, 0.95);
+    border-color: rgba($primary-purple, 0.5);
+  }
+
+  &[data-action="create-task"] {
+    &:hover {
+      border-color: rgba($accent-green, 0.5);
+      color: $accent-green-light;
+
+      svg {
+        color: $accent-green-light;
+      }
+    }
+  }
+
+  &[data-action="team-chat"] {
+    &:hover {
+      border-color: rgba($accent-blue, 0.5);
+      color: $accent-blue;
+
+      svg {
+        color: $accent-blue;
+      }
+    }
+  }
+
+  &[data-action="schedule"] {
+    &:hover {
+      border-color: rgba($accent-orange, 0.5);
+      color: $accent-orange;
+
+      svg {
+        color: $accent-orange;
+      }
+    }
+  }
+
+  &[data-action="quick-note"] {
+    &:hover {
+      border-color: rgba($accent-purple, 0.5);
+      color: $accent-purple;
+
+      svg {
+        color: $accent-purple;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 14px 20px;
+    font-size: $font-size-sm;
+    gap: 10px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 16px;
+  }
+}
+
+/* --- Dashboard секция --- */
+.dashboardSection {
+  width: 100%;
+  margin-top: 32px;
+
+  @media (max-width: 768px) {
+    margin-top: 24px;
+  }
+}
+
+/* --- Анимации --- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

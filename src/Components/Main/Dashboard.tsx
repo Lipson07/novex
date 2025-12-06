@@ -1,13 +1,6 @@
 import React from "react";
 import styles from "../../style/Main/Dashboard.module.scss";
-
-// Импорт данных
-import {
-  NeuralNetworkData,
-  SmartSuggestionData,
-  KnolageGraphData,
-  FlowDashboardData,
-} from "../../assets/Hero";
+import { DashboardIconsData } from "../../assets/DashboardIcons/index.js";
 
 interface Suggestion {
   title: string;
@@ -46,7 +39,7 @@ interface DataItem {
   gradient: "blue" | "purple" | "orange" | "green" | "default";
   icon: string;
 }
-// api for fetch http://127.0.0.1:8000/api/createProj
+
 const Dashboard: React.FC = () => {
   const suggestions: Suggestion[] = [
     {
@@ -76,7 +69,7 @@ const Dashboard: React.FC = () => {
       description: "У команд дизайна и разработки конфликтующие требования.",
       time: "1 час",
       tag: "Коллаборация",
-      iconType: "Команды", // Используем "Проверка" из данных
+      iconType: "Команды",
     },
     {
       title: "Проверить заблокированные задачи",
@@ -151,18 +144,13 @@ const Dashboard: React.FC = () => {
   };
 
   const getSuggestionIcon = (iconType: string) => {
-    // Сначала ищем точное совпадение
-    let iconData = SmartSuggestionData.find((item) => item.title === iconType);
+    // Ищем иконку по типу в данных SmartSuggestions
+    const iconData = DashboardIconsData.SmartSuggestions.find(
+      (item) => item.title === iconType
+    );
 
-    // Если не найдено, ищем частичное совпадение
-    if (!iconData) {
-      iconData = SmartSuggestionData.find(
-        (item) => iconType.includes(item.title) || item.title.includes(iconType)
-      );
-    }
-
-    // Если все еще не найдено, используем первую иконку
-    return iconData || SmartSuggestionData[0];
+    // Если не найдено, используем первую иконку
+    return iconData || DashboardIconsData.SmartSuggestions[0];
   };
 
   return (
@@ -174,14 +162,16 @@ const Dashboard: React.FC = () => {
               <div className={styles.titleContainer}>
                 <div
                   className={styles.neuralIcon}
-                  data-gradient={NeuralNetworkData[0].gradient}
+                  data-gradient={DashboardIconsData.NeuralNetwork[0].gradient}
                 >
-                  {renderIcon(NeuralNetworkData[0].icon)}
+                  {renderIcon(DashboardIconsData.NeuralNetwork[0].icon)}
                 </div>
-                <h2>{NeuralNetworkData[0].title}</h2>
+                <h2>{DashboardIconsData.NeuralNetwork[0].title}</h2>
               </div>
               <button className={styles.iconButton}>
-                <div>{renderIcon(NeuralNetworkData[1].icon)}</div>
+                <div>
+                  {renderIcon(DashboardIconsData.NeuralNetwork[1].icon)}
+                </div>
               </button>
             </div>
 
@@ -233,12 +223,14 @@ const Dashboard: React.FC = () => {
               <div className={styles.titleContainer}>
                 <div
                   className={styles.suggestionsIcon}
-                  data-gradient={SmartSuggestionData[0].gradient}
+                  data-gradient={
+                    DashboardIconsData.SmartSuggestions[0].gradient
+                  }
                 >
-                  {renderIcon(SmartSuggestionData[0].icon)}
+                  {renderIcon(DashboardIconsData.SmartSuggestions[0].icon)}
                 </div>
                 <div>
-                  <h2>{SmartSuggestionData[0].title}</h2>
+                  <h2>{DashboardIconsData.SmartSuggestions[0].title}</h2>
                   <p className={styles.subtitle}>Рекомендации на основе ИИ</p>
                 </div>
               </div>
@@ -305,12 +297,12 @@ const Dashboard: React.FC = () => {
               <div className={styles.titleContainer}>
                 <div
                   className={styles.knowledgeIcon}
-                  data-gradient={KnolageGraphData[0].gradient}
+                  data-gradient={DashboardIconsData.KnowledgeGraph[0].gradient}
                 >
-                  {renderIcon(KnolageGraphData[0].icon)}
+                  {renderIcon(DashboardIconsData.KnowledgeGraph[0].icon)}
                 </div>
                 <div>
-                  <h2>{KnolageGraphData[0].title}</h2>
+                  <h2>{DashboardIconsData.KnowledgeGraph[0].title}</h2>
                   <p className={styles.subtitle}>Связанная информация</p>
                 </div>
               </div>
@@ -320,11 +312,11 @@ const Dashboard: React.FC = () => {
               <div className={styles.quickFilters}>
                 <div
                   className={styles.filterIcon}
-                  data-gradient={KnolageGraphData[1].gradient}
+                  data-gradient={DashboardIconsData.KnowledgeGraph[1].gradient}
                 >
-                  {renderIcon(KnolageGraphData[1].icon)}
+                  {renderIcon(DashboardIconsData.KnowledgeGraph[1].icon)}
                 </div>
-                <span>{KnolageGraphData[1].title}</span>
+                <span>{DashboardIconsData.KnowledgeGraph[1].title}</span>
               </div>
               <div className={styles.filterButtons}>
                 <button className={`${styles.filterButton} ${styles.active}`}>
@@ -394,41 +386,43 @@ const Dashboard: React.FC = () => {
               <div className={styles.titleContainer}>
                 <div
                   className={styles.flowIcon}
-                  data-gradient={FlowDashboardData[0].gradient}
+                  data-gradient={DashboardIconsData.FlowDashboard[0].gradient}
                 >
-                  {renderIcon(FlowDashboardData[0].icon)}
+                  {renderIcon(DashboardIconsData.FlowDashboard[0].icon)}
                 </div>
                 <div>
-                  <h2>{FlowDashboardData[0].title}</h2>
+                  <h2>{DashboardIconsData.FlowDashboard[0].title}</h2>
                   <p className={styles.subtitle}>Пульс вашей эффективности</p>
                 </div>
               </div>
             </div>
 
             <div className={styles.metricsContainer}>
-              {FlowDashboardData.slice(1).map((item: DataItem) => (
-                <div key={item.id} className={styles.metricCard}>
-                  <div
-                    className={styles.metricIcon}
-                    data-gradient={item.gradient}
-                  >
-                    <div className={styles.iconInner}>
-                      {renderIcon(item.icon)}
+              {DashboardIconsData.FlowDashboard.slice(1).map(
+                (item: DataItem) => (
+                  <div key={item.id} className={styles.metricCard}>
+                    <div
+                      className={styles.metricIcon}
+                      data-gradient={item.gradient}
+                    >
+                      <div className={styles.iconInner}>
+                        {renderIcon(item.icon)}
+                      </div>
+                    </div>
+                    <div className={styles.metricValue}>
+                      {item.id === 2 ? "6.5ч" : item.id === 3 ? "24" : "94%"}
+                    </div>
+                    <div className={styles.metricLabel}>{item.title}</div>
+                    <div className={styles.metricTrend}>
+                      {item.id === 2
+                        ? "+12% на этой неделе"
+                        : item.id === 3
+                        ? "+8 на этой неделе"
+                        : "+5% на этой неделе"}
                     </div>
                   </div>
-                  <div className={styles.metricValue}>
-                    {item.id === 2 ? "6.5ч" : item.id === 3 ? "24" : "94%"}
-                  </div>
-                  <div className={styles.metricLabel}>{item.title}</div>
-                  <div className={styles.metricTrend}>
-                    {item.id === 2
-                      ? "+12% на этой неделе"
-                      : item.id === 3
-                      ? "+8 на этой неделе"
-                      : "+5% на этой неделе"}
-                  </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
 
             <div className={styles.activityContainer}>

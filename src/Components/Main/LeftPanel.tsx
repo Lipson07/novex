@@ -20,14 +20,16 @@ interface Project {
 
 interface LeftPanelProps {
   onPageChange?: (page: string) => void;
-  currentPage?: "main" | "projects";
+  currentPage?: "main" | "projects" | "project-detail";
   onProjectClick?: (projectId: number) => void;
+  activeProjectId?: number | null;
 }
 
 function LeftPanel({
   onPageChange,
   currentPage,
   onProjectClick,
+  activeProjectId,
 }: LeftPanelProps) {
   const user = useSelector(selectUser);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -39,6 +41,14 @@ function LeftPanel({
   const [error, setError] = useState("");
   const [userProjects, setUserProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [isProjectsListCollapsed, setIsProjectsListCollapsed] = useState(false);
+  const [isAIPanelCollapsed, setIsAIPanelCollapsed] = useState(true); // По умолчанию свернуто
+
+  useEffect(() => {
+    if (activeProjectId && currentPage === "project-detail") {
+      setIsProjectsListCollapsed(false);
+    }
+  }, [activeProjectId, currentPage]);
 
   useEffect(() => {
     if (currentPage === "projects") {
@@ -156,15 +166,6 @@ function LeftPanel({
     if (onProjectClick) {
       onProjectClick(projectId);
     }
-    if (onPageChange) {
-      onPageChange("projects");
-      const projectsIndex = leftPanelIcons.findIndex(
-        (icon) => icon.name === "Проекты"
-      );
-      if (projectsIndex !== -1) {
-        setActiveCategory(projectsIndex);
-      }
-    }
   };
 
   const handleViewAllProjects = () => {
@@ -177,6 +178,10 @@ function LeftPanel({
         setActiveCategory(projectsIndex);
       }
     }
+  };
+
+  const toggleAIPanel = () => {
+    setIsAIPanelCollapsed(!isAIPanelCollapsed);
   };
 
   return (
@@ -193,7 +198,7 @@ function LeftPanel({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M2.00341 13.0026C1.81418 13.0032 1.62864 12.9502 1.46836 12.8496C1.30809 12.749 1.17964 12.605 1.09796 12.4343C1.01628 12.2636 0.984703 12.0732 1.00691 11.8853C1.02912 11.6973 1.10419 11.5196 1.22341 11.3726L11.1234 1.1726C11.1977 1.08689 11.2989 1.02896 11.4104 1.00834C11.5219 0.987714 11.6371 1.00562 11.7371 1.05911C11.8371 1.1126 11.916 1.1985 11.9607 1.30271C12.0055 1.40692 12.0135 1.52325 11.9834 1.6326L10.0634 7.6526C10.0068 7.80413 9.98778 7.96712 10.008 8.12761C10.0282 8.2881 10.0871 8.44129 10.1795 8.57403C10.2719 8.70678 10.3952 8.81512 10.5387 8.88976C10.6822 8.96441 10.8417 9.00313 11.0034 9.0026H18.0034C18.1926 9.00196 18.3782 9.05502 18.5385 9.15563C18.6987 9.25623 18.8272 9.40025 18.9089 9.57095C18.9905 9.74165 19.0221 9.93202 18.9999 10.1199C18.9777 10.3079 18.9026 10.4856 18.7834 10.6326L8.88341 20.8326C8.80915 20.9183 8.70795 20.9762 8.59643 20.9969C8.48491 21.0175 8.36969 20.9996 8.26968 20.9461C8.16967 20.8926 8.09083 20.8067 8.04607 20.7025C8.00132 20.5983 7.99333 20.482 8.02341 20.3726L9.94341 14.3526C10 14.2011 10.019 14.0381 9.99882 13.8776C9.9786 13.7171 9.91975 13.5639 9.82732 13.4312C9.73489 13.2984 9.61164 13.1901 9.46813 13.1154C9.32463 13.0408 9.16516 13.0021 9.00341 13.0026H2.00341Z"
+                  d="M2.00341 13.0026C1.81418 13.0032 1.62864 12.9502 1.46836 12.8496C1.30809 12.749 1.17964 12.605 1.09796 12.4343C1.01628 12.2636 0.984703 12.0732 1.00691 11.8853C1.02912 11.6973 1.10419 11.5196 1.22341 11.3726L11.1234 1.1726C11.1977 1.08689 11.2989 1.02896 11.4104 1.00834C11.5219 0.987714 11.6371 1.00562 11.7371 1.05911C11.8371 1.1126 11.916 1.1985 11.9607 1.30271C12.0055 1.40692 12.0135 1.52325 11.9834 1.6326L10.0634 7.6526C10.0068 7.80413 11.9844 8.96444 12.0046 9.12493C12.0248 9.28541 12.0837 9.4386 12.1761 9.57135C12.2685 9.70409 12.3918 9.81243 12.5353 9.88708C12.6788 9.96172 12.8382 10.0004 13 9.99992H20C20.1892 9.99927 20.3748 10.0523 20.535 10.1529C20.6953 10.2535 20.8238 10.3976 20.9054 10.5683C20.9871 10.739 21.0187 10.9293 20.9965 11.1173C20.9743 11.3052 20.8992 11.483 20.78 11.6299L10.88 21.8299C10.8057 21.9156 10.7045 21.9736 10.593 21.9942C10.4815 22.0148 10.3663 21.9969 10.2663 21.9434C10.1663 21.8899 10.0874 21.804 10.0427 21.6998C9.99791 21.5956 9.98991 21.4793 10.02 21.3699L11.94 15.3499C11.9966 15.1984 12.0156 15.0354 11.9954 14.8749C11.9752 14.7144 11.9163 14.5612 11.8239 14.4285C11.7315 14.2957 11.6082 14.1874 11.4647 14.1128C11.3212 14.0381 11.1617 13.9994 11 13.9999H2.00341Z"
                   stroke="white"
                   strokeWidth="2"
                   strokeLinecap="round"
@@ -269,53 +274,81 @@ function LeftPanel({
                     </button>
                   </div>
 
-                  {/* Список последних проектов */}
                   <div className={style.projectsListSection}>
-                    <div className={style.projectsListTitle}>
-                      Последние проекты
+                    <div
+                      className={style.projectsListTitle}
+                      onClick={() =>
+                        setIsProjectsListCollapsed(!isProjectsListCollapsed)
+                      }
+                    >
+                      <span>Последние проекты</span>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className={`${style.collapseIcon} ${
+                          isProjectsListCollapsed ? style.collapsed : ""
+                        }`}
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
                     </div>
 
-                    {projectsLoading ? (
-                      <div className={style.projectsLoading}>
-                        Загрузка проектов...
-                      </div>
-                    ) : recentProjects.length === 0 ? (
-                      <div className={style.projectsEmpty}>Нет проектов</div>
-                    ) : (
+                    {!isProjectsListCollapsed && (
                       <>
-                        {recentProjects.map((project) => (
-                          <div
-                            key={project.id}
-                            className={style.projectListItem}
-                            onClick={() => handleProjectClick(project.id)}
-                          >
-                            <div className={style.projectIcon}>
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
+                        {projectsLoading ? (
+                          <div className={style.projectsLoading}>
+                            Загрузка проектов...
+                          </div>
+                        ) : recentProjects.length === 0 ? (
+                          <div className={style.projectsEmpty}>
+                            Нет проектов
+                          </div>
+                        ) : (
+                          <>
+                            {recentProjects.map((project) => (
+                              <div
+                                key={project.id}
+                                className={`${style.projectListItem} ${
+                                  activeProjectId === project.id &&
+                                  currentPage === "project-detail"
+                                    ? style.active
+                                    : ""
+                                }`}
+                                onClick={() => handleProjectClick(project.id)}
                               >
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                              </svg>
-                            </div>
-                            <div className={style.projectInfo}>
-                              <div className={style.projectTitle}>
-                                {project.tittle}
+                                <div className={style.projectIcon}>
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  >
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                  </svg>
+                                </div>
+                                <div className={style.projectInfo}>
+                                  <div className={style.projectTitle}>
+                                    {project.tittle}
+                                  </div>
+                                  <div className={style.projectDate}>
+                                    {formatDate(project.created_at)}
+                                  </div>
+                                </div>
                               </div>
-                              <div className={style.projectDate}>
-                                {formatDate(project.created_at)}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                            ))}
 
-                        {userProjects.length > 3 && (
-                          <div className={style.projectsMore}>
-                            И еще {userProjects.length - 3} проектов
-                          </div>
+                            {userProjects.length > 3 && (
+                              <div className={style.projectsMore}>
+                                И еще {userProjects.length - 3} проектов
+                              </div>
+                            )}
+                          </>
                         )}
                       </>
                     )}
@@ -349,8 +382,16 @@ function LeftPanel({
         </div>
 
         <div className={style.suggestions}>
-          <div className={style.glassCard}>
-            <div className={style.cardHeader}>
+          <div
+            className={`${style.glassCard} ${
+              isAIPanelCollapsed ? style.collapsed : ""
+            }`}
+          >
+            <div
+              className={style.cardHeader}
+              onClick={toggleAIPanel}
+              style={{ cursor: "pointer" }}
+            >
               <div className={style.aiIdentity}>
                 <div className={style.aiIcon}>
                   <svg
@@ -365,22 +406,75 @@ function LeftPanel({
                   </svg>
                 </div>
                 <div className={style.aiInfo}>
-                  <div className={style.aiName}>Synapse AI</div>
+                  <div className={style.aiName}>AI</div>
                   <div className={style.aiStatus}>
                     <div className={style.statusDot}></div>
                     <span>Всегда учится</span>
                   </div>
                 </div>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className={`${style.collapseIcon} ${
+                    isAIPanelCollapsed ? style.collapsed : ""
+                  }`}
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
               </div>
             </div>
+            {!isAIPanelCollapsed && (
+              <>
+                <div className={style.cardContent}>
+                  <div className={style.suggestionsTitle}>
+                    Умные предложения
+                  </div>
 
-            <div className={style.cardContent}>
-              <div className={style.suggestionsTitle}>Умные предложения</div>
+                  <div className={style.suggestionsList}>
+                    {suggestions.map((suggestion, index) => (
+                      <div key={index} className={style.suggestionItem}>
+                        <div className={style.suggestionIcon}>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <path d="M9 18l6-6-6-6" />
+                          </svg>
+                        </div>
+                        <span className={style.suggestionText}>
+                          {suggestion}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              <div className={style.suggestionsList}>
-                {suggestions.map((suggestion, index) => (
-                  <div key={index} className={style.suggestionItem}>
-                    <div className={style.suggestionIcon}>
+                <form
+                  onSubmit={handleChatSubmit}
+                  className={style.chatInputContainer}
+                >
+                  <div className={style.chatInputWrapper}>
+                    <input
+                      type="text"
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      placeholder="Спросите Synapse AI..."
+                      className={style.chatInput}
+                      maxLength={100}
+                    />
+                    <button
+                      type="submit"
+                      className={style.chatSendButton}
+                      disabled={!chatMessage.trim()}
+                    >
                       <svg
                         width="14"
                         height="14"
@@ -389,46 +483,13 @@ function LeftPanel({
                         stroke="currentColor"
                         strokeWidth="2"
                       >
-                        <path d="M9 18l6-6-6-6" />
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                       </svg>
-                    </div>
-                    <span className={style.suggestionText}>{suggestion}</span>
+                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <form
-              onSubmit={handleChatSubmit}
-              className={style.chatInputContainer}
-            >
-              <div className={style.chatInputWrapper}>
-                <input
-                  type="text"
-                  value={chatMessage}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                  placeholder="Спросите Synapse AI..."
-                  className={style.chatInput}
-                  maxLength={100}
-                />
-                <button
-                  type="submit"
-                  className={style.chatSendButton}
-                  disabled={!chatMessage.trim()}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                  </svg>
-                </button>
-              </div>
-            </form>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </div>

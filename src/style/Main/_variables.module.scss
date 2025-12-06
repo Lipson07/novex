@@ -1,8 +1,9 @@
-// _variables.module.scss (обновленная версия)
+// _variables.module.scss (дополненная версия)
 $bg-dark: #0a0a0a;
 $bg-panel: #202020;
 $bg-card: rgba(20, 20, 20, 0.95);
 $bg-content: #161617;
+$bg-sidebar: #121212; // ← ДОБАВЛЕНО: цвет для боковой панели
 
 $border-color: rgba(255, 255, 255, 0.1);
 $border-light: rgba(255, 255, 255, 0.05);
@@ -36,15 +37,26 @@ $gradient-primary: linear-gradient(
   #8c8c8c 50%,
   #707070 100%
 );
+$gradient-sidebar: linear-gradient(
+  135deg,
+  #667eea 0%,
+  #764ba2 100%
+); // ← ДОБАВЛЕНО: градиент для сайдбара
+
 $shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5);
 $shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+$shadow-sidebar: 0 8px 32px rgba(0, 0, 0, 0.3); // ← ДОБАВЛЕНО: тень для сайдбара
+$shadow-glow: 0 0 20px rgba($primary-color, 0.3); // ← ДОБАВЛЕНО: свечение
 
 $z-modal: 1000;
 $z-dropdown: 100;
 $z-header: 100;
+$z-sidebar: 50; // ← ДОБАВЛЕНО: z-index для сайдбара
 
 $transition-default: all 0.2s ease;
 $transition-smooth: all 0.3s ease;
+$transition-bounce: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // ← ДОБАВЛЕНО: bounce анимация
+$transition-slide: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); // ← ДОБАВЛЕНО: slide анимация
 
 $border-radius-sm: 4px;
 $border-radius-md: 6px;
@@ -52,6 +64,7 @@ $border-radius-lg: 8px;
 $border-radius-xl: 10px;
 $border-radius-2xl: 14px;
 $border-radius-3xl: 16px;
+$border-radius-full: 50%; // ← ДОБАВЛЕНО: полная округлость
 
 $font-size-xs: 11px;
 $font-size-sm: 12px;
@@ -61,3 +74,60 @@ $font-size-xl: 15px;
 $font-size-2xl: 18px;
 $font-size-3xl: 24px;
 $font-size-4xl: 36px;
+
+// Новые переменные для анимаций
+$animation-duration-fast: 0.2s;
+$animation-duration-normal: 0.3s;
+$animation-duration-slow: 0.4s;
+$animation-duration-slower: 0.5s;
+
+$animation-timing-ease: ease;
+$animation-timing-ease-out: ease-out;
+$animation-timing-ease-in-out: ease-in-out;
+$animation-timing-bounce: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Новые переменные для состояний
+$state-hover-bg: rgba(255, 255, 255, 0.05);
+$state-active-bg: rgba($primary-color, 0.1);
+$state-focus-ring: 0 0 0 3px rgba($primary-color, 0.1);
+
+// Новые переменные для компонентов
+$input-bg: rgba(255, 255, 255, 0.05);
+$input-border: rgba(255, 255, 255, 0.1);
+$input-focus-bg: rgba(255, 255, 255, 0.08);
+
+$button-primary-bg: rgba($primary-color, 0.1);
+$button-primary-border: rgba($primary-color, 0.2);
+$button-primary-hover-bg: rgba($primary-color, 0.2);
+$button-primary-hover-border: rgba($primary-color, 0.3);
+
+$button-secondary-bg: rgba(255, 255, 255, 0.05);
+$button-secondary-border: rgba(255, 255, 255, 0.1);
+$button-secondary-hover-bg: rgba(255, 255, 255, 0.1);
+$button-secondary-hover-border: rgba(255, 255, 255, 0.2);
+
+// Новые переменные для стекла (glass morphism)
+$glass-bg-light: rgba(255, 255, 255, 0.05);
+$glass-bg-medium: rgba(255, 255, 255, 0.08);
+$glass-bg-heavy: rgba(255, 255, 255, 0.12);
+$glass-blur: blur(10px);
+$glass-blur-heavy: blur(20px);
+
+// Новые переменные для градиентов
+$gradient-overlay: linear-gradient(
+  135deg,
+  rgba(255, 255, 255, 0.05),
+  rgba(255, 255, 255, 0.02)
+);
+$gradient-shine: linear-gradient(
+  90deg,
+  transparent,
+  rgba(255, 255, 255, 0.1),
+  transparent
+);
+$gradient-divider: linear-gradient(
+  90deg,
+  transparent,
+  $border-light,
+  transparent
+);

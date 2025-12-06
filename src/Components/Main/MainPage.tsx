@@ -3,25 +3,48 @@ import React, { useState } from "react";
 import LeftPanel from "./LeftPanel";
 import Hero from "./Hero";
 import ProjectsPage from "./ProjectsPage";
+import ProjectDetailPage from "./ProjectDetailPage";
 import style from "../../style/Main/MainPage.module.scss";
 
-type Page = "main" | "projects";
+type Page = "main" | "projects" | "project-detail";
 
 function MainPage() {
   const [currentPage, setCurrentPage] = useState<Page>("main");
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null
+  );
 
   const handleProjectClick = (projectId: number) => {
-    console.log("Открыть проект:", projectId);
-    // Здесь можно добавить логику для открытия страницы проекта
-    // Например: setCurrentPage('project-detail');
+    setSelectedProjectId(projectId);
+    setCurrentPage("project-detail");
   };
 
-  const handlePageChange = (page: Page) => {
-    setCurrentPage(page);
+  const handlePageChange = (page: string) => {
+    if (page === "main" || page === "projects" || page === "project-detail") {
+      setCurrentPage(page as Page);
+      if (page !== "project-detail") {
+        setSelectedProjectId(null);
+      }
+    }
+  };
+
+  const handleBackToProjects = () => {
+    setCurrentPage("projects");
+    setSelectedProjectId(null);
   };
 
   const renderContent = () => {
     switch (currentPage) {
+      case "project-detail":
+        if (selectedProjectId) {
+          return (
+            <ProjectDetailPage
+              projectId={selectedProjectId}
+              onBack={handleBackToProjects}
+            />
+          );
+        }
+        return <ProjectsPage onProjectClick={handleProjectClick} />;
       case "projects":
         return <ProjectsPage onProjectClick={handleProjectClick} />;
       case "main":
@@ -37,7 +60,12 @@ function MainPage() {
   return (
     <div className={style.mainContainer}>
       <div className={style.leftPanelContainer}>
-        <LeftPanel onPageChange={handlePageChange} currentPage={currentPage} />
+        <LeftPanel
+          onPageChange={handlePageChange}
+          currentPage={currentPage}
+          onProjectClick={handleProjectClick}
+          activeProjectId={selectedProjectId}
+        />
       </div>
       <div className={style.contentContainer}>{renderContent()}</div>
     </div>

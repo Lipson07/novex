@@ -86,7 +86,6 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
   }, [projects, searchQuery, activeFilter]);
 
   const handleProjectClick = (projectId: number) => {
-    console.log("Открыть проект:", projectId);
     if (onProjectClick) {
       onProjectClick(projectId);
     }
