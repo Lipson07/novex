@@ -19,7 +19,7 @@ interface Project {
 }
 
 interface LeftPanelProps {
-  onPageChange?: (page: string) => void;
+  onPageChange?: (page: "main" | "projects") => void;
 }
 
 function LeftPanel({ onPageChange }: LeftPanelProps) {
