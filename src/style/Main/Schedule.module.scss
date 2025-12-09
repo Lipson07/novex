@@ -1,0 +1,457 @@
+@import "./variables.module";
+
+.schedule {
+  background-color: $bg-content;
+  color: $text-main;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content {
+  width: 100%;
+  padding: 32px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    padding: 32px 30px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: $text-main;
+  }
+}
+
+.headerInfo {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 4px 0;
+  font-size: $font-size-3xl;
+  font-weight: 600;
+  color: $text-main;
+
+  @media (max-width: 768px) {
+    font-size: $font-size-2xl;
+  }
+}
+
+.subtitle {
+  margin: 0;
+  font-size: $font-size-md;
+  color: $text-secondary;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba($accent-orange, 0.1);
+  border: 1px solid rgba($accent-orange, 0.3);
+  border-radius: $border-radius-md;
+  color: $accent-orange;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: rgba($accent-orange, 0.2);
+    border-color: rgba($accent-orange, 0.5);
+  }
+}
+
+.scheduleContent {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calendarSection {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 24px;
+
+  @media (max-width: 1024px) {
+    position: static;
+  }
+}
+
+.calendarHeader {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: $input-bg;
+  border: $input-border;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  font-size: $font-size-md;
+  font-family: inherit;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-orange;
+    box-shadow: $state-focus-ring;
+  }
+}
+
+.selectedDateInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+}
+
+.dateLabel {
+  font-size: $font-size-md;
+  color: $text-main;
+  font-weight: 500;
+}
+
+.eventsCount {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.eventsSection {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 24px;
+}
+
+.eventsHeader {
+  margin-bottom: 24px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $border-light;
+  border-left: 4px solid;
+  border-radius: $border-radius-md;
+  transition: $transition-default;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.eventHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.eventType {
+  display: flex;
+  align-items: center;
+}
+
+.eventTypeBadge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: $font-size-xs;
+  font-weight: 500;
+}
+
+.eventTime {
+  font-size: $font-size-md;
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.eventTitle {
+  margin: 0 0 8px 0;
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.eventDescription {
+  margin: 0 0 12px 0;
+  font-size: $font-size-md;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
+.eventParticipants {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $font-size-sm;
+}
+
+.participantsLabel {
+  color: $text-secondary;
+}
+
+.participantsList {
+  color: $text-main;
+}
+
+.emptyEvents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  color: $text-secondary;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyEvents p {
+  color: $text-secondary;
+  font-size: $font-size-md;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-card;
+  position: relative;
+  z-index: 1001;
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    width: calc(100% - 32px);
+    max-height: 95vh;
+  }
+}
+
+.modalTitle {
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  color: $text-main;
+  text-align: center;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: $font-size-md;
+    font-weight: 500;
+    color: $text-secondary;
+  }
+
+  input,
+  select,
+  textarea {
+    background: $input-bg;
+    border: $input-border;
+    border-radius: $border-radius-md;
+    padding: 14px 16px;
+    color: $text-main;
+    font-size: $font-size-md;
+    transition: $transition-default;
+    box-sizing: border-box;
+    font-family: inherit;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $accent-orange;
+      box-shadow: $state-focus-ring;
+    }
+  }
+
+  textarea {
+    resize: none;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff99' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+  background: transparent;
+  border: 1px solid rgba($accent-red, 0.3);
+  color: $accent-red;
+
+  &:hover {
+    background: rgba($accent-red, 0.1);
+    border-color: rgba($accent-red, 0.5);
+  }
+}
+
+.submitButton {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+  background: transparent;
+  border: 1px solid rgba($accent-green, 0.3);
+  color: $accent-green;
+
+  &:hover {
+    background: rgba($accent-green, 0.1);
+    border-color: rgba($accent-green, 0.5);
+  }
+}
+

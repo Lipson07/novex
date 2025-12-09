@@ -15,17 +15,13 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(102, 126, 234, 0.08);
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
   }
 
   scrollbar-width: thin;
@@ -41,11 +37,7 @@
   right: 0;
   padding: 16px 24px;
   z-index: $z-header;
-  background: linear-gradient(
-    180deg,
-    rgba($bg-content, 0.98),
-    rgba($bg-content, 0.92)
-  );
+  background-color: $bg-content;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba($border-color, 0.6);
   margin-bottom: 24px;
@@ -106,7 +98,7 @@
     transform: translateY(-50%);
     width: 4px;
     height: 60%;
-    background: linear-gradient(135deg, $primary-color, $accent-purple);
+    background: $primary-color;
     border-radius: 2px;
     opacity: 0.8;
   }
@@ -141,7 +133,7 @@
   width: 100%;
   height: 44px;
   padding: 0 44px 0 44px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(102, 126, 234, 0.1);
   border: 1px solid rgba($border-color, 0.8);
   border-radius: $border-radius-lg;
   color: $text-main;
@@ -156,7 +148,7 @@
   &:focus {
     outline: none;
     border-color: $primary-color;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(102, 126, 234, 0.15);
     box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
   }
 }
@@ -176,12 +168,6 @@
   border-radius: $border-radius-sm;
   transition: all 0.2s ease;
   padding: 0;
-
-  &:hover {
-    background: rgba($primary-color, 0.1);
-    color: $primary-color;
-    transform: scale(1.05);
-  }
 }
 
 .rightSection {
@@ -249,30 +235,57 @@
 }
 
 .activeProjects {
-  background: radial-gradient(
-    circle at 20% 80%,
-    rgba($primary-color, 0.2),
-    transparent
-  );
-  border-color: rgba($primary-color, 0.4);
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.4);
   color: rgba(255, 255, 255, 0.85);
-
-  &:hover {
-    box-shadow: 0 2px 8px rgba($primary-color, 0.2);
-  }
 }
 
 .completedProjects {
-  background: radial-gradient(
-    circle at 80% 20%,
-    rgba(5, 223, 114, 0.15),
-    transparent
-  );
-  border-color: rgba(5, 223, 114, 0.4);
-  color: rgba(5, 223, 114, 0.95);
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: rgba(16, 185, 129, 0.95);
+}
 
-  &:hover {
-    box-shadow: 0 2px 8px rgba(5, 223, 114, 0.25);
+.aiButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba($primary-purple, 0.1);
+  border: 1px solid rgba($primary-purple, 0.2);
+  border-radius: $border-radius-lg;
+  color: $primary-purple;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-right: 10px;
+  flex-shrink: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+  }
+
+  .aiBadge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #9333ea;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 8px;
+    border: 2px solid $bg-content;
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
   }
 }
 
@@ -288,7 +301,7 @@
   width: 44px;
   height: 44px;
   border-radius: $border-radius-lg;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(102, 126, 234, 0.1);
   border: 1px solid rgba($border-color, 0.7);
   display: grid;
   place-items: center;
@@ -297,12 +310,6 @@
   position: relative;
   overflow: hidden;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-
   svg {
     width: 20px;
     height: 20px;
@@ -310,23 +317,18 @@
   }
 }
 
-// Профиль — компактный, с градиентным аватаром
+// Профиль — компактный
 .userProfileHeader {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 14px 8px 10px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(102, 126, 234, 0.1);
   border: 1px solid rgba($border-color, 0.7);
   border-radius: $border-radius-lg;
   transition: all 0.25s ease;
   min-width: 0;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  }
+  cursor: pointer;
 
   @media (max-width: 768px) {
     padding: 6px 10px 6px 8px;
@@ -345,7 +347,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #667eea, #764ba2, #f093fb);
+  background-color: $primary-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -405,7 +407,7 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
   backdrop-filter: blur(12px);
@@ -422,12 +424,8 @@
 
 .statusBlockAI {
   @extend .statusBlock;
-  background: linear-gradient(
-    90deg,
-    rgba($primary-color, 0.15),
-    rgba($accent-purple, 0.15)
-  );
-  border: 1px solid rgba($primary-color, 0.3);
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -476,10 +474,6 @@
   cursor: pointer;
   user-select: none;
   transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.8;
-  }
 }
 
 .sectionTitle {
@@ -507,10 +501,6 @@
   border-radius: $border-radius-sm;
   transition: $transition-default;
   margin-left: 8px;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-  }
 }
 
 .collapseIcon {
@@ -534,11 +524,6 @@
   border-radius: $border-radius-md;
   transition: all 0.2s ease;
   white-space: nowrap;
-
-  &:hover {
-    color: $text-main;
-    background: rgba(255, 255, 255, 0.05);
-  }
 }
 
 // Информация о пользователе
@@ -547,7 +532,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-light;
   border-radius: $border-radius-xl;
 }
@@ -562,7 +547,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -604,7 +589,7 @@
 .userDepartment {
   font-size: $font-size-sm;
   color: $text-muted;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   padding: 4px 8px;
   border-radius: $border-radius-md;
   align-self: flex-start;
@@ -631,15 +616,11 @@
     gap: 16px;
     cursor: pointer;
     user-select: none;
-
-    &:hover {
-      opacity: 0.8;
-    }
   }
 }
 
 .projectCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-light;
   border-radius: $border-radius-xl;
   padding: 18px;
@@ -650,13 +631,6 @@
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
-
-  &:hover {
-    border-color: $border-color;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
 
   &:active {
     transform: translateY(0);
@@ -717,6 +691,64 @@
       font-size: $font-size-lg;
     }
   }
+}
+
+.projectInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: $text-secondary;
+  margin-top: 2px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.infoLabel {
+  font-size: $font-size-xs;
+  color: $text-muted;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-size: $font-size-sm;
+  color: $text-main;
+  font-weight: 500;
+  word-break: break-word;
 }
 
 // УЛУЧШЕННЫЙ ПРОГРЕСС-БАР
@@ -803,7 +835,7 @@
     color: rgba(255, 255, 255, 0.9);
     cursor: help;
     padding: 2px 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(102, 126, 234, 0.08);
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -857,7 +889,7 @@
 // ПРОГРЕСС-БАР
 .progressBar {
   height: 6px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -916,7 +948,7 @@
 .teamCount {
   font-size: $font-size-sm;
   color: $text-secondary;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   padding: 4px 8px;
   border-radius: $border-radius-md;
 }
@@ -932,17 +964,11 @@
   align-items: center;
   gap: 12px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-light;
   border-radius: $border-radius-lg;
   transition: all 0.2s ease;
   cursor: pointer;
-
-  &:hover {
-    border-color: $border-color;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(4px);
-  }
 }
 
 .memberAvatar {
@@ -980,25 +1006,15 @@
   align-items: center;
   gap: 12px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-light;
   border-radius: $border-radius-lg;
   transition: all 0.2s ease;
   position: relative;
 
-  &:hover {
-    border-color: $border-color;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(4px);
-  }
-
   &.urgent {
     border-left: 3px solid #ff6467;
     background: rgba(255, 100, 103, 0.08);
-
-    &:hover {
-      background: rgba(255, 100, 103, 0.12);
-    }
   }
 
   &.soon {
@@ -1074,14 +1090,14 @@
   font-size: $font-size-xs;
   color: $text-muted;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border-radius: $border-radius-sm;
 }
 
 .deadlinesCount {
   font-size: $font-size-sm;
   color: $text-secondary;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   padding: 4px 10px;
   border-radius: $border-radius-md;
   font-weight: 500;
@@ -1107,17 +1123,10 @@
   justify-content: center;
   gap: 10px;
   padding: 18px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-light;
   border-radius: $border-radius-lg;
   transition: all 0.2s ease;
-
-  &:hover {
-    border-color: $border-color;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
 
   &:active {
     transform: translateY(0);
@@ -1159,12 +1168,7 @@
 }
 
 .activityModal {
-  background: linear-gradient(
-    to bottom,
-    $bg-content 0%,
-    $bg-content 90%,
-    rgba(22, 22, 23, 0) 100%
-  );
+  background: $bg-content;
   border-radius: 20px;
   width: 90%;
   max-width: 600px;
@@ -1204,11 +1208,6 @@
   padding: 8px;
   border-radius: $border-radius-md;
   transition: $transition-default;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: $text-main;
-  }
 }
 
 .modalActivityList {
@@ -1221,7 +1220,7 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(102, 126, 234, 0.08);
     border-radius: 3px;
   }
 
@@ -1242,7 +1241,7 @@
 }
 
 .viewAllBtn {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   border: 1px solid $border-color;
   color: $text-main;
   padding: 12px 24px;
@@ -1281,17 +1280,13 @@
   padding: 12px;
   border-radius: $border-radius-lg;
   transition: background 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-  }
 }
 
 .avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(102, 126, 234, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;

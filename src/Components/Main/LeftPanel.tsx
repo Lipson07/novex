@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import style from "../../style/Main/LeftPanel.module.scss";
 import { leftPanelIcons } from "../../assets/LeftPanel/index.js";
 import { useSelector } from "react-redux";
+import "../../App.scss";
 import { selectUser } from "../../store/user.js";
 import { ProjectService, formatDate } from "../../assets/MockData/index.js";
 
@@ -20,7 +21,13 @@ interface Project {
 
 interface LeftPanelProps {
   onPageChange?: (page: string) => void;
-  currentPage?: "main" | "projects" | "project-detail";
+  currentPage?:
+    | "main"
+    | "projects"
+    | "project-detail"
+    | "team-chat"
+    | "schedule"
+    | "quick-note";
   onProjectClick?: (projectId: number) => void;
   activeProjectId?: number | null;
 }
@@ -33,6 +40,7 @@ function LeftPanel({
 }: LeftPanelProps) {
   const user = useSelector(selectUser);
   const [activeCategory, setActiveCategory] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tittle, setTittle] = useState("");
@@ -43,6 +51,45 @@ function LeftPanel({
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [isProjectsListCollapsed, setIsProjectsListCollapsed] = useState(false);
   const [isAIPanelCollapsed, setIsAIPanelCollapsed] = useState(true); // По умолчанию свернуто
+
+  // Список доступных тем
+  const themes = [
+    "dark-plus",
+    "light-plus",
+    "monokai",
+    "solarized-dark",
+    "dracula",
+    "github-dark",
+    "github-light",
+    "one-dark-pro",
+    "material-theme-darker",
+    "night-owl",
+    "palenight",
+    "synthwave-84",
+    "tokyo-night",
+    "catppuccin-mocha",
+    "ayu-dark",
+    "cobalt2",
+    "gruvbox-dark",
+    "horizon",
+    "nord",
+    "red",
+    "abyss",
+    "quietlight",
+    "kimbie-dark",
+    "solarized-light",
+  ];
+
+  // Выбранная тема (инициализация из localStorage)
+  const [selectedTheme, setSelectedTheme] = useState<string>(() => {
+    try {
+      return localStorage.getItem("theme") || "";
+    } catch {
+      return "";
+    }
+  });
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const themeMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (activeProjectId && currentPage === "project-detail") {
@@ -138,8 +185,13 @@ function LeftPanel({
       });
 
       console.log("Проект успешно создан:", newProject);
-      fetchUserProjects(); // Обновить список проектов
+      await fetchUserProjects(); // Обновить список проектов
       closeModal();
+
+      // Если есть callback для перехода на страницу проектов
+      if (onPageChange) {
+        onPageChange("projects");
+      }
     } catch (error) {
       console.error("Ошибка создания проекта:", error);
       setError("Ошибка создания проекта");
@@ -184,6 +236,53 @@ function LeftPanel({
   const toggleAIPanel = () => {
     setIsAIPanelCollapsed(!isAIPanelCollapsed);
   };
+
+  const toggleTheme = () => {
+    // Теперь открываем/закрываем меню выбора темы
+    setIsThemeMenuOpen((s) => !s);
+  };
+
+  useEffect(() => {
+    // Применяем выбранную тему к body через data-theme и сохраняем в localStorage
+    try {
+      if (selectedTheme) {
+        document.body.setAttribute("data-theme", selectedTheme);
+        localStorage.setItem("theme", selectedTheme);
+      } else {
+        document.body.removeAttribute("data-theme");
+        localStorage.removeItem("theme");
+      }
+    } catch (e) {
+      // ignore localStorage errors
+    }
+
+    // Синхронизируем старое булево состояние dark, если где-то используется
+    setIsDarkMode(!!selectedTheme && selectedTheme.includes("dark"));
+  }, [selectedTheme]);
+
+  // Закрытие меню при клике вне области и при нажатии Esc
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (
+        isThemeMenuOpen &&
+        themeMenuRef.current &&
+        !themeMenuRef.current.contains(e.target as Node)
+      ) {
+        setIsThemeMenuOpen(false);
+      }
+    }
+    function onEsc(e: KeyboardEvent) {
+      if (isThemeMenuOpen && e.key === "Escape") {
+        setIsThemeMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [isThemeMenuOpen]);
 
   return (
     <>
@@ -358,6 +457,61 @@ function LeftPanel({
               );
             }
 
+            // Специальная обработка кнопки Тема — показываем меню выбора темы
+            if (element.name === "Тема") {
+              return (
+                <div
+                  key={element.name}
+                  className={`${style.categoryItem} ${
+                    selectedTheme ? style.active : ""
+                  }`}
+                  title="Выбрать тему"
+                  ref={themeMenuRef}
+                >
+                  <div
+                    className={style.themeToggle}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleTheme();
+                    }}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d={element.icon} />
+                    </svg>
+                    <p>{element.name}</p>
+
+                    {isThemeMenuOpen && (
+                      <div className={style.themeDropdown} role="menu">
+                        {themes.map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            className={`${style.themeItem} ${
+                              selectedTheme === t ? style.themeActive : ""
+                            }`}
+                            onClick={(ev) => {
+                              ev.stopPropagation();
+                              setSelectedTheme(t);
+                              setIsThemeMenuOpen(false);
+                            }}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div
                 key={element.name}
@@ -428,6 +582,7 @@ function LeftPanel({
                 </svg>
               </div>
             </div>
+
             {!isAIPanelCollapsed && (
               <>
                 <div className={style.cardContent}>
@@ -658,3 +813,4 @@ function LeftPanel({
 }
 
 export default LeftPanel;
+export { LeftPanel };

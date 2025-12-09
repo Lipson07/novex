@@ -67,14 +67,21 @@ export const getPriorityColor = (priority) => {
   }
 };
 
+// Константа для базового URL API
+const API_BASE_URL = "http://localhost:8000/api";
+
 // Реальный сервис для работы с проектами
 export const ProjectService = {
   // Получить проекты пользователя (реальная версия)
   getUserProjects: async (userId) => {
+    if (!userId) {
+      throw new Error("ID пользователя не указан");
+    }
+    
     console.log(`[API] Получение проектов пользователя ${userId}`);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/projects?user_id=${userId}`,
+        `${API_BASE_URL}/projects?user_id=${userId}`,
         {
           method: "GET",
           headers: {
@@ -84,90 +91,136 @@ export const ProjectService = {
         }
       );
 
+      // Проверяем статус ответа перед парсингом JSON
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = "Ошибка загрузки проектов";
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
       const data = await response.json();
 
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Ошибка загрузки проектов");
       }
 
       return data.projects || [];
     } catch (error) {
       console.error("Ошибка загрузки проектов:", error);
-      throw error;
+      // Если это уже наша ошибка, пробрасываем дальше
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Неожиданная ошибка при загрузке проектов");
     }
   },
 
-  // Получить все проекты (реальная версия)
-  getAllProjects: async () => {
-    console.log("[API] Получение всех проектов");
-    try {
-      // Пока используем getUserProjects с ID 1 как временное решение
-      const response = await fetch(
-        "http://localhost:8000/api/projects?user_id=1",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Ошибка загрузки проектов");
-      }
-
-      return data.projects || [];
-    } catch (error) {
-      console.error("Ошибка загрузки всех проектов:", error);
-      throw error;
+  // Получить все проекты пользователя (использует текущего пользователя)
+  getAllProjects: async (userId) => {
+    if (!userId) {
+      throw new Error("ID пользователя не указан");
     }
+    
+    console.log(`[API] Получение всех проектов пользователя ${userId}`);
+    // Используем getUserProjects, так как это то же самое
+    return ProjectService.getUserProjects(userId);
   },
 
   // Создать проект (реальная версия)
   createProject: async (projectData) => {
     console.log("[API] Создание проекта:", projectData);
+    
+    // Валидация данных перед отправкой
+    if (!projectData.tittle || !projectData.tittle.trim()) {
+      throw new Error("Название проекта обязательно");
+    }
+    if (!projectData.owner_id) {
+      throw new Error("ID владельца проекта обязателен");
+    }
+    
     try {
-      const response = await fetch("http://localhost:8000/api/createProj", {
+      const response = await fetch(`${API_BASE_URL}/createProj`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(projectData),
+        body: JSON.stringify({
+          tittle: projectData.tittle.trim(),
+          description: projectData.description?.trim() || "",
+          owner_id: projectData.owner_id,
+        }),
       });
+
+      // Проверяем статус ответа перед парсингом JSON
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = "Ошибка создания проекта";
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+          // Если есть ошибки валидации, добавляем их
+          if (errorData.errors) {
+            const validationErrors = Object.values(errorData.errors).flat().join(", ");
+            errorMessage = `${errorMessage}: ${validationErrors}`;
+          }
+        } catch {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
 
       const data = await response.json();
 
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Ошибка создания проекта");
       }
 
       return data.project;
     } catch (error) {
       console.error("Ошибка создания проекта:", error);
-      throw error;
+      // Если это уже наша ошибка, пробрасываем дальше
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Неожиданная ошибка при создании проекта");
     }
   },
 
   // Получить проект по ID (реальная версия)
-  getProjectById: async (projectId) => {
+  getProjectById: async (projectId, userId) => {
+    if (!projectId) {
+      throw new Error("ID проекта не указан");
+    }
+    
     console.log(`[API] Получение проекта ${projectId}`);
     try {
-      // Пока используем getAllProjects и фильтруем
-      const allProjects = await ProjectService.getAllProjects();
+      // Используем getUserProjects и фильтруем по ID проекта
+      if (!userId) {
+        throw new Error("ID пользователя не указан");
+      }
+      
+      const allProjects = await ProjectService.getUserProjects(userId);
       const project = allProjects.find((p) => p.id === projectId);
 
       if (!project) {
-        throw new Error("Проект не найден");
+        throw new Error(`Проект с ID ${projectId} не найден`);
       }
 
       return project;
     } catch (error) {
       console.error("Ошибка загрузки проекта:", error);
-      throw error;
+      // Пробрасываем ошибку дальше с более информативным сообщением
+      if (error.message.includes("не найден")) {
+        throw error;
+      }
+      throw new Error(`Не удалось загрузить проект: ${error.message}`);
     }
   },
 };

@@ -44,13 +44,20 @@ function ProjectsPage({ onProjectClick }: ProjectsPageProps) {
   const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    if (user?.id) {
+      fetchProjects();
+    }
+  }, [user?.id]);
 
   const fetchProjects = async () => {
     try {
       setIsLoading(true);
-      const projectsData = await ProjectService.getAllProjects();
+      setError("");
+      if (!user?.id) {
+        setError("Пользователь не авторизован");
+        return;
+      }
+      const projectsData = await ProjectService.getAllProjects(user.id);
       setProjects(projectsData);
     } catch (error) {
       console.error("Ошибка загрузки проектов:", error);

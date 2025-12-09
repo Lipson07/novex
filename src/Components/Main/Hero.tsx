@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import style from "../../style/Main/Hero.module.scss";
 import { HeroIcons } from "../../assets/LeftPanel/index.js";
-import { progressStatusIcons } from "../../assets/Hero/index.js";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
 import {
@@ -13,6 +12,7 @@ import {
 
 interface HeroProps {
   onNavigateToProjects?: () => void;
+  onProjectClick?: (projectId: number) => void;
 }
 
 interface Project {
@@ -28,6 +28,8 @@ interface Project {
   status?: string;
   owner?: User;
   users?: User[];
+  repository?: string;
+  activeTasks?: number;
 }
 
 interface User {
@@ -41,7 +43,7 @@ interface User {
   online?: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
+const Hero: React.FC<HeroProps> = ({ onNavigateToProjects, onProjectClick }) => {
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<{
@@ -193,7 +195,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
   };
 
   const handleProjectClick = (id: number) => {
-    console.log(`Выбран проект: ${id}`);
+    if (onProjectClick) {
+      onProjectClick(id);
+    }
   };
 
   const handleViewAllClick = () => {
@@ -237,84 +241,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
   );
 
   const renderProjectCard = (project: Project) => {
-    // Функция для расчета цвета прогресса
-    const getProgressColor = (progress: number): string => {
-      if (progress <= 33) {
-        const ratio = progress / 33;
-        const r = Math.floor(255);
-        const g = Math.floor(165 * ratio);
-        const b = Math.floor(0);
-        return `rgb(${r}, ${g}, ${b})`;
-      } else if (progress <= 66) {
-        const ratio = (progress - 33) / 33;
-        const r = Math.floor(255);
-        const g = Math.floor(165 + 90 * ratio);
-        const b = Math.floor(0);
-        return `rgb(${r}, ${g}, ${b})`;
-      } else {
-        const ratio = (progress - 66) / 34;
-        const r = Math.floor(255 - 155 * ratio);
-        const g = Math.floor(255);
-        const b = Math.floor(0);
-        return `rgb(${r}, ${g}, ${b})`;
-      }
-    };
 
-    // Получение статуса проекта с иконками
-    const getProgressStatus = (p: number) => {
-      if (p === 0)
-        return {
-          text: "Не начат",
-          icon: progressStatusIcons.notStarted,
-          color: "statusNotStarted",
-        };
-      if (p < 25)
-        return {
-          text: "Начальная стадия",
-          icon: progressStatusIcons.earlyStage,
-          color: "statusEarly",
-        };
-      if (p < 50)
-        return {
-          text: "В процессе",
-          icon: progressStatusIcons.inProgress,
-          color: "statusInProgress",
-        };
-      if (p < 75)
-        return {
-          text: "Хороший прогресс",
-          icon: progressStatusIcons.goodProgress,
-          color: "statusGood",
-        };
-      if (p < 100)
-        return {
-          text: "Почти готово",
-          icon: progressStatusIcons.almostDone,
-          color: "statusAlmost",
-        };
-      return {
-        text: "Завершено",
-        icon: progressStatusIcons.completed,
-        color: "statusCompleted",
-      };
-    };
-
-    const progress = project.progress || 0;
-    const status = getProgressStatus(progress);
-
-    // Рассчитываем выполненные задачи
-    const totalTasks = project.tasks || 0;
-    const completedTasks = Math.floor((progress / 100) * totalTasks);
-
-    // Примерная дата дедлайна
-    const deadlineDate = new Date();
-    deadlineDate.setDate(
-      deadlineDate.getDate() + Math.floor((100 - progress) / 10)
-    );
-    const deadline = deadlineDate.toLocaleDateString("ru-RU", {
-      day: "numeric",
-      month: "short",
-    });
+    // Генерируем название репозитория на основе названия проекта
+    const repositoryName = project.repository || `github.com/org/${project.tittle.toLowerCase().replace(/\s+/g, '-')}`;
+    const activeTasksCount = project.activeTasks !== undefined ? project.activeTasks : (project.tasks ? Math.floor((project.tasks * 0.6)) : 0);
 
     return (
       <div
@@ -339,97 +269,88 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
               {getStatusText(project.status)}
             </span>
           </div>
-          <div className={style.projectStats}>
-            {project.users && (
-              <div className={style.stat}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx="9"
-                    cy="7"
-                    r="4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                </svg>
-                <span>{project.users.length}</span>
-              </div>
-            )}
-            {project.tasks !== undefined && (
-              <div className={style.stat}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M22 4L12 14.01l-3-3"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span>{project.tasks}</span>
-              </div>
-            )}
-          </div>
         </div>
 
-        {/* УЛУЧШЕННЫЙ ПРОГРЕСС-БАР */}
-        <div className={style.enhancedProgress}>
-          <div className={style.progressHeader}>
-            <div className={style.progressStatus}>
-              <div
-                className={`${style.statusIcon} ${style[status.color]}`}
-                dangerouslySetInnerHTML={{ __html: status.icon }}
-              />
-              <span className={style.statusText}>{status.text}</span>
+        {/* Краткая информация о проекте */}
+        <div className={style.projectInfo}>
+          {/* Название репозитория */}
+          <div className={style.infoRow}>
+            <div className={style.infoIcon}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
             </div>
-
-            <div className={style.progressTooltip}>
-              <span className={style.percentage}>{progress}%</span>
-              <div className={style.tooltip}>
-                <div className={style.tooltipItem}>
-                  <span className={style.tooltipLabel}>Задачи:</span>
-                  <span className={style.tooltipValue}>
-                    {completedTasks}/{totalTasks}
-                  </span>
-                </div>
-                <div className={style.tooltipItem}>
-                  <span className={style.tooltipLabel}>Дедлайн:</span>
-                  <span className={style.tooltipValue}>~{deadline}</span>
-                </div>
-              </div>
+            <div className={style.infoContent}>
+              <span className={style.infoLabel}>Репозиторий</span>
+              <span className={style.infoValue}>{repositoryName}</span>
             </div>
           </div>
 
-          {/* ПРОГРЕСС-БАР */}
-          <div className={style.progressBar}>
-            <div
-              className={style.progressFill}
-              style={{
-                width: `${progress}%`,
-                background: getProgressColor(progress),
-              }}
-            />
+          {/* Количество людей */}
+          <div className={style.infoRow}>
+            <div className={style.infoIcon}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div className={style.infoContent}>
+              <span className={style.infoLabel}>Участников</span>
+              <span className={style.infoValue}>{project.users?.length || project.members || 0}</span>
+            </div>
           </div>
+
+          {/* Количество активных задач */}
+          <div className={style.infoRow}>
+            <div className={style.infoIcon}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+            </div>
+            <div className={style.infoContent}>
+              <span className={style.infoLabel}>Активных задач</span>
+              <span className={style.infoValue}>{activeTasksCount}</span>
+            </div>
+          </div>
+
+          {/* Дополнительная информация для улучшения UX/UI */}
+          {project.progress !== undefined && (
+            <div className={style.infoRow}>
+              <div className={style.infoIcon}>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.66667">
+                  <path d="M13.3334 5.83325H18.3334V10.8333" />
+                  <path d="M18.3333 5.83325L11.25 12.9166L7.08329 8.74992L1.66663 14.1666" />
+                </svg>
+              </div>
+              <div className={style.infoContent}>
+                <span className={style.infoLabel}>Прогресс</span>
+                <span className={style.infoValue}>{project.progress}%</span>
+              </div>
+            </div>
+          )}
+
+          {project.updated_at && (
+            <div className={style.infoRow}>
+              <div className={style.infoIcon}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              </div>
+              <div className={style.infoContent}>
+                <span className={style.infoLabel}>Обновлен</span>
+                <span className={style.infoValue}>
+                  {new Date(project.updated_at).toLocaleDateString("ru-RU", {
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
-        {/* КОНЕЦ УЛУЧШЕННОГО ПРОГРЕСС-БАРА */}
       </div>
     );
   };
@@ -755,7 +676,38 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
             {/* Логотип и поиск */}
             <div className={style.leftSection}>
               <div className={style.logo}>
-                <h1 className={style.title}>Novex</h1>
+                <h1 className={style.title}>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    style={{ marginRight: "5px", verticalAlign: "middle" }}
+                  >
+                    <path
+                      d="M12 2L2 7L12 12L22 7L12 2Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 17L12 22L22 17"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 12L12 17L22 12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Novex
+                </h1>
               </div>
 
               {/* Поиск */}
@@ -775,7 +727,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Поиск проектов, задач, людей..."
+                  placeholder="Поиск"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={style.searchInput}
@@ -854,7 +806,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
                 <div className={style.userInfoHeader}>
                   <span className={style.userNameHeader}>{userData.name}</span>
                   <span className={style.userPositionHeader}>
-                    {userData.position}
+                    {userData.position
+                      ? userData.position
+                      : "Должность не указана"}
                   </span>
                 </div>
               </div>
@@ -926,43 +880,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToProjects }) => {
               )}
             </div>
 
-            {/* Секция команды проекта */}
-            {teamMembers.length > 0 && (
-              <div className={style.teamSection}>
-                <div
-                  className={style.sectionHeader}
-                  onClick={() => toggleSection("team")}
-                >
-                  <div className={style.sectionTitle}>
-                    {sectionIcons.team}
-                    <h2>Команда проекта</h2>
-                    <button className={style.collapseButton}>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className={`${style.collapseIcon} ${
-                          collapsedSections.team ? style.collapsed : ""
-                        }`}
-                      >
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                  </div>
-                  <span className={style.teamCount}>
-                    {teamMembers.length} участников
-                  </span>
-                </div>
-                {!collapsedSections.team && (
-                  <div className={style.teamList}>
-                    {teamMembers.map(renderTeamMember)}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Группа: Дедлайны и быстрый доступ */}

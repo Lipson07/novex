@@ -1,47 +1,35 @@
-// _variables.module.scss (дополненная версия)
-$bg-dark: #0a0a0a;
-$bg-panel: #202020;
-$bg-card: rgba(20, 20, 20, 0.95);
-$bg-content: #161617;
-$bg-sidebar: #121212; // ← ДОБАВЛЕНО: цвет для боковой панели
+// _variables.module.scss (обновленная цветовая палитра - менее серая, но темная)
+// Фоны - более теплые темные оттенки с легким синим/фиолетовым оттенком
+$bg-dark: #000000; // Черный
+$bg-panel: #222222; // Темный серый
+$bg-card: #333333; // Темный серый
+$bg-content: #111111; // Темный серый
+$bg-sidebar: #292929; // Темный серый
 
-$border-color: rgba(255, 255, 255, 0.1);
-$border-light: rgba(255, 255, 255, 0.05);
+// Бордеры - более заметные, но не яркие
+$border-color: rgba(127, 255, 212, 0.25); // "Aquamarine" с прозрачностью
+$border-light: rgba(127, 255, 212, 0.08); // "Aquamarine" с прозрачностью
 
-$text-main: white;
-$text-secondary: rgba(255, 255, 255, 0.6);
-$text-muted: rgba(255, 255, 255, 0.4);
-$text-disabled: rgba(255, 255, 255, 0.3);
+// Текст - более контрастный
+$text-main: #ffffff; // Белый
+$text-secondary: rgba(255, 255, 255, 0.75); // Белый с прозрачностью
+$text-muted: rgba(176, 224, 230, 0.55); // "PowderBlue" с прозрачностью
+$text-disabled: rgba(176, 224, 230, 0.4); // "PowderBlue" с прозрачностью
 
-$primary-color: #667eea;
-$primary-purple: #6c73da;
-$primary-light: #7a92f0;
-$accent-blue: #2b7fff;
-$accent-purple: #764ba2;
-$accent-green: #10b981;
-$accent-green-light: #05df72;
-$accent-red: #f87171;
-$accent-orange: #ff6900;
-$accent-pink: #f6339a;
+// Основные цвета - более насыщенные
+$primary-color: #66cdaa; // MediumAquamarine
+$primary-purple: #8fbc8f; // DarkSeaGreen
+$primary-light: #9acd32; // YellowGreen
+$accent-blue: #87ceeb; // SkyBlue
+$accent-purple: #ee82ee; // Violet
+$accent-green: #3cb371; // MediumSeaGreen
+$accent-green-light: #98fb98; // Светлый оттенок "PaleGreen"
+$accent-red: #cd5c5c; // IndianRed
+$accent-orange: #fa8072; // Salmon
+$accent-pink: #ff69b4; // HotPink
 
-$glass-bg: rgba(255, 255, 255, 0.08);
-$glass-border: rgba(255, 255, 255, 0.1);
-
-$gradient-blue: linear-gradient(135deg, #2b7fff 0%, #00b8db 100%);
-$gradient-purple: linear-gradient(135deg, #ad46ff 0%, #f6339a 100%);
-$gradient-orange: linear-gradient(135deg, #ff6900 0%, #fb2c36 100%);
-$gradient-green: linear-gradient(135deg, #00c950 0%, #00bc7d 100%);
-$gradient-primary: linear-gradient(
-  90deg,
-  #a8a8a8 0%,
-  #8c8c8c 50%,
-  #707070 100%
-);
-$gradient-sidebar: linear-gradient(
-  135deg,
-  #667eea 0%,
-  #764ba2 100%
-); // ← ДОБАВЛЕНО: градиент для сайдбара
+$glass-bg: rgba(102, 126, 234, 0.1);
+$glass-border: rgba(102, 126, 234, 0.2);
 
 $shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5);
 $shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
@@ -87,47 +75,28 @@ $animation-timing-ease-in-out: ease-in-out;
 $animation-timing-bounce: cubic-bezier(0.4, 0, 0.2, 1);
 
 // Новые переменные для состояний
-$state-hover-bg: rgba(255, 255, 255, 0.05);
-$state-active-bg: rgba($primary-color, 0.1);
-$state-focus-ring: 0 0 0 3px rgba($primary-color, 0.1);
+$state-hover-bg: rgba(102, 126, 234, 0.2);
+$state-active-bg: rgba(102, 126, 234, 0.3);
+$state-focus-ring: 0 0 0 2px rgba(102, 126, 234, 0.3);
 
 // Новые переменные для компонентов
-$input-bg: rgba(255, 255, 255, 0.05);
-$input-border: rgba(255, 255, 255, 0.1);
-$input-focus-bg: rgba(255, 255, 255, 0.08);
+$input-bg: rgba(102, 126, 234, 0.15);
+$input-border: rgba(102, 126, 234, 0.3);
+$input-focus-bg: rgba(102, 126, 234, 0.25);
 
-$button-primary-bg: rgba($primary-color, 0.1);
-$button-primary-border: rgba($primary-color, 0.2);
-$button-primary-hover-bg: rgba($primary-color, 0.2);
-$button-primary-hover-border: rgba($primary-color, 0.3);
+$button-primary-bg: rgba(102, 126, 234, 0.3);
+$button-primary-border: rgba(102, 126, 234, 0.5);
+$button-primary-hover-bg: rgba(102, 126, 234, 0.4);
+$button-primary-hover-border: rgba(102, 126, 234, 0.6);
 
-$button-secondary-bg: rgba(255, 255, 255, 0.05);
-$button-secondary-border: rgba(255, 255, 255, 0.1);
-$button-secondary-hover-bg: rgba(255, 255, 255, 0.1);
-$button-secondary-hover-border: rgba(255, 255, 255, 0.2);
+$button-secondary-bg: rgba(102, 126, 234, 0.15);
+$button-secondary-border: rgba(102, 126, 234, 0.3);
+$button-secondary-hover-bg: rgba(102, 126, 234, 0.25);
+$button-secondary-hover-border: rgba(102, 126, 234, 0.4);
 
 // Новые переменные для стекла (glass morphism)
-$glass-bg-light: rgba(255, 255, 255, 0.05);
-$glass-bg-medium: rgba(255, 255, 255, 0.08);
-$glass-bg-heavy: rgba(255, 255, 255, 0.12);
+$glass-bg-light: rgba(102, 126, 234, 0.15);
+$glass-bg-medium: rgba(102, 126, 234, 0.25);
+$glass-bg-heavy: rgba(102, 126, 234, 0.35);
 $glass-blur: blur(10px);
 $glass-blur-heavy: blur(20px);
-
-// Новые переменные для градиентов
-$gradient-overlay: linear-gradient(
-  135deg,
-  rgba(255, 255, 255, 0.05),
-  rgba(255, 255, 255, 0.02)
-);
-$gradient-shine: linear-gradient(
-  90deg,
-  transparent,
-  rgba(255, 255, 255, 0.1),
-  transparent
-);
-$gradient-divider: linear-gradient(
-  90deg,
-  transparent,
-  $border-light,
-  transparent
-);

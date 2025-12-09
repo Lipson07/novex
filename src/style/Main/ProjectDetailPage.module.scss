@@ -10,26 +10,50 @@
 
 .content {
   width: 100%;
-  padding: 32px 40px;
-  max-width: 1800px;
+  padding: 20px 24px;
+  max-width: 1600px;
   margin: 0 auto;
   box-sizing: border-box;
 
-  @media (max-width: 1200px) {
-    padding: 32px 30px;
-  }
-
   @media (max-width: 768px) {
-    padding: 20px 16px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 16px 12px;
+    padding: 16px;
   }
 }
 
 /* --- Загрузка и Ошибки --- */
-.loading,
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  width: 100%;
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-md;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: $primary-purple;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
 .error {
   display: flex;
   flex-direction: column;
@@ -41,76 +65,35 @@
   width: 100%;
 
   p {
-    color: $text-secondary;
+    color: $accent-red;
     font-size: $font-size-lg;
+    font-weight: 500;
   }
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: $primary-color;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.error p {
-  color: $accent-red;
-  font-size: $font-size-xl;
-}
-
-/* --- Кнопка назад --- */
 .backButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid $border-light;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid $border-color;
   border-radius: $border-radius-md;
   color: $text-secondary;
-  font-size: $font-size-md;
-  font-weight: 500;
   cursor: pointer;
-  transition: $transition-default;
-  margin-bottom: 24px;
   font-family: inherit;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: $text-main;
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 14px;
-    font-size: $font-size-sm;
-    margin-bottom: 20px;
-  }
+  flex-shrink: 0;
 }
 
-/* --- Заголовок проекта --- */
+/* --- Основная верхняя секция --- */
 .projectHeader {
+  margin-bottom: 32px;
   background: $bg-card;
   border: 1px solid $border-color;
-  border-radius: $border-radius-xl;
-  padding: 32px;
-  margin-bottom: 24px;
-  box-shadow: $shadow-card;
-
-  @media (max-width: 768px) {
-    padding: 24px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 20px;
-  }
+  border-radius: $border-radius-lg;
+  padding: 24px;
 }
 
 .headerTop {
@@ -118,7 +101,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -126,59 +109,62 @@
   }
 }
 
-.projectTitleSection {
+.headerLeft {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
   flex: 1;
   min-width: 0;
 }
 
-.projectTitle {
-  margin: 0;
-  font-size: $font-size-4xl;
-  line-height: 1.2;
-  font-weight: 600;
-  color: $text-main;
-
-  @media (max-width: 1200px) {
-    font-size: $font-size-3xl;
-  }
+.headerRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
 
   @media (max-width: 768px) {
-    font-size: 28px;
+    width: 100%;
+    align-items: stretch;
   }
+}
 
-  @media (max-width: 480px) {
-    font-size: 24px;
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.projectTitle {
+  margin: 0;
+  font-size: $font-size-3xl;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: $font-size-2xl;
   }
 }
 
 .statusBadge {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: $font-size-sm;
-  font-weight: 500;
-  align-self: flex-start;
+  font-size: $font-size-md;
+  font-weight: 600;
+  line-height: 1.4;
   white-space: nowrap;
-  display: inline-block;
-
-  @media (max-width: 768px) {
-    padding: 4px 10px;
-    font-size: $font-size-xs;
-  }
 }
 
 .projectMeta {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
 
   @media (max-width: 768px) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
+    gap: 16px;
   }
 }
 
@@ -188,94 +174,74 @@
   gap: 8px;
   color: $text-secondary;
   font-size: $font-size-sm;
+  font-weight: 500;
 
   svg {
-    width: 16px;
-    height: 16px;
-    opacity: 0.7;
-  }
-
-  @media (max-width: 768px) {
-    font-size: $font-size-xs;
+    flex-shrink: 0;
   }
 }
 
 .projectDescription {
-  margin-bottom: 24px;
-  padding-top: 20px;
-  border-top: 1px solid $border-light;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  border-left: 3px solid $primary-purple;
 
   p {
     margin: 0;
-    font-size: $font-size-lg;
+    font-size: $font-size-sm;
     line-height: 1.6;
     color: $text-secondary;
+  }
 
-    @media (max-width: 768px) {
-      font-size: $font-size-md;
-    }
+  @media (max-width: 768px) {
+    padding: 12px 16px;
   }
 }
 
-/* --- Статистика проекта --- */
 .projectStats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-  padding-top: 24px;
-  border-top: 1px solid $border-light;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
+    gap: 16px;
   }
 }
 
 .statCard {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid $border-light;
+  gap: 16px;
+  padding: 20px 24px;
+  background: $bg-card;
+  border: 1px solid $border-color;
   border-radius: $border-radius-lg;
-  transition: $transition-default;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
+  flex: 1;
+  min-width: 200px;
 
   @media (max-width: 768px) {
-    padding: 12px;
-    gap: 10px;
+    min-width: 100%;
+    flex: none;
   }
 }
 
 .statIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba($primary-purple, 0.1);
+  border-radius: $border-radius-md;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba($primary-purple, 0.1);
-  border-radius: $border-radius-md;
   color: $primary-purple;
   flex-shrink: 0;
 
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-
   @media (max-width: 768px) {
-    width: 36px;
-    height: 36px;
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -283,31 +249,277 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 0;
 }
 
 .statValue {
   font-size: $font-size-2xl;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+/* --- Кнопки действий --- */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  cursor: pointer;
+  font-family: inherit;
+
+  img {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.aiButtonWrapper {
+  position: relative;
+}
+
+.aiButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  cursor: pointer;
+  font-family: inherit;
+
+  svg {
+    color: $primary-purple;
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* --- Компактный header --- */
+.compactHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-card;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+}
+
+.backButtonCompact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: $transition-default;
+  flex-shrink: 0;
+}
+
+.headerMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
+}
+
+.projectTitleCompact {
+  margin: 0;
+  font-size: $font-size-2xl;
+  line-height: 1.3;
   font-weight: 600;
   color: $text-main;
-  line-height: 1;
 
   @media (max-width: 768px) {
     font-size: $font-size-xl;
   }
 }
 
-.statLabel {
+.statusBadgeCompact {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.descriptionCompact {
+  margin: 0;
   font-size: $font-size-sm;
+  line-height: 1.5;
   color: $text-secondary;
+  max-width: 600px;
 
   @media (max-width: 768px) {
     font-size: $font-size-xs;
   }
 }
 
-/* --- Кнопки действий --- */
-.actionButtons {
+.quickActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.quickActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: $transition-default;
+
+  img {
+    opacity: 0.7;
+    transition: opacity $transition-default;
+  }
+
+  img {
+    opacity: 1;
+  }
+}
+
+/* --- Компактная статистика --- */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.statItemCompact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  transition: $transition-default;
+}
+
+.statIconCompact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba($primary-purple, 0.15);
+  border-radius: $border-radius-sm;
+  color: $primary-purple;
+  flex-shrink: 0;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.statValueCompact {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-main;
+  line-height: 1.2;
+}
+
+.statLabelCompact {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+}
+
+.progressBarCompact {
+  width: 60px;
+  height: 4px;
+  background: rgba(102, 126, 234, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progressFillCompact {
+  height: 100%;
+  background: $accent-green;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* --- Статистика задач --- */
+.tasksStatsRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
@@ -317,168 +529,420 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
 }
 
-.actionButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 16px 24px;
+.taskStatCard {
   background: $bg-card;
   border: 1px solid $border-color;
   border-radius: $border-radius-lg;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.taskStatLabel {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.taskStatValue {
+  font-size: $font-size-2xl;
+  font-weight: 700;
   color: $text-main;
-  font-size: $font-size-md;
+  line-height: 1.2;
+}
+
+/* --- Разделы --- */
+.sectionsContainer {
+  margin-top: 0;
+}
+
+.tabsContainer {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid $border-color;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: $text-secondary;
+  font-size: $font-size-sm;
   font-weight: 500;
   cursor: pointer;
-  transition: $transition-smooth;
   font-family: inherit;
-  position: relative;
-  overflow: hidden;
+  margin-bottom: -1px;
+
+  &.tabActive {
+    color: $primary-purple;
+    border-bottom-color: $primary-purple;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: $font-size-xs;
+  }
+}
+
+/* --- Контент вкладок --- */
+.overviewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tasksContent {
+  width: 100%;
+}
+
+.activityCard {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+}
+
+.activityIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($primary-purple, 0.1);
+  border-radius: $border-radius-sm;
+  flex-shrink: 0;
 
   svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    transition: $transition-default;
+    width: 16px;
+    height: 16px;
+    color: $primary-purple;
+  }
+}
+
+.activityContent {
+  flex: 1;
+  min-width: 0;
+
+  p {
+    margin: 0 0 4px 0;
+    font-size: $font-size-sm;
+    color: $text-main;
+    line-height: 1.4;
   }
 
   span {
-    white-space: nowrap;
+    font-size: $font-size-xs;
+    color: $text-muted;
   }
+}
 
-  &:hover {
-    background: $state-hover-bg;
-    border-color: rgba($primary-purple, 0.3);
-  }
+/* --- GitHub карточка --- */
+.githubCard {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  box-shadow: $shadow-card;
+}
 
-  &[data-action="create-task"] {
-    &:hover {
-      border-color: rgba($accent-green, 0.5);
-      color: $accent-green-light;
-
-      svg {
-        color: $accent-green-light;
-      }
-    }
-  }
-
-  &[data-action="team-chat"] {
-    &:hover {
-      border-color: rgba($accent-blue, 0.5);
-      color: $accent-blue;
-
-      svg {
-        color: $accent-blue;
-      }
-    }
-  }
-
-  &[data-action="schedule"] {
-    &:hover {
-      border-color: rgba($accent-orange, 0.5);
-      color: $accent-orange;
-
-      svg {
-        color: $accent-orange;
-      }
-    }
-  }
-
-  &[data-action="quick-note"] {
-    &:hover {
-      border-color: rgba($accent-purple, 0.5);
-      color: $accent-purple;
-
-      svg {
-        color: $accent-purple;
-      }
-    }
-  }
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-light;
 
   @media (max-width: 768px) {
-    padding: 14px 20px;
-    font-size: $font-size-sm;
-    gap: 10px;
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 
-/* --- Dashboard секция --- */
-.dashboardSection {
-  width: 100%;
-  margin-top: 32px;
+.cardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $text-main;
+}
+
+.cardTitle {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0;
+}
+
+.repoLink {
+  font-size: $font-size-sm;
+  color: $primary-purple;
+  text-decoration: none;
+}
+
+.githubContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 
   @media (max-width: 768px) {
-    margin-top: 24px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 
-/* --- Анимации --- */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+.subsectionTitle {
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0 0 12px 0;
+}
+
+.branchesCompact,
+.commitsCompact {
+  display: flex;
+  flex-direction: column;
+}
+
+.branchesListCompact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.branchItemCompact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+
+  svg {
+    color: $primary-purple;
+    flex-shrink: 0;
   }
 }
 
-/* --- Стили для модального окна создания задачи --- */
+.branchNameCompact {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $text-main;
+  flex: 1;
+  min-width: 0;
+}
+
+.branchCommitCompact {
+  font-size: $font-size-xs;
+  font-family: monospace;
+  color: $text-secondary;
+  background: rgba(102, 126, 234, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.commitsListCompact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commitItemCompact {
+  padding: 10px 12px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+}
+
+.commitHashCompact {
+  display: inline-block;
+  font-size: $font-size-xs;
+  font-family: monospace;
+  font-weight: 600;
+  color: $primary-purple;
+  background: rgba($primary-purple, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.commitMessageCompact {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $text-main;
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+.commitMetaCompact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $font-size-xs;
+  color: $text-secondary;
+
+  span {
+    &:nth-child(2) {
+      opacity: 0.5;
+    }
+  }
+}
+
+/* --- Toast уведомления --- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2000;
+  animation: slideInUp 0.3s ease-out;
+
+  @media (max-width: 768px) {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+  }
+}
+
+.toastContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: $bg-card;
+  border: 1px solid rgba($accent-green, 0.3);
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-card;
+  color: $accent-green;
+  font-size: $font-size-sm;
+  font-weight: 500;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+}
+
+/* --- Модальное окно --- */
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
 }
 
 .modalContent {
   background: $bg-card;
   border: 1px solid $border-color;
   border-radius: $border-radius-xl;
-  padding: 32px;
-  max-width: 500px;
+  padding: 24px;
+  max-width: 520px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: $shadow-card;
   position: relative;
+  z-index: 1001;
+  animation: slideUp 0.3s ease-out;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.25);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.35);
+    }
+  }
 
   @media (max-width: 768px) {
-    padding: 24px;
+    padding: 20px;
     width: calc(100% - 32px);
   }
 }
 
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-light;
+}
+
 .modalTitle {
-  font-size: $font-size-2xl;
+  font-size: $font-size-xl;
   font-weight: 600;
-  margin: 0 0 24px 0;
+  margin: 0;
   color: $text-main;
-  text-align: center;
+}
+
+.modalCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .modalForm {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .formGroup {
@@ -487,22 +951,22 @@
   gap: 8px;
 
   label {
-    font-size: $font-size-md;
+    font-size: $font-size-sm;
     font-weight: 500;
     color: $text-secondary;
   }
 
   input,
-  select,
   textarea {
     background: $input-bg;
     border: $input-border;
     border-radius: $border-radius-md;
-    padding: 14px 16px;
+    padding: 10px 14px;
     color: $text-main;
-    font-size: $font-size-md;
+    font-size: $font-size-sm;
     transition: $transition-default;
     box-sizing: border-box;
+    font-family: inherit;
 
     &::placeholder {
       color: $text-secondary;
@@ -516,410 +980,34 @@
   }
 
   textarea {
-    resize: vertical;
-    min-height: 120px;
-    max-height: 200px;
+    resize: none;
+    min-height: 100px;
     line-height: 1.5;
-    font-family: inherit;
-    padding: 16px;
   }
-
-  select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff99' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 12px center;
-    background-repeat: no-repeat;
-    background-size: 16px;
-    padding-right: 40px;
-  }
-}
-
-.modalButtons {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  margin-top: 24px;
-}
-
-.cancelButton {
-  background: $bg-card;
-  border: 1px solid $border-color;
-  color: $text-secondary;
-  padding: 12px 24px;
-  border-radius: $border-radius-md;
-  font-size: $font-size-md;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-default;
-  flex: 1;
-  font-family: inherit;
-
-  &:hover {
-    background: $state-hover-bg;
-    border-color: rgba(255, 255, 255, 0.2);
-    color: $text-main;
-  }
-}
-
-.submitButton {
-  background: $bg-card;
-  border: 1px solid $border-color;
-  color: $primary-purple;
-  padding: 12px 24px;
-  border-radius: $border-radius-md;
-  font-size: $font-size-md;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-default;
-  flex: 1;
-  font-family: inherit;
-
-  &:hover {
-    background: $state-hover-bg;
-    border-color: rgba($primary-purple, 0.5);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-/* --- Календарь для дедлайна --- */
-.calendarOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-  backdrop-filter: blur(4px);
-}
-
-.calendarModal {
-  background: $bg-card;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-xl;
-  padding: 24px;
-  width: 90%;
-  max-width: 450px; /* Увеличена максимальная ширина для лучшего пространства */
-  max-height: 90vh;
-  box-shadow: $shadow-card;
-  position: relative;
-}
-
-.calendarHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid $border-light;
-}
-
-.calendarNavButton {
-  background: none;
-  border: none;
-  color: $text-secondary;
-  font-size: $font-size-xl;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: $border-radius-sm;
-  transition: $transition-default;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: $state-hover-bg;
-    color: $text-main;
-  }
-}
-
-.calendarTitle {
-  font-size: $font-size-lg;
-  font-weight: 600;
-  color: $text-main;
-  text-align: center;
-  flex: 1;
-}
-
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  font-size: $font-size-sm;
-}
-
-.calendarDayHeader {
-  font-weight: 600;
-  color: $text-secondary;
-  text-align: center;
-  padding: 8px 4px;
-}
-
-.calendarDay {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $border-radius-md;
-  cursor: pointer;
-  transition: $transition-default;
-  color: $text-main;
-  font-weight: 500;
-  position: relative;
-  background: rgba(255, 255, 255, 0.03); /* Нежный фоновый цвет для дней */
-
-  &:hover {
-    background: $state-hover-bg;
-  }
-
-  &.selected {
-    background: $primary-purple; /* Более выраженный фон для выбранного дня */
-    color: white; /* Белый текст для выбранного дня */
-    font-weight: 600;
-  }
-
-  &.today {
-    border: 2px solid $accent-blue; /* Другой акцентный цвет для рамки сегодняшнего дня */
-  }
-
-  &.other-month {
-    color: $text-secondary;
-    opacity: 0.5;
-  }
-
-  &.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-
-    &:hover {
-      background: none;
-    }
-  }
-}
-
-.calendarFooter {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid $border-light;
-}
-
-.calendarConfirmButton {
-  padding: 10px 20px;
-  background: $primary-purple;
-  border: none;
-  border-radius: $border-radius-md;
-  color: white;
-  font-size: $font-size-md;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-default;
-
-  &:hover {
-    opacity: 0.9;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.calendarCancelButton {
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-md;
-  color: $text-secondary;
-  font-size: $font-size-md;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-default;
-
-  &:hover {
-    background: $state-hover-bg;
-    color: $text-main;
-  }
-}
-
-/* --- Дополнительные стили для модалки --- */
-.datePickerGroup {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.dateButton {
-  background: rgba($primary-purple, 0.1);
-  border: 1px solid rgba($primary-purple, 0.3);
-  border-radius: $border-radius-md;
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: $transition-default;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 18px;
-
-  &:hover {
-    background: rgba($primary-purple, 0.2);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: $state-focus-ring;
-  }
-}
-
-.dateInput {
-  flex: 1;
 }
 
 .teamMembersGroup {
   position: relative;
 }
 
-.teamInput {
-  width: 100%;
-}
-
-.chipsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid $border-light;
-  border-radius: $border-radius-md;
-  padding: 6px 12px;
-  font-size: $font-size-sm;
-  color: $text-main;
-  font-weight: 500;
-  max-width: calc(100% - 8px);
-
-  .chipRemove {
-    background: none;
-    border: none;
-    color: $text-secondary;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 4px;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: $transition-default;
-
-    &:hover {
-      background: rgba($accent-red, 0.2);
-      color: $accent-red;
-    }
-  }
-}
-
-.formGroup small {
-  color: $text-secondary;
-  font-size: $font-size-xs;
-  margin-top: 4px;
-  font-style: italic;
-}
-
-/* --- Стили для выбора команды --- */
 .selectTeamButton {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
+  padding: 10px 14px;
   background: $input-bg;
   border: $input-border;
   border-radius: $border-radius-md;
   color: $text-main;
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   font-weight: 500;
   cursor: pointer;
-  transition: $transition-default;
   font-family: inherit;
 
-  &:hover {
-    background: rgba($primary-purple, 0.05);
-    border-color: rgba($primary-purple, 0.3);
-  }
-
   &.open {
-    border-color: $primary-purple;
+    border-color: rgba($primary-purple, 0.5);
     box-shadow: $state-focus-ring;
-  }
-}
-
-.teamDropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: $bg-card;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-md;
-  box-shadow: $shadow-card;
-  z-index: 10;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-top: 4px;
-}
-
-.teamOption {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: $transition-default;
-  border-bottom: 1px solid $border-light;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: $state-hover-bg;
-  }
-
-  input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: $primary-purple;
-    cursor: pointer;
-    flex-shrink: 0;
-    margin: 0;
-  }
-
-  span {
-    font-size: $font-size-md;
-    color: $text-main;
-    user-select: none;
   }
 }
 
@@ -934,18 +1022,510 @@
   transform: rotate(180deg);
 }
 
-@media (max-width: 768px) {
-  .modalContent {
-    padding: 24px 20px;
-    width: calc(100% - 32px);
+.teamDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-card;
+  z-index: 1002;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.teamOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid $border-light;
+
+  &:last-child {
+    border-bottom: none;
   }
 
-  .modalButtons {
-    flex-direction: column;
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: $primary-purple;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
   }
 
-  .cancelButton,
-  .submitButton {
-    padding: 14px 20px;
+  span {
+    font-size: $font-size-sm;
+    color: $text-main;
+    user-select: none;
   }
+}
+
+.chipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(102, 126, 234, 0.12);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+  padding: 4px 10px;
+  font-size: $font-size-xs;
+  color: $text-main;
+  font-weight: 500;
+}
+
+.chipRemove {
+  background: none;
+  border: none;
+  color: $text-secondary;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 10px 20px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid;
+}
+
+.cancelButton {
+  background: transparent;
+  border-color: rgba($accent-red, 0.3);
+  color: $accent-red;
+}
+
+.submitButton {
+  background: transparent;
+  border-color: rgba($accent-green, 0.3);
+  color: $accent-green;
+}
+
+.requiredLabel {
+  color: $accent-red;
+  font-weight: 600;
+}
+
+.optionalLabel {
+  color: $text-muted;
+  font-weight: 400;
+  font-size: $font-size-xs;
+}
+
+/* --- Анимации --- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Стили для команды
+.teamCard {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.teamList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.teamMemberItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  border-radius: $border-radius-lg;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+.memberAvatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarInitial {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba($primary-purple, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  font-weight: 700;
+  color: $primary-purple;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    font-size: $font-size-xs;
+  }
+}
+
+.statusIndicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid $bg-card;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+
+  &.online {
+    background: $accent-green;
+    box-shadow: 0 0 8px rgba($accent-green, 0.5);
+  }
+
+  &.away {
+    background: $accent-orange;
+  }
+
+  &.offline {
+    background: $text-muted;
+  }
+}
+
+.memberInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.memberName {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: $text-main;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.memberRole {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.memberActivity {
+  font-size: $font-size-xs;
+  color: $text-muted;
+  flex-shrink: 0;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: $border-radius-sm;
+}
+
+/* --- AI Suggestions Dropdown --- */
+.aiDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-card;
+  z-index: 1000;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: calc(100vw - 32px);
+    right: -16px;
+  }
+}
+
+.aiDropdownHeader {
+  padding: 16px;
+  border-bottom: 1px solid $border-light;
+}
+
+.aiIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aiIcon {
+  width: 36px;
+  height: 36px;
+  background: rgba($primary-purple, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    color: $primary-purple;
+  }
+}
+
+.aiInfo {
+  flex: 1;
+
+  .aiName {
+    font-size: $font-size-md;
+    font-weight: 500;
+    color: $text-main;
+    margin-bottom: 2px;
+  }
+
+  .aiStatus {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .statusDot {
+      width: 6px;
+      height: 6px;
+      background: #05df72;
+      border-radius: 50%;
+    }
+
+    span {
+      font-size: $font-size-xs;
+      color: $text-muted;
+    }
+  }
+}
+
+.aiDropdownContent {
+  padding: 16px;
+}
+
+.suggestionsTitle {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $text-secondary;
+  margin-bottom: 12px;
+}
+
+.suggestionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: $border-radius-md;
+  background: rgba(102, 126, 234, 0.06);
+
+  .suggestionIcon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $text-muted;
+    }
+  }
+
+  .suggestionText {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    flex: 1;
+    line-height: 1.4;
+  }
+}
+
+.chatInputContainer {
+  border-top: 1px solid $border-light;
+  padding-top: 16px;
+}
+
+.chatInputWrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.chatInput {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  font-size: $font-size-sm;
+  font-family: inherit;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-purple;
+  }
+}
+
+.chatSendButton {
+  background: rgba($primary-purple, 0.1);
+  border: 1px solid rgba($primary-purple, 0.2);
+  border-radius: $border-radius-md;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: $primary-purple;
+  }
+}
+
+.aiSuggestionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.aiSuggestionItem {
+  padding: 8px 12px;
+  font-size: $font-size-sm;
+  color: $text-main;
+  border-radius: $border-radius-md;
+  transition: $transition-default;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.08);
+  }
+}
+
+.aiInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aiInput {
+  flex: 1;
+  padding: 8px 12px;
+  background: $input-bg;
+  border: $input-border;
+  border-radius: $border-radius-md;
+  color: $text-main;
+  font-size: $font-size-sm;
+  font-family: inherit;
+
+  &::placeholder {
+    color: $text-secondary;
+  }
+}
+
+.aiSubmitButton {
+  background: transparent;
+  border: none;
+  color: $primary-purple;
+  cursor: pointer;
+  padding: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.feather {
+  stroke: $primary-purple;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

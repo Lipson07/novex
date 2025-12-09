@@ -89,7 +89,7 @@ function Registration({ onSuccess, onError, onNavigateToLogin }: RegistrationPro
         isVerified: false 
       }));
 
-      const checkResponse = await fetch(`http://127.0.0.1:8000/api/check-user?email=${encodeURIComponent(formData.email)}&name=${encodeURIComponent(formData.name)}`, {
+      const checkResponse = await fetch(`http://localhost:8000/api/check-user?email=${encodeURIComponent(formData.email)}&name=${encodeURIComponent(formData.name)}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

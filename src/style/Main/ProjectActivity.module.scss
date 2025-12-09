@@ -1,0 +1,153 @@
+@import "./variables.module";
+
+.activityLog {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.activityHeader {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+}
+
+.activityTitle {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.activitySubtitle {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+}
+
+.activityTimeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activityLogItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  position: relative;
+  border-left: 2px solid rgba(102, 126, 234, 0.25);
+  padding-left: 24px;
+  margin-left: 20px;
+
+  &:last-child {
+    border-left: none;
+  }
+
+  @media (max-width: 768px) {
+    gap: 12px;
+    padding-left: 16px;
+    margin-left: 16px;
+  }
+}
+
+.activityTimelineLine {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(102, 126, 234, 0.12);
+}
+
+.activityIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-lg;
+  border: 2px solid;
+  flex-shrink: 0;
+  margin-top: 2px;
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.activityContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.activityAuthor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.authorAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: $primary-purple;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  flex-shrink: 0;
+}
+
+.authorName {
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.activityTime {
+  font-size: $font-size-xs;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+.activityMessage {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.activityDetails {
+  font-size: $font-size-xs;
+  color: $text-muted;
+  font-family: "Courier New", monospace;
+  background: rgba(102, 126, 234, 0.08);
+  padding: 4px 8px;
+  border-radius: $border-radius-sm;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+
+

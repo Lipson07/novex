@@ -1,474 +1,358 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styles from "../../style/Main/Dashboard.module.scss";
-import { DashboardIconsData } from "../../assets/DashboardIcons/index.js";
 
-interface Suggestion {
-  title: string;
-  priority: string;
-  priorityColor: string;
-  description: string;
-  time: string;
-  tag: string;
-  iconType: string;
-}
-
-interface Document {
-  title: string;
-  description: string;
-  type: string;
-  typeColor: string;
-  tags: string[];
-  connections: number;
-  timeAgo: string;
-}
-
-interface ActivityTag {
-  name: string;
-  count: number;
-  color: string;
-}
-
-interface WeeklyData {
-  day: string;
-  value: number;
-}
-
-interface DataItem {
+interface Task {
   id: number;
   title: string;
-  gradient: "blue" | "purple" | "orange" | "green" | "default";
-  icon: string;
+  status: "todo" | "in-progress" | "done";
+  assignee: string;
+  assigneeAvatar?: string;
+  dueDate?: string;
+  priority: "low" | "medium" | "high" | "critical";
 }
 
 const Dashboard: React.FC = () => {
-  const suggestions: Suggestion[] = [
+  const [priorityFilter, setPriorityFilter] = useState<
+    "all" | "low" | "medium" | "high" | "critical"
+  >("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Задачи
+  const tasks: Task[] = [
     {
-      title: "Оптимизировать планирование спринта",
-      priority: "Высокий",
-      priorityColor: "#FF8904",
-      description:
-        "На основе прошлой скорости, предложить скорректировать стори-поинты.",
-      time: "15 мин",
-      tag: "Продуктивность",
-      iconType: "Оптимизация",
+      id: 1,
+      title: "Реализовать авторизацию через OAuth",
+      status: "in-progress",
+      assignee: "Иван Иванов",
+      assigneeAvatar: "ИИ",
+      dueDate: "2024-01-20",
+      priority: "high",
     },
     {
-      title: "Обновить документацию",
-      priority: "Средний",
-      priorityColor: "#FDC700",
-      description:
-        "Конечные точки API изменились в последнем спринте, нужно обновить документацию.",
-      time: "30 мин",
-      tag: "Документация",
-      iconType: "Документы",
+      id: 2,
+      title: "Исправить баг с отображением карточек",
+      status: "todo",
+      assignee: "Петр Петров",
+      assigneeAvatar: "ПП",
+      dueDate: "2024-01-18",
+      priority: "medium",
     },
     {
-      title: "Требуется синхронизация команд",
-      priority: "Высокий",
-      priorityColor: "#FF8904",
-      description: "У команд дизайна и разработки конфликтующие требования.",
-      time: "1 час",
-      tag: "Коллаборация",
-      iconType: "Команды",
+      id: 3,
+      title: "Добавить тесты для API",
+      status: "done",
+      assignee: "Анна Сидорова",
+      assigneeAvatar: "АС",
+      priority: "low",
     },
     {
-      title: "Проверить заблокированные задачи",
-      priority: "Критический",
-      priorityColor: "#FF6467",
-      description: "3 задачи заблокированы более 48 часов",
-      time: "20 мин",
-      tag: "Блокеры",
-      iconType: "Проверка",
+      id: 4,
+      title: "Обновить дизайн формы входа",
+      status: "in-progress",
+      assignee: "Михаил Кузнецов",
+      assigneeAvatar: "МК",
+      dueDate: "2024-01-22",
+      priority: "critical",
+    },
+    {
+      id: 5,
+      title: "Оптимизировать производительность базы данных",
+      status: "todo",
+      assignee: "Иван Иванов",
+      assigneeAvatar: "ИИ",
+      priority: "high",
+    },
+    {
+      id: 6,
+      title: "Добавить документацию API",
+      status: "todo",
+      assignee: "Петр Петров",
+      assigneeAvatar: "ПП",
+      priority: "low",
     },
   ];
 
-  const documents: Document[] = [
-    {
-      title: "Стратегия продукта 2025",
-      description: "Ключевые цели на Q1-Q4, включая расширение рынка...",
-      type: "Документ",
-      typeColor: "#51A2FF",
-      tags: ["#продукт", "#стратегия"],
-      connections: 8,
-      timeAgo: "2 дня назад",
-    },
-    {
-      title: "Гайдлайны дизайн-системы",
-      description: "Полное руководство по компонентам, цветам и паттернам...",
-      type: "Вики",
-      typeColor: "#C27AFF",
-      tags: ["#дизайн", "#ui"],
-      connections: 15,
-      timeAgo: "1 неделю назад",
-    },
-    {
-      title: "Архитектура API",
-      description: "Паттерны RESTful API и лучшие практики...",
-      type: "Технический",
-      typeColor: "#05DF72",
-      tags: ["#разработка", "#api"],
-      connections: 12,
-      timeAgo: "3 дня назад",
-    },
-    {
-      title: "Результаты пользовательских исследований",
-      description: "Инсайты из 50+ интервью и опросов пользователей...",
-      type: "Исследование",
-      typeColor: "#FF8904",
-      tags: ["#продукт", "#ux"],
-      connections: 6,
-      timeAgo: "5 дней назад",
-    },
-  ];
+  const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
 
-  const activityTags: ActivityTag[] = [
-    { name: "Глубокая работа", count: 12, color: "#AD46FF" },
-    { name: "Встречи", count: 8, color: "#2B7FFF" },
-    { name: "Code Review", count: 15, color: "#00C950" },
-    { name: "Планирование", count: 6, color: "#F0B100" },
-    { name: "Исследование", count: 9, color: "#F6339A" },
-  ];
+  // Фильтрация и сортировка задач
+  const filteredAndSortedTasks = useMemo(() => {
+    let filtered = tasks;
 
-  const weeklyData: WeeklyData[] = [
-    { day: "П", value: 75 },
-    { day: "В", value: 82 },
-    { day: "С", value: 68 },
-    { day: "Ч", value: 91 },
-    { day: "П", value: 88 },
-    { day: "С", value: 45 },
-    { day: "В", value: 32 },
-  ];
+    // Фильтрация по приоритету
+    if (priorityFilter !== "all") {
+      filtered = tasks.filter((task) => task.priority === priorityFilter);
+    }
 
-  const renderIcon = (icon: string) => {
-    return <div dangerouslySetInnerHTML={{ __html: icon }} />;
+    // Сортировка от менее важных к критически важным (asc) или наоборот (desc)
+    const sorted = [...filtered].sort((a, b) => {
+      const orderA = priorityOrder[a.priority];
+      const orderB = priorityOrder[b.priority];
+      return sortOrder === "asc" ? orderA - orderB : orderB - orderA;
+    });
+
+    return sorted;
+  }, [priorityFilter, sortOrder]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "todo":
+        return "#667EEA";
+      case "in-progress":
+        return "#FDC700";
+      case "done":
+        return "#05DF72";
+      default:
+        return "#667EEA";
+    }
   };
 
-  const getSuggestionIcon = (iconType: string) => {
-    // Ищем иконку по типу в данных SmartSuggestions
-    const iconData = DashboardIconsData.SmartSuggestions.find(
-      (item) => item.title === iconType
-    );
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "todo":
+        return "К выполнению";
+      case "in-progress":
+        return "В работе";
+      case "done":
+        return "Выполнено";
+      default:
+        return status;
+    }
+  };
 
-    // Если не найдено, используем первую иконку
-    return iconData || DashboardIconsData.SmartSuggestions[0];
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return "#FF6467";
+      case "high":
+        return "#FF8C42";
+      case "medium":
+        return "#FDC700";
+      case "low":
+        return "#667EEA";
+      default:
+        return "#667EEA";
+    }
+  };
+
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return "Критический";
+      case "high":
+        return "Высокий";
+      case "medium":
+        return "Средний";
+      case "low":
+        return "Низкий";
+      default:
+        return priority;
+    }
+  };
+
+  const getStatusBadgeStyle = (status: string) => {
+    const color = getStatusColor(status);
+    return {
+      backgroundColor: `${color}20`,
+      borderColor: `${color}40`,
+      color: color,
+      border: "2px solid",
+      padding: "4px 12px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      fontWeight: 600,
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+    };
   };
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardContent}>
-        <div className={styles.dashboardRow}>
-          <div className={`${styles.panel} ${styles.neuralNetworkPanel}`}>
-            <div className={styles.panelHeader}>
-              <div className={styles.titleContainer}>
-                <div
-                  className={styles.neuralIcon}
-                  data-gradient={DashboardIconsData.NeuralNetwork[0].gradient}
-                >
-                  {renderIcon(DashboardIconsData.NeuralNetwork[0].icon)}
-                </div>
-                <h2>{DashboardIconsData.NeuralNetwork[0].title}</h2>
-              </div>
-              <button className={styles.iconButton}>
-                <div>
-                  {renderIcon(DashboardIconsData.NeuralNetwork[1].icon)}
-                </div>
+        {/* Панель задач */}
+        <div className={`${styles.panel} ${styles.tasksPanel}`}>
+          <div className={styles.panelHeader}>
+            <div className={styles.titleContainer}>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M4.16663 10H15.8333M10 4.16675V15.8334" />
+              </svg>
+              <h2>Задачи</h2>
+            </div>
+          </div>
+
+          {/* Фильтры и сортировка */}
+          <div className={styles.filtersContainer}>
+            <div className={styles.priorityFilters}>
+              <button
+                className={`${styles.filterButton} ${
+                  priorityFilter === "all" ? styles.filterButtonActive : ""
+                }`}
+                onClick={() => setPriorityFilter("all")}
+              >
+                Все
+              </button>
+              <button
+                className={`${styles.filterButton} ${
+                  priorityFilter === "low" ? styles.filterButtonActive : ""
+                }`}
+                onClick={() => setPriorityFilter("low")}
+                style={{
+                  backgroundColor:
+                    priorityFilter === "low"
+                      ? `${getPriorityColor("low")}20`
+                      : "transparent",
+                  borderColor:
+                    priorityFilter === "low"
+                      ? getPriorityColor("low")
+                      : "rgba(255, 255, 255, 0.1)",
+                  color:
+                    priorityFilter === "low"
+                      ? getPriorityColor("low")
+                      : "rgba(255, 255, 255, 0.6)",
+                }}
+              >
+                Низкий
+              </button>
+              <button
+                className={`${styles.filterButton} ${
+                  priorityFilter === "medium" ? styles.filterButtonActive : ""
+                }`}
+                onClick={() => setPriorityFilter("medium")}
+                style={{
+                  backgroundColor:
+                    priorityFilter === "medium"
+                      ? `${getPriorityColor("medium")}20`
+                      : "transparent",
+                  borderColor:
+                    priorityFilter === "medium"
+                      ? getPriorityColor("medium")
+                      : "rgba(255, 255, 255, 0.1)",
+                  color:
+                    priorityFilter === "medium"
+                      ? getPriorityColor("medium")
+                      : "rgba(255, 255, 255, 0.6)",
+                }}
+              >
+                Средний
+              </button>
+              <button
+                className={`${styles.filterButton} ${
+                  priorityFilter === "high" ? styles.filterButtonActive : ""
+                }`}
+                onClick={() => setPriorityFilter("high")}
+                style={{
+                  backgroundColor:
+                    priorityFilter === "high"
+                      ? `${getPriorityColor("high")}20`
+                      : "transparent",
+                  borderColor:
+                    priorityFilter === "high"
+                      ? getPriorityColor("high")
+                      : "rgba(255, 255, 255, 0.1)",
+                  color:
+                    priorityFilter === "high"
+                      ? getPriorityColor("high")
+                      : "rgba(255, 255, 255, 0.6)",
+                }}
+              >
+                Высокий
+              </button>
+              <button
+                className={`${styles.filterButton} ${
+                  priorityFilter === "critical" ? styles.filterButtonActive : ""
+                }`}
+                onClick={() => setPriorityFilter("critical")}
+                style={{
+                  backgroundColor:
+                    priorityFilter === "critical"
+                      ? `${getPriorityColor("critical")}20`
+                      : "transparent",
+                  borderColor:
+                    priorityFilter === "critical"
+                      ? getPriorityColor("critical")
+                      : "rgba(255, 255, 255, 0.1)",
+                  color:
+                    priorityFilter === "critical"
+                      ? getPriorityColor("critical")
+                      : "rgba(255, 255, 255, 0.6)",
+                }}
+              >
+                Критический
               </button>
             </div>
-
-            <div className={styles.graphContainer}>
-              <div className={styles.graphImage}></div>
-              <div className={styles.graphOverlay}>
-                <div className={styles.overlayItem}>
-                  <div
-                    className={styles.colorDot}
-                    style={{ backgroundColor: "#667EEA" }}
-                  ></div>
-                  <span>Проекты</span>
-                </div>
-                <div className={styles.overlayItem}>
-                  <div
-                    className={styles.colorDot}
-                    style={{ backgroundColor: "#764BA2" }}
-                  ></div>
-                  <span>Документы</span>
-                </div>
-                <div className={styles.overlayItem}>
-                  <div
-                    className={styles.colorDot}
-                    style={{ backgroundColor: "#EC4899" }}
-                  ></div>
-                  <span>Задачи</span>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.statsContainer}>
-              <div className={styles.statItem}>
-                <div className={styles.statValue}>24</div>
-                <div className={styles.statLabel}>Связей</div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statValue}>8</div>
-                <div className={styles.statLabel}>Узлов</div>
-              </div>
-              <div className={styles.statItem}>
-                <div className={styles.statValue}>94%</div>
-                <div className={styles.statLabel}>Состояние</div>
-              </div>
-            </div>
+            <button
+              className={styles.sortButton}
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+            >
+              {sortOrder === "asc" ? "↑" : "↓"} Сортировка
+            </button>
           </div>
 
-          <div className={`${styles.panel} ${styles.suggestionsPanel}`}>
-            <div className={styles.panelHeader}>
-              <div className={styles.titleContainer}>
-                <div
-                  className={styles.suggestionsIcon}
-                  data-gradient={
-                    DashboardIconsData.SmartSuggestions[0].gradient
-                  }
-                >
-                  {renderIcon(DashboardIconsData.SmartSuggestions[0].icon)}
-                </div>
-                <div>
-                  <h2>{DashboardIconsData.SmartSuggestions[0].title}</h2>
-                  <p className={styles.subtitle}>Рекомендации на основе ИИ</p>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.suggestionsList}>
-              {suggestions.map((suggestion, index) => {
-                const iconData = getSuggestionIcon(suggestion.iconType);
-                return (
-                  <div key={index} className={styles.suggestionItem}>
-                    <div className={styles.suggestionHeader}>
-                      <div
-                        className={styles.suggestionIcon}
-                        data-gradient={iconData.gradient}
-                      >
-                        {renderIcon(iconData.icon)}
-                      </div>
-                      <div className={styles.suggestionContent}>
-                        <div className={styles.suggestionTitleRow}>
-                          <h3>{suggestion.title}</h3>
-                          <div
-                            className={styles.priorityBadge}
-                            style={{
-                              backgroundColor: `${suggestion.priorityColor}20`,
-                              borderColor: `${suggestion.priorityColor}30`,
-                            }}
-                          >
-                            <span style={{ color: suggestion.priorityColor }}>
-                              {suggestion.priority}
-                            </span>
-                          </div>
-                        </div>
-                        <p className={styles.suggestionDescription}>
-                          {suggestion.description}
-                        </p>
-                        <div className={styles.suggestionFooter}>
-                          <div className={styles.timeTag}>
-                            <div className={styles.clockIcon}></div>
-                            <span>{suggestion.time}</span>
-                          </div>
-                          <div className={styles.categoryTag}>
-                            <span>{suggestion.tag}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+          <div className={styles.tasksList}>
+            {filteredAndSortedTasks.map((task) => (
+              <div
+                key={task.id}
+                className={styles.taskItem}
+                style={{
+                  borderLeft: `4px solid ${getPriorityColor(task.priority)}`,
+                }}
+              >
+                <div className={styles.taskHeader}>
+                  <div className={styles.taskStatus}>
+                    <span style={getStatusBadgeStyle(task.status)}>
+                      <span
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "50%",
+                          backgroundColor: getStatusColor(task.status),
+                          display: "inline-block",
+                        }}
+                      />
+                      {getStatusText(task.status)}
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-
-            <div className={styles.panelFooter}>
-              <span className={styles.footerText}>
-                12 предложений на этой неделе
-              </span>
-              <button className={styles.viewAllButton}>Смотреть все</button>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.dashboardRow}>
-          <div className={`${styles.panel} ${styles.knowledgePanel}`}>
-            <div className={styles.panelHeader}>
-              <div className={styles.titleContainer}>
-                <div
-                  className={styles.knowledgeIcon}
-                  data-gradient={DashboardIconsData.KnowledgeGraph[0].gradient}
-                >
-                  {renderIcon(DashboardIconsData.KnowledgeGraph[0].icon)}
-                </div>
-                <div>
-                  <h2>{DashboardIconsData.KnowledgeGraph[0].title}</h2>
-                  <p className={styles.subtitle}>Связанная информация</p>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.filtersContainer}>
-              <div className={styles.quickFilters}>
-                <div
-                  className={styles.filterIcon}
-                  data-gradient={DashboardIconsData.KnowledgeGraph[1].gradient}
-                >
-                  {renderIcon(DashboardIconsData.KnowledgeGraph[1].icon)}
-                </div>
-                <span>{DashboardIconsData.KnowledgeGraph[1].title}</span>
-              </div>
-              <div className={styles.filterButtons}>
-                <button className={`${styles.filterButton} ${styles.active}`}>
-                  продукт <span className={styles.count}>(12)</span>
-                </button>
-                <button className={styles.filterButton}>
-                  дизайн <span className={styles.count}>(8)</span>
-                </button>
-                <button className={styles.filterButton}>
-                  разработка <span className={styles.count}>(15)</span>
-                </button>
-                <button className={styles.filterButton}>
-                  исследование <span className={styles.count}>(6)</span>
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.documentsList}>
-              {documents.map((doc, index) => (
-                <div key={index} className={styles.documentItem}>
-                  <div className={styles.documentHeader}>
-                    <h3>{doc.title}</h3>
-                    <div className={styles.documentIcon}></div>
-                  </div>
-                  <p className={styles.documentDescription}>
-                    {doc.description}
-                  </p>
-                  <div className={styles.documentFooter}>
-                    <div className={styles.documentTags}>
-                      <div
-                        className={styles.typeTag}
-                        style={{ backgroundColor: `${doc.typeColor}20` }}
-                      >
-                        <span style={{ color: doc.typeColor }}>{doc.type}</span>
-                      </div>
-                      {doc.tags.map((tag, i) => (
-                        <div key={i} className={styles.hashTag}>
-                          <span>{tag}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className={styles.documentMeta}>
-                      <div className={styles.connections}>
-                        <div className={styles.connectionIcon}></div>
-                        <span>{doc.connections}</span>
-                      </div>
-                      <span className={styles.timeAgo}>{doc.timeAgo}</span>
-                    </div>
+                  <div
+                    className={styles.priorityBadge}
+                    style={{
+                      backgroundColor: `${getPriorityColor(task.priority)}20`,
+                      borderColor: getPriorityColor(task.priority),
+                      color: getPriorityColor(task.priority),
+                    }}
+                  >
+                    {getPriorityText(task.priority)}
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className={styles.panelFooter}>
-              <span className={styles.footerText}>
-                147 документов проиндексировано
-              </span>
-              <button className={styles.exploreButton}>
-                Исследовать граф
-                <div className={styles.exploreIcon}></div>
-              </button>
-            </div>
-          </div>
-
-          <div className={`${styles.panel} ${styles.flowPanel}`}>
-            <div className={styles.panelHeader}>
-              <div className={styles.titleContainer}>
-                <div
-                  className={styles.flowIcon}
-                  data-gradient={DashboardIconsData.FlowDashboard[0].gradient}
-                >
-                  {renderIcon(DashboardIconsData.FlowDashboard[0].icon)}
-                </div>
-                <div>
-                  <h2>{DashboardIconsData.FlowDashboard[0].title}</h2>
-                  <p className={styles.subtitle}>Пульс вашей эффективности</p>
+                <h3 className={styles.taskTitle}>{task.title}</h3>
+                <div className={styles.taskFooter}>
+                  <div className={styles.taskAssignee}>
+                    <div className={styles.assigneeAvatar}>
+                      {task.assigneeAvatar ||
+                        task.assignee
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                    </div>
+                    <span>{task.assignee}</span>
+                  </div>
+                  {task.dueDate && (
+                    <span className={styles.taskDueDate}>
+                      {new Date(task.dueDate).toLocaleDateString("ru-RU", {
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </span>
+                  )}
                 </div>
               </div>
-            </div>
-
-            <div className={styles.metricsContainer}>
-              {DashboardIconsData.FlowDashboard.slice(1).map(
-                (item: DataItem) => (
-                  <div key={item.id} className={styles.metricCard}>
-                    <div
-                      className={styles.metricIcon}
-                      data-gradient={item.gradient}
-                    >
-                      <div className={styles.iconInner}>
-                        {renderIcon(item.icon)}
-                      </div>
-                    </div>
-                    <div className={styles.metricValue}>
-                      {item.id === 2 ? "6.5ч" : item.id === 3 ? "24" : "94%"}
-                    </div>
-                    <div className={styles.metricLabel}>{item.title}</div>
-                    <div className={styles.metricTrend}>
-                      {item.id === 2
-                        ? "+12% на этой неделе"
-                        : item.id === 3
-                        ? "+8 на этой неделе"
-                        : "+5% на этой неделе"}
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-
-            <div className={styles.activityContainer}>
-              <div className={styles.activityHeader}>
-                <div className={styles.activityIcon}></div>
-                <h3>Активность за неделю</h3>
-                <span className={styles.timeRange}>Эта неделя</span>
-              </div>
-              <div className={styles.weeklyChart}>
-                {weeklyData.map((day, index) => (
-                  <div key={index} className={styles.chartColumn}>
-                    <div
-                      className={styles.chartBar}
-                      style={{ height: `${day.value}%` }}
-                    ></div>
-                    <div className={styles.chartLabel}>{day.day}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.tagsContainer}>
-              <div className={styles.tagsHeader}>
-                <div className={styles.tagsIcon}></div>
-                <h3>Теги активности</h3>
-              </div>
-              <div className={styles.tagsList}>
-                {activityTags.map((tag, index) => (
-                  <div key={index} className={styles.activityTag}>
-                    <div
-                      className={styles.tagColor}
-                      style={{ backgroundColor: tag.color }}
-                    ></div>
-                    <span className={styles.tagName}>{tag.name}</span>
-                    <span className={styles.tagCount}>({tag.count})</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.panelFooter}>
-              <span className={styles.footerText}>
-                Итого: 42.5 часов на этой неделе
-              </span>
-              <button className={styles.viewDetailsButton}>Подробнее</button>
-            </div>
+            ))}
           </div>
         </div>
       </div>

@@ -1,21 +1,63 @@
 // Dashboard.module.scss
 @import "./variables.module";
 
+/* ========== ОСНОВНЫЕ ИСПРАВЛЕНИЯ ШИРИНЫ ========== */
+
+.projectDetailPage {
+  background-color: $bg-content;
+  color: $text-main;
+  min-height: 100vh;
+  width: 100vw; // Изменено на 100vw
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; // Скрыть горизонтальный скролл
+}
+
+.content {
+  width: 100vw; // Используем viewport width
+  padding: 20px 24px;
+  margin: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    width: 100vw;
+  }
+}
+
 .dashboard {
   background-color: $bg-content;
   color: white;
   font-family: "Inter", sans-serif;
-  min-height: auto;
+  width: 100%; // 100% от родителя
+  max-width: 100vw; // Ограничиваем viewport
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .dashboardContent {
   padding: 24px;
+  width: 100%;
+  max-width: 100vw; // Ключевое исправление
+  box-sizing: border-box;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    max-width: 100vw;
+  }
 }
+
+/* ========== ИСПРАВЛЕНИЕ ДЛЯ ROWS И ПАНЕЛЕЙ ========== */
 
 .dashboardRow {
   display: flex;
   gap: 24px;
   margin-bottom: 24px;
+  width: 100%;
+  max-width: 100%; // Не больше контейнера
 
   &:last-child {
     margin-bottom: 0;
@@ -23,11 +65,14 @@
 
   @media (max-width: 1200px) {
     flex-direction: column;
+    gap: 16px;
   }
 }
 
+// Ключевое исправление - делаем панели гибкими
 .panel {
-  flex: 1;
+  flex: 1 1 auto; // Автоматическая ширина
+  min-width: 0; // Важно для flex элементов
   background: $bg-card;
   border: 1px solid $border-color;
   backdrop-filter: blur(12px);
@@ -36,889 +81,469 @@
   display: flex;
   flex-direction: column;
 
+  // Исправление ширины на мобильных
   @media (max-width: 1200px) {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 0 auto; // Отключаем flex-grow на мобильных
+  }
+}
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ ========== */
+
+// Для всех внутренних контейнеров
+.neuralNetworkPanel,
+.suggestionsPanel,
+.knowledgePanel,
+.flowPanel,
+.tasksPanel {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Исправление для графика
+.graphContainer {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+
+  .graphImage {
+    width: 100%;
+    max-width: 100%;
+    height: 300px;
+    box-sizing: border-box;
+  }
+}
+
+// Исправление для списков
+.suggestionsList,
+.documentsList,
+.tasksList {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ========== ВКЛАДКИ (TABS) ========== */
+.tabsContainer {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid $border-color;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  // Если вкладки выходят за пределы - добавляем скролл
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-default;
+  font-family: inherit;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  flex-shrink: 0; // Не сжимаем вкладки
+
+  &:hover {
+    color: $text-main;
+  }
+
+  &.tabActive {
+    color: $primary-purple;
+    border-bottom-color: $primary-purple;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: $font-size-xs;
+  }
+}
+
+/* ========== КОНТЕНТ ВКЛАДОК ========== */
+.overviewContent,
+.dashboardContent {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ========== КАРТОЧКИ ========== */
+.githubCard,
+.teamCard {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 16px;
+  }
+}
+
+/* ========== МЕДИА-ЗАПРОСЫ ========== */
+@media (max-width: 1200px) {
+  .projectDetailPage,
+  .content,
+  .dashboard,
+  .dashboardContent {
+    max-width: 100vw;
+  }
+
+  .dashboardRow {
+    max-width: 100%;
+  }
+
+  .panel {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden; // Глобальное скрытие горизонтального скролла
+  }
+
+  .projectDetailPage {
+    width: 100vw;
+  }
+
+  .content {
+    padding: 16px;
+    width: 100vw;
+  }
+
+  .dashboardContent {
+    padding: 16px;
+    width: 100vw;
+  }
+
+  .panel {
+    padding: 16px;
     width: 100%;
   }
 }
 
-// Neural Network Panel
-.neuralNetworkPanel {
-  .panelHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+/* ========== FIX ДЛЯ ФЛЕКС-КОНТЕЙНЕРОВ ========== */
+.overviewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
 
-    .titleContainer {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .neuralIcon {
-        width: 20px;
-        height: 20px;
-        position: relative;
-      }
-
-      h2 {
-        font-size: 18.6px;
-        font-weight: 400;
-        line-height: 28px;
-        margin: 0;
-        color: #fff;
-      }
-    }
-
-    .iconButton {
-      background: transparent;
-      border: none;
-      padding: 8px;
-      border-radius: 10px;
-      cursor: pointer;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      .closeIcon {
-        width: 16px;
-        height: 16px;
-        position: relative;
-
-        &::before,
-        &::after {
-          content: "";
-          position: absolute;
-          border: 1.33px solid rgba(255, 255, 255, 0.6);
-        }
-
-        &::before {
-          left: 62.5%;
-          right: 12.5%;
-          top: 12.5%;
-          bottom: 62.5%;
-        }
-
-        &::after {
-          left: 12.5%;
-          right: 62.5%;
-          top: 62.5%;
-          bottom: 12.5%;
-        }
-      }
-    }
-  }
-
-  .graphContainer {
-    position: relative;
-    margin-bottom: 16px;
-    flex: 1;
-
-    .graphImage {
-      width: 100%;
-      height: 300px;
-      background: rgba(10, 10, 10, 0.5);
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .graphOverlay {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      .overlayItem {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 12px;
-        background: rgba(0, 0, 0, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        width: 105px;
-
-        .colorDot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-        }
-
-        span {
-          font-size: 11.3px;
-          color: rgba(255, 255, 255, 0.6);
-        }
-      }
-    }
-  }
-
-  .statsContainer {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-
-    .statItem {
-      flex: 1;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-      }
-
-      .statValue {
-        font-size: 24px;
-        line-height: 32px;
-        margin-bottom: 4px;
-        color: #fff;
-      }
-
-      .statLabel {
-        font-size: 11.1px;
-        color: rgba(255, 255, 255, 0.4);
-      }
-    }
+  > * {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
-// Smart Suggestions Panel
-.suggestionsPanel {
-  .panelHeader {
-    margin-bottom: 24px;
-
-    .titleContainer {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .suggestionsIcon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 14px;
-      }
-
-      h2 {
-        font-size: 18.8px;
-        font-weight: 400;
-        line-height: 28px;
-        margin: 0;
-        color: #fff;
-      }
-
-      .subtitle {
-        font-size: 11.1px;
-        color: rgba(255, 255, 255, 0.4);
-        margin: 0;
-      }
-    }
-  }
-
-  .suggestionsList {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 16px;
-
-    .suggestionItem {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: background-color 0.2s ease;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      .suggestionHeader {
-        display: flex;
-        gap: 12px;
-
-        .suggestionIcon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 39px;
-          height: 39px;
-          background: rgba(102, 126, 234, 0.1);
-          border-radius: 10px;
-          margin-top: 4px;
-          border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-
-        .suggestionContent {
-          flex: 1;
-
-          .suggestionTitleRow {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-
-            h3 {
-              font-size: 13.2px;
-              font-weight: 400;
-              line-height: 20px;
-              color: rgba(255, 255, 255, 0.9);
-              margin: 0;
-            }
-
-            .priorityBadge {
-              padding: 4px 8px;
-              border-radius: 4px;
-              border: 1px solid;
-
-              span {
-                font-size: 11.3px;
-              }
-            }
-          }
-
-          .suggestionDescription {
-            font-size: 11.1px;
-            color: rgba(255, 255, 255, 0.5);
-            margin: 0 0 8px 0;
-          }
-
-          .suggestionFooter {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 4px;
-
-            .timeTag {
-              display: flex;
-              align-items: center;
-              gap: 4px;
-
-              .clockIcon {
-                width: 12px;
-                height: 12px;
-              }
-
-              span {
-                font-size: 11.8px;
-                color: rgba(255, 255, 255, 0.4);
-              }
-            }
-
-            .categoryTag {
-              padding: 2px 8px;
-              background: rgba(255, 255, 255, 0.05);
-              border-radius: 4px;
-
-              span {
-                font-size: 10.9px;
-                color: rgba(255, 255, 255, 0.4);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .panelFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-    .footerText {
-      font-size: 11.1px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .viewAllButton {
-      background: transparent;
-      border: none;
-      color: #667eea;
-      font-size: 11.4px;
-      cursor: pointer;
-
-      &:hover {
-        color: #7a92f0;
-      }
-    }
-  }
-}
-
-// Knowledge Graph Panel
-.knowledgePanel {
-  .panelHeader {
-    margin-bottom: 24px;
-
-    .titleContainer {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .knowledgeIcon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-      }
-
-      h2 {
-        font-size: 18.9px;
-        font-weight: 400;
-        line-height: 28px;
-        margin: 0;
-        color: #fff;
-      }
-
-      .subtitle {
-        font-size: 11.1px;
-        color: rgba(255, 255, 255, 0.4);
-        margin: 0;
-      }
-    }
-  }
-
-  .filtersContainer {
-    margin-bottom: 24px;
-
-    .quickFilters {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-
-      .filterIcon {
-        width: 16px;
-        height: 16px;
-      }
-
-      span {
-        font-size: 11.4px;
-        color: rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .filterButtons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-
-      .filterButton {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 12px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 11.8px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.08);
-        }
-
-        &.active {
-          background: rgba(43, 127, 255, 0.2);
-          border-color: rgba(43, 127, 255, 0.3);
-          color: #fff;
-
-          .count {
-            color: #fff;
-          }
-        }
-
-        .count {
-          font-size: 12px;
-          opacity: 0.6;
-        }
-      }
-    }
-  }
-
-  .documentsList {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 16px;
-
-    .documentItem {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: background-color 0.2s ease;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      .documentHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 8px;
-
-        h3 {
-          font-size: 12.8px;
-          font-weight: 400;
-          line-height: 20px;
-          color: rgba(255, 255, 255, 0.9);
-          margin: 0;
-        }
-
-        .documentIcon {
-          width: 16px;
-          height: 16px;
-        }
-      }
-
-      .documentDescription {
-        font-size: 11.1px;
-        color: rgba(255, 255, 255, 0.5);
-        margin: 0 0 8px 0;
-      }
-
-      .documentFooter {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 4px;
-
-        .documentTags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-
-          .typeTag {
-            padding: 2px 8px;
-            border-radius: 4px;
-            background: rgba(0, 0, 0, 0.2);
-
-            span {
-              font-size: 11.1px;
-            }
-          }
-
-          .hashTag {
-            padding: 2px 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-
-            span {
-              font-size: 10.7px;
-              color: rgba(255, 255, 255, 0.4);
-            }
-          }
-        }
-
-        .documentMeta {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-
-          .connections {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-
-            .connectionIcon {
-              width: 12px;
-              height: 12px;
-            }
-
-            span {
-              font-size: 12px;
-              color: rgba(255, 255, 255, 0.4);
-            }
-          }
-
-          .timeAgo {
-            font-size: 11.1px;
-            color: rgba(255, 255, 255, 0.4);
-          }
-        }
-      }
-    }
-  }
-
-  .panelFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-    .footerText {
-      font-size: 11.1px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .exploreButton {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: transparent;
-      border: none;
-      color: #667eea;
-      font-size: 15.1px;
-      cursor: pointer;
-      transition: color 0.2s ease;
-
-      &:hover {
-        color: #7a92f0;
-      }
-
-      .exploreIcon {
-        width: 12px;
-        height: 12px;
-      }
-    }
-  }
-}
-
-// Flow Dashboard Panel
-.flowPanel {
-  .panelHeader {
-    margin-bottom: 24px;
-
-    .titleContainer {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .flowIcon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-      }
-
-      h2 {
-        font-size: 18.9px;
-        font-weight: 400;
-        line-height: 28px;
-        margin: 0;
-        color: #fff;
-      }
-
-      .subtitle {
-        font-size: 11.1px;
-        color: rgba(255, 255, 255, 0.4);
-        margin: 0;
-      }
-    }
-  }
-
-  .metricsContainer {
-    display: flex;
-    justify-content: center;
+// Исправление для quick metrics
+.quickMetricsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    margin-bottom: 24px;
-
-    .metricCard {
-      flex: 1;
-      padding: 13px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      position: relative;
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-      }
-
-      .metricIcon {
-        width: 100%;
-        height: 80px;
-        border-radius: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        position: relative;
-
-        &::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          opacity: 0.8;
-          border-radius: 14px;
-          z-index: 1;
-        }
-
-        &[data-gradient="blue"]::before {
-          background: linear-gradient(135deg, #2b7fff 0%, #00b8db 100%);
-        }
-
-        &[data-gradient="purple"]::before {
-          background: linear-gradient(135deg, #ad46ff 0%, #f6339a 100%);
-        }
-
-        &[data-gradient="orange"]::before {
-          background: linear-gradient(135deg, #ff6900 0%, #fb2c36 100%);
-        }
-
-        &[data-gradient="green"]::before {
-          background: linear-gradient(135deg, #00c950 0%, #00bc7d 100%);
-        }
-
-        &[data-gradient="default"]::before {
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        &:hover {
-          &::before {
-            opacity: 0.75;
-          }
-        }
-
-        .iconInner {
-          z-index: 22;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-
-          svg {
-            width: 60px;
-            height: 60px;
-          }
-        }
-      }
-
-      .metricValue {
-        font-size: 22.7px;
-        line-height: 32px;
-        margin-top: 56px;
-        margin-bottom: 4px;
-        color: #fff;
-      }
-
-      .metricLabel {
-        font-size: 11.4px;
-        color: rgba(255, 255, 255, 0.4);
-        margin-bottom: 4px;
-      }
-
-      .metricTrend {
-        font-size: 11.4px;
-        color: #05df72;
-      }
-    }
   }
 
-  .activityContainer {
-    margin-bottom: 24px;
-
-    .activityHeader {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-
-      .activityIcon {
-        width: 16px;
-        height: 16px;
-      }
-
-      h3 {
-        font-size: 13px;
-        font-weight: 400;
-        line-height: 20px;
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0;
-      }
-
-      .timeRange {
-        font-size: 11.3px;
-        color: rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .weeklyChart {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      height: 128px;
-
-      .chartColumn {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-
-        .chartBar {
-          width: 100%;
-          background: rgba(102, 126, 234, 0.3);
-          border: 1px solid rgba(102, 126, 234, 0.4);
-          border-radius: 10px 10px 0 0;
-          transition: background-color 0.2s ease;
-
-          &:hover {
-            background: rgba(102, 126, 234, 0.4);
-          }
-        }
-
-        .chartLabel {
-          font-size: 12px;
-          color: rgba(255, 255, 255, 0.4);
-        }
-      }
-    }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
   }
+}
 
-  .tagsContainer {
-    margin-bottom: 16px;
+/* ========== ГРАНИЦЫ И ТЕНИ ========== */
+// Убираем потенциальные проблемы с границами
+* {
+  box-sizing: border-box;
+}
 
-    .tagsHeader {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
+// Исправление для всех карточек
+[class*="Card"],
+[class*="Panel"],
+[class*="Item"] {
+  box-sizing: border-box;
+}
 
-      .tagsIcon {
-        width: 16px;
-        height: 16px;
-      }
+/* ========== ДЕБАГ СТИЛИ (можно убрать после проверки) ========== */
+.debug-border {
+  border: 1px solid red !important;
+}
 
-      h3 {
-        font-size: 12.8px;
-        font-weight: 400;
-        line-height: 20px;
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0;
-      }
-    }
+.debug-bg {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+}
 
-    .tagsList {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+// Стили для задач
+.tasksPanel {
+  width: 100%;
+}
 
-      .activityTag {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        transition: background-color 0.2s ease;
+.panelHeader {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
 
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .tagColor {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-        }
-
-        .tagName {
-          font-size: 11.4px;
-          color: rgba(255, 255, 255, 0.8);
-        }
-
-        .tagCount {
-          font-size: 10.9px;
-          color: rgba(255, 255, 255, 0.4);
-        }
-      }
-    }
-  }
-
-  .panelFooter {
+  .titleContainer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 12px;
 
-    .footerText {
-      font-size: 11.1px;
-      color: rgba(255, 255, 255, 0.4);
+    svg {
+      width: 22px;
+      height: 22px;
+      color: $primary-purple;
+      flex-shrink: 0;
     }
 
-    .viewDetailsButton {
-      background: transparent;
-      border: none;
-      color: #667eea;
-      font-size: 14.9px;
-      cursor: pointer;
-      transition: color 0.2s ease;
-
-      &:hover {
-        color: #7a92f0;
-      }
+    h2 {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0;
+      color: $text-main;
+      letter-spacing: -0.01em;
     }
   }
 }
 
-// Стили скроллбара
-.dashboard::-webkit-scrollbar {
-  width: 8px;
+// Фильтры
+.filtersContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
-.dashboard::-webkit-scrollbar-track {
+.priorityFilters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.filterButton {
+  padding: 8px 16px;
   background: transparent;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: $border-radius-md;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: $font-size-xs;
+    flex: 1;
+  }
 }
 
-.dashboard::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+.filterButtonActive {
+  background: rgba(102, 126, 234, 0.12);
+  border-color: rgba(102, 126, 234, 0.3);
+  color: $text-main;
 }
 
-.dashboard::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+.sortButton {
+  padding: 8px 16px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 10px 16px;
+  }
 }
 
-// Стили для внутренних скроллов
-.suggestionsList,
-.documentsList {
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
+// Список задач
+.tasksList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+.taskItem {
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  position: relative;
 
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+  @media (max-width: 768px) {
+    padding: 12px;
   }
+}
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taskStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priorityBadge {
+  padding: 4px 12px;
+  border-radius: $border-radius-sm;
+  border: 1px solid;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.taskTitle {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.taskFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taskAssignee {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.assigneeAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: $primary-purple;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+}
+
+.taskDueDate {
+  color: $text-muted;
+  font-weight: 500;
+  padding: 4px 10px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: $border-radius-sm;
+}
+
+// Быстрые метрики
+.quickMetricsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+}
+
+.quickMetricCard {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 12px 14px;
+  }
+}
+
+.metricLabel {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.metricValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.metricValue {
+  font-size: $font-size-2xl;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+
+  @media (max-width: 768px) {
+    font-size: $font-size-xl;
   }
 }

@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import noteIcon from "../../assets/icons/variant=1.svg";
+import taskIcon from "../../assets/icons/variant=11.svg";
+import chatIcon from "../../assets/icons/variant=16.svg";
+import scheduleIcon from "../../assets/icons/variant=17.svg";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
 import {
@@ -34,12 +38,19 @@ interface TaskData {
 interface ProjectDetailPageProps {
   projectId: number;
   onBack?: () => void;
+  onNavigateToTeamChat?: (projectId: number) => void;
+  onNavigateToSchedule?: (projectId: number) => void;
+  onNavigateToQuickNote?: (projectId: number) => void;
 }
 
-function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
+function ProjectDetailPage({
+  projectId,
+  onBack,
+  onNavigateToTeamChat,
+  onNavigateToSchedule,
+  onNavigateToQuickNote,
+}: ProjectDetailPageProps) {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [taskData, setTaskData] = useState<TaskData>({
     title: "",
     description: "",
@@ -49,12 +60,52 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
   });
 
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
+  const [isAIDropdownOpen, setIsAIDropdownOpen] = useState(false);
+  const aiDropdownRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "tasks">("overview");
+  const [chatMessage, setChatMessage] = useState("");
+
   const teamMembersAvailable: string[] = [
     "Иван Иванов",
     "Петр Петров",
     "Анна Сидорова",
     "Михаил Кузнецов",
   ];
+
+  const aiSuggestions = [
+    "Обзор дорожной карты Q4",
+    "Обновить документацию дизайн-системы",
+    "Запланировать синхронизацию команды",
+  ];
+
+
+  // Закрытие AI dropdown при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        aiDropdownRef.current &&
+        !aiDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsAIDropdownOpen(false);
+      }
+    };
+
+    if (isAIDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAIDropdownOpen]);
+
+  const handleChatSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (chatMessage.trim()) {
+      console.log("Отправка сообщения ИИ:", chatMessage);
+      setChatMessage("");
+    }
+  };
 
   const removeTeamMember = (memberToRemove: string) => {
     setTaskData({
@@ -64,60 +115,6 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
       ),
     });
   };
-
-  const handleDatePickerClick = () => {
-    setIsCalendarOpen(true);
-  };
-
-  const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
-  };
-
-  const selectDate = (day: number) => {
-    const selectedDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      day
-    );
-    const formattedDate = selectedDate.toLocaleDateString("ru-RU");
-    setTaskData({ ...taskData, deadline: formattedDate });
-    setIsCalendarOpen(false);
-  };
-
-  const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-
-  const getDaysInMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay() || 7;
-  };
-
-  const monthDays = [];
-  const firstDay = getFirstDayOfMonth(currentDate);
-  const daysInMonth = getDaysInMonth(currentDate);
-
-  // Пустые дни до начала месяца
-  for (let i = 1; i < firstDay; i++) {
-    monthDays.push({ day: 0, isOtherMonth: true });
-  }
-
-  // Дни месяца
-  for (let day = 1; day <= daysInMonth; day++) {
-    monthDays.push({ day, isOtherMonth: false });
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
   const handleTaskSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -151,7 +148,7 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
     try {
       setIsLoading(true);
       setError("");
-      const projectData = await ProjectService.getProjectById(projectId);
+      const projectData = await ProjectService.getProjectById(projectId, user?.id);
       setProject(projectData);
     } catch (error) {
       console.error("Ошибка загрузки проекта:", error);
@@ -166,18 +163,15 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
   };
 
   const handleTeamChat = () => {
-    console.log("Открыть командный чат проекта:", projectId);
-    // TODO: Здесь добавить логику для чата, например модалку или навигацию
+    onNavigateToTeamChat?.(projectId);
   };
 
   const handleSchedule = () => {
-    console.log("Открыть расписание проекта:", projectId);
-    // Здесь будет логика открытия расписания
+    onNavigateToSchedule?.(projectId);
   };
 
   const handleQuickNote = () => {
-    console.log("Создать быструю заметку для проекта:", projectId);
-    // Здесь будет логика создания заметки
+    onNavigateToQuickNote?.(projectId);
   };
 
   if (isLoading) {
@@ -209,59 +203,12 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
   return (
     <div className={style.projectDetailPage}>
       <div className={style.content}>
-        {/* Кнопка назад */}
-        {onBack && (
-          <button onClick={onBack} className={style.backButton}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            <span>Назад к проектам</span>
-          </button>
-        )}
-
-        {/* Заголовок и информация о проекте */}
+        {/* Улучшенный header */}
         <div className={style.projectHeader}>
           <div className={style.headerTop}>
-            <div className={style.projectTitleSection}>
-              <h1 className={style.projectTitle}>{project.tittle}</h1>
-              <span
-                className={style.statusBadge}
-                style={{
-                  backgroundColor: `${getStatusColor(project.status)}20`,
-                  color: getStatusColor(project.status),
-                }}
-              >
-                {getStatusText(project.status)}
-              </span>
-            </div>
-            <div className={style.projectMeta}>
-              <div className={style.metaItem}>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.66667"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3.33329 16.6667H16.6666C17.1087 16.6667 17.5326 16.4911 17.8451 16.1785C18.1577 15.866 18.3333 15.442 18.3333 15V6.66667C18.3333 6.22464 18.1577 5.80072 17.8451 5.48816C17.5326 5.17559 17.1087 5 16.6666 5H10.0583C9.78378 4.99858 9.51387 4.92937 9.27254 4.79853C9.03121 4.66769 8.82594 4.47927 8.67496 4.25L7.99163 3.25C7.84065 3.02073 7.63537 2.83231 7.39404 2.70147C7.15272 2.57063 6.8828 2.50142 6.60829 2.5H3.33329C2.89127 2.5 2.46734 2.67559 2.15478 2.98816C1.84222 3.30072 1.66663 3.72464 1.66663 4.16667V15C1.66663 15.9167 2.41663 16.6667 3.33329 16.6667Z" />
-                  <path d="M6.66663 8.33325V11.6666" />
-                  <path d="M10 8.33325V9.99992" />
-                  <path d="M13.3334 8.33325V13.3333" />
-                </svg>
-                <span>Создан {formatDate(project.created_at)}</span>
-              </div>
-              {project.updated_at && (
-                <div className={style.metaItem}>
+            <div className={style.headerLeft}>
+              {onBack && (
+                <button onClick={onBack} className={style.backButton}>
                   <svg
                     width="16"
                     height="16"
@@ -270,12 +217,222 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
                     stroke="currentColor"
                     strokeWidth="2"
                   >
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
                   </svg>
-                  <span>Обновлен {formatDate(project.updated_at)}</span>
-                </div>
+                </button>
               )}
+              <div className={style.titleGroup}>
+                <h1 className={style.projectTitle}>{project.tittle}</h1>
+                <span
+                  className={style.statusBadge}
+                  style={{
+                    backgroundColor: `${getStatusColor(project.status)}20`,
+                    color: getStatusColor(project.status),
+                  }}
+                >
+                  {getStatusText(project.status)}
+                </span>
+              </div>
+            </div>
+
+            <div className={style.headerRight}>
+              <div className={style.projectMeta}>
+                <div className={style.metaItem}>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.66667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3.33329 16.6667H16.6666C17.1087 16.6667 17.5326 16.4911 17.8451 16.1785C18.1577 15.866 18.3333 15.442 18.3333 15V6.66667C18.3333 6.22464 18.1577 5.80072 17.8451 5.48816C17.5326 5.17559 17.1087 5 16.6666 5H10.0583C9.78378 4.99858 9.51387 4.92937 9.27254 4.79853C9.03121 4.66769 8.82594 4.47927 8.67496 4.25L7.99163 3.25C7.84065 3.02073 7.63537 2.83231 7.39404 2.70147C7.15272 2.57063 6.8828 2.50142 6.60829 2.5H3.33329C2.89127 2.5 2.46734 2.67559 2.15478 2.98816C1.84222 3.30072 1.66663 3.72464 1.66663 4.16667V15C1.66663 15.9167 2.41663 16.6667 3.33329 16.6667Z" />
+                    <path d="M6.66663 8.33325V11.6666" />
+                    <path d="M10 8.33325V9.99992" />
+                    <path d="M13.3334 8.33325V13.3333" />
+                  </svg>
+                  <span>Создан {formatDate(project.created_at)}</span>
+                </div>
+                {project.updated_at && (
+                  <div className={style.metaItem}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>Обновлен {formatDate(project.updated_at)}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className={style.actionButtons}>
+                <button
+                  className={style.actionButton}
+                  onClick={handleCreateTask}
+                  data-action="create-task"
+                >
+                  <img
+                    src={taskIcon}
+                    alt="Создать задачу"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+
+                <button
+                  className={style.actionButton}
+                  onClick={handleTeamChat}
+                  data-action="team-chat"
+                >
+                  <img
+                    src={chatIcon}
+                    alt="Командный чат"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+
+                <button
+                  className={style.actionButton}
+                  onClick={handleSchedule}
+                  data-action="schedule"
+                >
+                  <img
+                    src={scheduleIcon}
+                    alt="Расписание"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+
+                <button
+                  className={style.actionButton}
+                  onClick={handleQuickNote}
+                  data-action="quick-note"
+                >
+                  <img
+                    src={noteIcon}
+                    alt="Быстрая заметка"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+
+                {/* Кнопка AI */}
+                <div className={style.aiButtonWrapper} ref={aiDropdownRef}>
+                  <button
+                    className={style.aiButton}
+                    onClick={() => setIsAIDropdownOpen(!isAIDropdownOpen)}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </button>
+
+                  {isAIDropdownOpen && (
+                    <div className={style.aiDropdown}>
+                      <div className={style.aiDropdownHeader}>
+                        <div className={style.aiIdentity}>
+                          <div className={style.aiIcon}>
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                          </div>
+                          <div className={style.aiInfo}>
+                            <div className={style.aiName}>AI</div>
+                            <div className={style.aiStatus}>
+                              <div className={style.statusDot}></div>
+                              <span>Всегда учится</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={style.aiDropdownContent}>
+                        <div className={style.suggestionsTitle}>
+                          Умные предложения
+                        </div>
+
+                        <div className={style.suggestionsList}>
+                          {aiSuggestions.map((suggestion, index) => (
+                            <div key={index} className={style.suggestionItem}>
+                              <div className={style.suggestionIcon}>
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M9 18l6-6-6-6" />
+                                </svg>
+                              </div>
+                              <span className={style.suggestionText}>
+                                {suggestion}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <form
+                          onSubmit={handleChatSubmit}
+                          className={style.chatInputContainer}
+                        >
+                          <div className={style.chatInputWrapper}>
+                            <input
+                              type="text"
+                              value={chatMessage}
+                              onChange={(e) => setChatMessage(e.target.value)}
+                              placeholder="Спросите AI..."
+                              className={style.chatInput}
+                              maxLength={100}
+                            />
+                            <button
+                              type="submit"
+                              className={style.chatSendButton}
+                              disabled={!chatMessage.trim()}
+                            >
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -359,95 +516,6 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
           </div>
         </div>
 
-        {/* Кнопки действий */}
-        <div className={style.actionButtons}>
-          <button
-            className={style.actionButton}
-            onClick={handleCreateTask}
-            data-action="create-task"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.66667"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M4.16663 10H15.8333" />
-              <path d="M10 4.16675V15.8334" />
-            </svg>
-            <span>Создать задачу</span>
-          </button>
-
-          <button
-            className={style.actionButton}
-            onClick={handleTeamChat}
-            data-action="team-chat"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.66667"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M8.55664 17.5C8.70293 17.7533 8.91332 17.9637 9.16668 18.11C9.42003 18.2563 9.70743 18.3333 9.99997 18.3333C10.2925 18.3333 10.5799 18.2563 10.8333 18.11C11.0866 17.9637 11.297 17.7533 11.4433 17.5" />
-              <path d="M2.71833 12.7717C2.60947 12.8911 2.53763 13.0394 2.51155 13.1988C2.48547 13.3582 2.50627 13.5218 2.57142 13.6696C2.63658 13.8174 2.74328 13.943 2.87855 14.0313C3.01381 14.1196 3.17182 14.1666 3.33333 14.1667H16.6667C16.8282 14.1668 16.9862 14.1199 17.1216 14.0318C17.2569 13.9437 17.3637 13.8182 17.4291 13.6705C17.4944 13.5228 17.5154 13.3593 17.4895 13.1999C17.4637 13.0405 17.392 12.892 17.2833 12.7726C16.175 11.6301 15 10.4159 15 6.66675C15 5.34067 14.4732 4.0689 13.5355 3.13121C12.5979 2.19353 11.3261 1.66675 10 1.66675C8.67392 1.66675 7.40215 2.19353 6.46447 3.13121C5.52679 4.0689 5 5.34067 5 6.66675C5 10.4159 3.82417 11.6301 2.71833 12.7717Z" />
-            </svg>
-            <span>Командный чат</span>
-          </button>
-
-          <button
-            className={style.actionButton}
-            onClick={handleSchedule}
-            data-action="schedule"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.66667"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M3.33329 16.6667H16.6666C17.1087 16.6667 17.5326 16.4911 17.8451 16.1785C18.1577 15.866 18.3333 15.442 18.3333 15V6.66667C18.3333 6.22464 18.1577 5.80072 17.8451 5.48816C17.5326 5.17559 17.1087 5 16.6666 5H10.0583C9.78378 4.99858 9.51387 4.92937 9.27254 4.79853C9.03121 4.66769 8.82594 4.47927 8.67496 4.25L7.99163 3.25C7.84065 3.02073 7.63537 2.83231 7.39404 2.70147C7.15272 2.57063 6.8828 2.50142 6.60829 2.5H3.33329C2.89127 2.5 2.46734 2.67559 2.15478 2.98816C1.84222 3.30072 1.66663 3.72464 1.66663 4.16667V15C1.66663 15.9167 2.41663 16.6667 3.33329 16.6667Z" />
-              <path d="M6.66663 8.33325V11.6666" />
-              <path d="M10 8.33325V9.99992" />
-              <path d="M13.3334 8.33325V13.3333" />
-            </svg>
-            <span>Расписание</span>
-          </button>
-
-          <button
-            className={style.actionButton}
-            onClick={handleQuickNote}
-            data-action="quick-note"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.66667"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.5 17.5V10.8333C12.5 10.6123 12.4122 10.4004 12.2559 10.2441C12.0996 10.0878 11.8877 10 11.6667 10H8.33333C8.11232 10 7.90036 10.0878 7.74408 10.2441C7.5878 10.4004 7.5 10.6123 7.5 10.8333V17.5" />
-              <path d="M2.5 8.33333C2.49994 8.09088 2.55278 7.85135 2.65482 7.63142C2.75687 7.4115 2.90566 7.21649 3.09083 7.05999L8.92417 2.05999C9.22499 1.80575 9.60613 1.66626 10 1.66626C10.3939 1.66626 10.775 1.80575 11.0758 2.05999L16.9092 7.05999C17.0943 7.21649 17.2431 7.4115 17.3452 7.63142C17.4472 7.85135 17.5001 8.09088 17.5 8.33333V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V8.33333Z" />
-            </svg>
-            <span>Быстрая заметка</span>
-          </button>
-        </div>
-
         {/* Модальное окно создания задачи */}
         {isTaskModalOpen && (
           <div
@@ -489,112 +557,17 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
                 </div>
 
                 <div className={style.formGroup}>
-                  <label>Дедлайн</label>
-                  <div className={style.datePickerGroup}>
-                    <input
-                      type="text"
-                      value={taskData.deadline || ""}
-                      placeholder="Выберите дату дедлайна"
-                      readOnly
-                      className={style.dateInput}
-                    />
-                    <button
-                      type="button"
-                      className={style.dateButton}
-                      onClick={handleDatePickerClick}
-                    >
-                      📅
-                    </button>
-                  </div>
+                  <label htmlFor="task-deadline">Дедлайн</label>
+                  <input
+                    id="task-deadline"
+                    type="text"
+                    value={taskData.deadline || ""}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, deadline: e.target.value })
+                    }
+                    placeholder="Дедлайн (например: завтра, через 3 часа, 10.07)"
+                  />
                 </div>
-
-                {/* Календарь дедлайна */}
-                {isCalendarOpen && (
-                  <div
-                    className={style.calendarOverlay}
-                    onClick={() => setIsCalendarOpen(false)}
-                  >
-                    <div
-                      className={style.calendarModal}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className={style.calendarHeader}>
-                        <button
-                          type="button"
-                          className={style.calendarNavButton}
-                          onClick={handlePrevMonth}
-                        >
-                          ‹
-                        </button>
-                        <div className={style.calendarTitle}>
-                          {currentDate.toLocaleDateString("ru-RU", {
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </div>
-                        <button
-                          type="button"
-                          className={style.calendarNavButton}
-                          onClick={handleNextMonth}
-                        >
-                          ›
-                        </button>
-                      </div>
-                      <div className={style.calendarGrid}>
-                        {daysOfWeek.map((day) => (
-                          <div key={day} className={style.calendarDayHeader}>
-                            {day}
-                          </div>
-                        ))}
-                        {monthDays.map((item, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            className={`
-                            ${style.calendarDay}
-                            ${item.day === 0 ? style.otherMonth : ""}
-                            ${
-                              item.day === today.getDate() &&
-                              currentDate.getMonth() === today.getMonth() &&
-                              currentDate.getFullYear() === today.getFullYear()
-                                ? style.today
-                                : ""
-                            }
-                            ${
-                              taskData.deadline &&
-                              new Date(taskData.deadline).getDate() === item.day
-                                ? style.selected
-                                : ""
-                            }
-                            ${item.day === 0 ? style.disabled : ""}
-                          `}
-                            onClick={() => item.day > 0 && selectDate(item.day)}
-                            disabled={item.day === 0}
-                          >
-                            {item.day || ""}
-                          </button>
-                        ))}
-                      </div>
-                      <div className={style.calendarFooter}>
-                        <button
-                          type="button"
-                          className={style.calendarCancelButton}
-                          onClick={() => setIsCalendarOpen(false)}
-                        >
-                          Отмена
-                        </button>
-                        <button
-                          type="button"
-                          className={style.calendarConfirmButton}
-                          disabled={!taskData.deadline}
-                          onClick={() => setIsCalendarOpen(false)}
-                        >
-                          Подтвердить
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 <div className={style.formGroup}>
                   <label>Члены команды</label>
@@ -697,9 +670,272 @@ function ProjectDetailPage({ projectId, onBack }: ProjectDetailPageProps) {
           </div>
         )}
 
-        {/* Dashboard */}
-        <div className={style.dashboardSection}>
-          <Dashboard />
+        {/* Разделы Обзор и Задачи */}
+        <div className={style.sectionsContainer}>
+          <div className={style.tabsContainer}>
+            <button
+              className={`${style.tab} ${
+                activeTab === "overview" ? style.tabActive : ""
+              }`}
+              onClick={() => setActiveTab("overview")}
+            >
+              Обзор
+            </button>
+            <button
+              className={`${style.tab} ${
+                activeTab === "tasks" ? style.tabActive : ""
+              }`}
+              onClick={() => setActiveTab("tasks")}
+            >
+              Задачи
+            </button>
+          </div>
+
+          {activeTab === "overview" && (
+            <div className={style.overviewContent}>
+              {/* GitHub репозиторий */}
+              <div className={style.githubCard}>
+                <div className={style.cardHeader}>
+                  <div className={style.cardHeaderLeft}>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                    </svg>
+                    <h3 className={style.cardTitle}>GitHub репозиторий</h3>
+                  </div>
+                  <a
+                    href="https://github.com/example/repo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={style.repoLink}
+                  >
+                    Открыть репозиторий
+                  </a>
+                </div>
+                <div className={style.githubContent}>
+                  <div className={style.branchesCompact}>
+                    <h4 className={style.subsectionTitle}>Ветки</h4>
+                    <div className={style.branchesListCompact}>
+                      <div className={style.branchItemCompact}>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M6 3v12a4 4 0 0 0 4 4 4 4 0 0 0 4-4V3" />
+                        </svg>
+                        <span className={style.branchNameCompact}>main</span>
+                        <span className={style.branchCommitCompact}>a1b2c3d</span>
+                      </div>
+                      <div className={style.branchItemCompact}>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M6 3v12a4 4 0 0 0 4 4 4 4 0 0 0 4-4V3" />
+                        </svg>
+                        <span className={style.branchNameCompact}>
+                          feature/new-task
+                        </span>
+                        <span className={style.branchCommitCompact}>e4f5g6h</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={style.commitsCompact}>
+                    <h4 className={style.subsectionTitle}>Последние коммиты</h4>
+                    <div className={style.commitsListCompact}>
+                      <div className={style.commitItemCompact}>
+                        <span className={style.commitHashCompact}>a1b2c3d</span>
+                        <p className={style.commitMessageCompact}>
+                          Добавлена авторизация через OAuth
+                        </p>
+                        <div className={style.commitMetaCompact}>
+                          <span>Иван Иванов</span>
+                          <span>•</span>
+                          <span>2 часа назад</span>
+                        </div>
+                      </div>
+                      <div className={style.commitItemCompact}>
+                        <span className={style.commitHashCompact}>e4f5g6h</span>
+                        <p className={style.commitMessageCompact}>
+                          Исправлен баг с отображением карточек
+                        </p>
+                        <div className={style.commitMetaCompact}>
+                          <span>Петр Петров</span>
+                          <span>•</span>
+                          <span>5 часов назад</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Логи последних действий */}
+              <div className={style.activityCard}>
+                <div className={style.cardHeader}>
+                  <div className={style.cardHeaderLeft}>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 12h18M3 6h18M3 18h18" />
+                    </svg>
+                    <h3 className={style.cardTitle}>Логи последних действий</h3>
+                  </div>
+                </div>
+                <div className={style.activityList}>
+                  <div className={style.activityItem}>
+                    <div className={style.activityIcon}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                      </svg>
+                    </div>
+                    <div className={style.activityContent}>
+                      <p>Создана задача "Реализовать авторизацию через OAuth"</p>
+                      <span>2 часа назад</span>
+                    </div>
+                  </div>
+                  <div className={style.activityItem}>
+                    <div className={style.activityIcon}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                    </div>
+                    <div className={style.activityContent}>
+                      <p>Добавлен новый участник: Анна Сидорова</p>
+                      <span>5 часов назад</span>
+                    </div>
+                  </div>
+                  <div className={style.activityItem}>
+                    <div className={style.activityIcon}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    </div>
+                    <div className={style.activityContent}>
+                      <p>Обновлена документация проекта</p>
+                      <span>1 день назад</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Команда проекта */}
+              <div className={style.teamCard}>
+                <div className={style.cardHeader}>
+                  <div className={style.cardHeaderLeft}>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <h3 className={style.cardTitle}>Команда проекта</h3>
+                  </div>
+                </div>
+                <div className={style.teamList}>
+                  <div className={style.teamMemberItem}>
+                    <div className={style.memberAvatar}>
+                      <div className={style.avatarInitial}>ИИ</div>
+                      <div className={`${style.statusIndicator} ${style.online}`}></div>
+                    </div>
+                    <div className={style.memberInfo}>
+                      <div className={style.memberName}>Иван Иванов</div>
+                      <div className={style.memberRole}>Разработчик</div>
+                    </div>
+                    <div className={style.memberActivity}>Активен</div>
+                  </div>
+                  <div className={style.teamMemberItem}>
+                    <div className={style.memberAvatar}>
+                      <div className={style.avatarInitial}>ПП</div>
+                      <div className={`${style.statusIndicator} ${style.online}`}></div>
+                    </div>
+                    <div className={style.memberInfo}>
+                      <div className={style.memberName}>Петр Петров</div>
+                      <div className={style.memberRole}>Дизайнер</div>
+                    </div>
+                    <div className={style.memberActivity}>Активен</div>
+                  </div>
+                  <div className={style.teamMemberItem}>
+                    <div className={style.memberAvatar}>
+                      <div className={style.avatarInitial}>АС</div>
+                      <div className={`${style.statusIndicator} ${style.away}`}></div>
+                    </div>
+                    <div className={style.memberInfo}>
+                      <div className={style.memberName}>Анна Сидорова</div>
+                      <div className={style.memberRole}>Тестировщик</div>
+                    </div>
+                    <div className={style.memberActivity}>Отошла</div>
+                  </div>
+                  <div className={style.teamMemberItem}>
+                    <div className={style.memberAvatar}>
+                      <div className={style.avatarInitial}>МК</div>
+                      <div className={`${style.statusIndicator} ${style.offline}`}></div>
+                    </div>
+                    <div className={style.memberInfo}>
+                      <div className={style.memberName}>Михаил Кузнецов</div>
+                      <div className={style.memberRole}>Менеджер проекта</div>
+                    </div>
+                    <div className={style.memberActivity}>Не в сети</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "tasks" && (
+            <div className={style.tasksContent}>
+              <Dashboard />
+            </div>
+          )}
         </div>
       </div>
     </div>
