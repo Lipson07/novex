@@ -229,6 +229,34 @@
   font-weight: 600;
 }
 
+.themeColorPreview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.themeColorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.themeItem {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  user-select: none;
+}
+
 .addProjectBtn {
   background: transparent;
   border: none;

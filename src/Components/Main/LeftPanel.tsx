@@ -62,6 +62,20 @@ function LeftPanel({
   // Список доступных тем (берём из src/assets/LeftPanel/themes.ts)
   const themes = [...themeNames];
 
+  // Функция для получения основных цветов темы для предпросмотра
+  const getThemePreviewColors = (themeName: string): string[] => {
+    const theme = themesMap[themeName];
+    if (!theme) return [];
+    // Возьмем основные цвета для предпросмотра
+    const colors = [
+      theme['bg-primary'],
+      theme['accent-primary'],
+      theme['accent-secondary'],
+      theme['border-primary'],
+    ].filter(Boolean);
+    return colors.slice(0, 4); // максимум 4 цвета
+  };
+
   // Выбранная тема (инициализация из localStorage)
   const [selectedTheme, setSelectedTheme] = useState<string>(() => {
     try {
@@ -525,21 +539,35 @@ function LeftPanel({
 
                     {isThemeMenuOpen && (
                       <div className={style.themeDropdown} role="menu">
-                        {themes.map((t) => (
-                          <button
-                            key={t}
-                            type="button"
-                            className={`${style.themeItem} ${
-                              selectedTheme === t ? style.themeActive : ""
-                            }`}
-                            onClick={(ev) => {
-                              ev.stopPropagation();
-                              handleThemeChange(t);
-                            }}
-                          >
-                            {t}
-                          </button>
-                        ))}
+                        {themes.map((t) => {
+                          const previewColors = getThemePreviewColors(t);
+                          return (
+                            <button
+                              key={t}
+                              type="button"
+                              className={`${style.themeItem} ${
+                                selectedTheme === t ? style.themeActive : ""
+                              }`}
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                handleThemeChange(t);
+                              }}
+                            >
+                              <span>{t}</span>
+                              {previewColors.length > 0 && (
+                                <div className={style.themeColorPreview}>
+                                  {previewColors.map((color, idx) => (
+                                    <div
+                                      key={idx}
+                                      className={style.themeColorDot}
+                                      style={{ backgroundColor: color }}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

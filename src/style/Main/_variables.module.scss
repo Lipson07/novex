@@ -15,7 +15,12 @@ $border-light: var(
   --border-secondary,
   rgba(127, 255, 212, 0.08)
 ); // "Aquamarine" с прозрачностью
-
+.no-select {
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none; /* Стандартный синтаксис */
+}
 // Текст - более контрастный
 $text-main: var(--text-main, #ffffff); // Белый
 $text-secondary: var(
