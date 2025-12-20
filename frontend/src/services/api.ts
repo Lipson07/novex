@@ -92,20 +92,20 @@ class ApiService {
     password: string;
     status: string;
   }) {
-    return this.request("/api/users/register", {
+    return this.request("/users/register", {
       method: "POST",
       body: JSON.stringify(userData),
     });
   }
 
   async checkUser(email: string, name: string) {
-    return this.request(`/api/users/check-user?email=${email}&name=${name}`, {
+    return this.request(`/users/check-user?email=${email}&name=${name}`, {
       method: "GET",
     });
   }
 
   async login(credentials: { email: string; password: string }) {
-    return this.request("/api/users/login", {
+    return this.request("/users/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
