@@ -33,42 +33,42 @@ class ProjectService {
     description: string;
     owner_id: number;
   }): Promise<Project> {
-    return httpClient.post<Project>('/projects/create', projectData);
+    return httpClient.post<Project>('/api/projects/create', projectData);
   }
 
   // Получить проекты пользователя
   async getUserProjects(userId: number): Promise<Project[]> {
-    return httpClient.get<Project[]>(`/projects`, { params: { user_id: userId } });
+    return httpClient.get<Project[]>(`/api/projects`, { params: { user_id: userId } });
   }
 
   // Получить проект по ID
   async getProjectById(projectId: number): Promise<Project> {
-    return httpClient.get<Project>(`/projects/${projectId}`);
+    return httpClient.get<Project>(`/api/projects/${projectId}`);
   }
 
   // Обновить проект
   async updateProject(projectId: number, data: Partial<Project>): Promise<Project> {
-    return httpClient.put<Project>(`/projects/${projectId}`, data);
+    return httpClient.put<Project>(`/api/projects/${projectId}`, data);
   }
 
   // Удалить проект
   async deleteProject(projectId: number): Promise<void> {
-    return httpClient.delete(`/projects/${projectId}`);
+    return httpClient.delete(`/api/projects/${projectId}`);
   }
 
   // Получить участников проекта
   async getProjectMembers(projectId: number): Promise<User[]> {
-    return httpClient.get<User[]>(`/projects/${projectId}/members`);
+    return httpClient.get<User[]>(`/api/projects/${projectId}/members`);
   }
 
   // Добавить участника в проект
   async addMember(projectId: number, userId: number): Promise<void> {
-    return httpClient.post(`/projects/${projectId}/members`, { user_id: userId });
+    return httpClient.post(`/api/projects/${projectId}/members`, { user_id: userId });
   }
 
   // Удалить участника из проекта
   async removeMember(projectId: number, userId: number): Promise<void> {
-    return httpClient.delete(`/projects/${projectId}/members/${userId}`);
+    return httpClient.delete(`/api/projects/${projectId}/members/${userId}`);
   }
 }
 

@@ -41,7 +41,7 @@ export interface GetTasksParams {
 class TaskService {
   // Получить список задач с фильтрами
   async getTasks(params?: GetTasksParams): Promise<Task[]> {
-    const result = await httpClient.get<any>('/tasks', { params });
+    const result = await httpClient.get<any>('/api/tasks', { params });
     // Обработка пагинированного ответа (если result содержит поле data с массивом)
     if (result && typeof result === 'object' && Array.isArray(result.data)) {
       return result.data as Task[];
@@ -57,7 +57,7 @@ class TaskService {
 
   // Получить задачу по ID
   async getTaskById(id: number): Promise<Task> {
-    return httpClient.get<Task>(`/tasks/${id}`);
+    return httpClient.get<Task>(`/api/tasks/${id}`);
   }
 
   // Создать задачу
@@ -72,32 +72,32 @@ class TaskService {
     tags?: string[];
     created_by: number;
   }): Promise<Task> {
-    return httpClient.post<Task>('/tasks', taskData);
+    return httpClient.post<Task>('/api/tasks', taskData);
   }
 
   // Обновить задачу
   async updateTask(id: number, taskData: Partial<Task>): Promise<Task> {
-    return httpClient.put<Task>(`/tasks/${id}`, taskData);
+    return httpClient.put<Task>(`/api/tasks/${id}`, taskData);
   }
 
   // Удалить задачу
   async deleteTask(id: number): Promise<void> {
-    return httpClient.delete(`/tasks/${id}`);
+    return httpClient.delete(`/api/tasks/${id}`);
   }
 
   // Отметить задачу как выполненную
   async completeTask(id: number): Promise<Task> {
-    return httpClient.post<Task>(`/tasks/${id}/complete`);
+    return httpClient.post<Task>(`/api/tasks/${id}/complete`);
   }
 
   // Изменить статус задачи
   async changeStatus(id: number, status: string): Promise<Task> {
-    return httpClient.patch<Task>(`/tasks/${id}/status`, { status });
+    return httpClient.patch<Task>(`/api/tasks/${id}/status`, { status });
   }
 
   // Назначить задачу пользователю
   async assignTask(id: number, userId: number): Promise<Task> {
-    return httpClient.patch<Task>(`/tasks/${id}/assign`, { assigned_to: userId });
+    return httpClient.patch<Task>(`/api/tasks/${id}/assign`, { assigned_to: userId });
   }
 
   // Получить задачи по проекту

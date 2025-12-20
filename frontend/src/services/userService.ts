@@ -24,42 +24,42 @@ class UserService {
     password: string;
     status: string;
   }): Promise<AuthResponse> {
-    return httpClient.post<AuthResponse>('/users/register', userData);
+    return httpClient.post<AuthResponse>('/api/users/register', userData);
   }
 
   // Вход в систему
   async login(credentials: { email: string; password: string }): Promise<AuthResponse> {
-    return httpClient.post<AuthResponse>('/users/login', credentials);
+    return httpClient.post<AuthResponse>('/api/users/login', credentials);
   }
 
   // Выход из системы
   async logout(): Promise<void> {
-    return httpClient.post('/users/logout');
+    return httpClient.post('/api/users/logout');
   }
 
   // Проверка существования пользователя по email и имени
   async checkUser(email: string, name: string): Promise<{ exists: boolean; message?: string }> {
-    return httpClient.get('/users/check-user', { params: { email, name } });
+    return httpClient.get('/api/users/check-user', { params: { email, name } });
   }
 
   // Получить текущего пользователя
   async getCurrentUser(): Promise<User> {
-    return httpClient.get<User>('/users/me');
+    return httpClient.get<User>('/api/users/me');
   }
 
   // Обновить профиль пользователя
   async updateProfile(userId: number, data: Partial<User>): Promise<User> {
-    return httpClient.put<User>(`/users/${userId}`, data);
+    return httpClient.put<User>(`/api/users/${userId}`, data);
   }
 
   // Получить список пользователей (например, для выбора назначения)
   async getUsers(): Promise<User[]> {
-    return httpClient.get<User[]>('/users');
+    return httpClient.get<User[]>('/api/users');
   }
 
   // Получить пользователя по ID
   async getUserById(id: number): Promise<User> {
-    return httpClient.get<User>(`/users/${id}`);
+    return httpClient.get<User>(`/api/users/${id}`);
   }
 
   // Сохранить токен в localStorage после успешной аутентификации
