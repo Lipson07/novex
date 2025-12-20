@@ -4,6 +4,8 @@ import { selectUser, setVerificationCode, setVerified } from "../../store/user";
 import emailjs from "@emailjs/browser";
 import style from "../../style/Form/EmailCheck.module.scss";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface EmailCheckProps {
   onSuccess?: () => void;
   onNotification?: (message: string, type: "success" | "error") => void;
@@ -153,7 +155,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/users/register", {
+      const response = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

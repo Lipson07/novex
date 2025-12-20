@@ -10,6 +10,8 @@ import {
   getStatusColor,
 } from "../../assets/MockData/index.js";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface HeroProps {
   onNavigateToProjects?: () => void;
   onProjectClick?: (projectId: number) => void;
@@ -76,7 +78,7 @@ const Hero: React.FC<HeroProps> = ({
   const fetchUserProjects = async (userId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/projects?user_id=${userId}`,
+        `${API_BASE_URL}/api/projects?user_id=${userId}`,
         {
           method: "GET",
           headers: {

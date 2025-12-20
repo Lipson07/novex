@@ -3,6 +3,8 @@ import style from "../../style/Form/Registration.module.scss";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../store/user";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface FormData {
   id: number;
   name: string;
@@ -108,7 +110,7 @@ function Registration({
       for (let i = 0; i < maxRetries; i++) {
         try {
           checkResponse = await fetch(
-            `http://localhost:8000/api/users/check-user?email=${encodeURIComponent(
+            `${API_BASE_URL}/api/users/check-user?email=${encodeURIComponent(
               formData.email
             )}&name=${encodeURIComponent(formData.name)}`,
             {

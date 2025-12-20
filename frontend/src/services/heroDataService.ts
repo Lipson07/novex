@@ -1,10 +1,12 @@
 // Сервис для получения данных для Hero компонента
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export const HeroDataService = {
   // Получить данные для статус блоков
   getStatusBlocks: async (userId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/projects?user_id=${userId}`,
+        `${API_BASE_URL}/api/projects?user_id=${userId}`,
         {
           method: "GET",
           headers: {
@@ -62,7 +64,7 @@ export const HeroDataService = {
   getActiveProjects: async (userId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/projects?user_id=${userId}`,
+        `${API_BASE_URL}/api/projects?user_id=${userId}`,
         {
           method: "GET",
           headers: {

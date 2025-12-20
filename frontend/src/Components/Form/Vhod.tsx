@@ -3,6 +3,8 @@ import style from "../../style/Form/Vhod.module.scss";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../store/user";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface FormData {
   email: string;
   password: string;
@@ -45,7 +47,7 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
 
     try {
       const loginResponse = await fetch(
-        "http://localhost:8000/api/users/login",
+        `${API_BASE_URL}/api/users/login`,
         {
           method: "POST",
           headers: {

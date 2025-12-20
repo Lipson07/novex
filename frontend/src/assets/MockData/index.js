@@ -68,7 +68,7 @@ export const getPriorityColor = (priority) => {
 };
 
 // Константа для базового URL API
-const API_BASE_URL = "http://100.77.65.33/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 // Реальный сервис для работы с проектами
 export const ProjectService = {
