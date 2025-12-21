@@ -46,20 +46,17 @@ function Vhod({ onSuccess, onError, onNavigateToRegistration }: LoginProps) {
     setErrors({});
 
     try {
-      const loginResponse = await fetch(
-        `${API_BASE_URL}/api/users/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        }
-      );
+      const loginResponse = await fetch(`${API_BASE_URL}/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
       if (!loginResponse.ok) {
         throw new Error("Ошибка при входе");

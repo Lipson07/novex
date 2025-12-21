@@ -110,7 +110,7 @@ function Registration({
       for (let i = 0; i < maxRetries; i++) {
         try {
           checkResponse = await fetch(
-            `${API_BASE_URL}/api/users/check-user?email=${encodeURIComponent(
+            `${API_BASE_URL}/users/check-user?email=${encodeURIComponent(
               formData.email
             )}&name=${encodeURIComponent(formData.name)}`,
             {
