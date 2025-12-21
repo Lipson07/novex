@@ -30,13 +30,7 @@ return [
     | Exact origins that are allowed to make CORS requests.
     |
     */
-    'allowed_origins' => [
-        'https://novextask.ru',                              // Production
-        'https://server-thinkpad-x220.tail44896d.ts.net',    // Tailscale / remote
-        'http://localhost:3000',                             // Dev
-        'http://localhost:5173',                             // Dev
-        'http://127.0.0.1:5173',                             // Dev via 127.0.0.1
-    ],
+    'allowed_origins' => ['*'],
 
     /*
     |--------------------------------------------------------------------------
