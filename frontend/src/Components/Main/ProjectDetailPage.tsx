@@ -971,12 +971,12 @@ function ProjectDetailPage({
                   <label htmlFor="task-due-date">Дата выполнения</label>
                   <input
                     id="task-due-date"
-                    type="date"
+                    type="text"
                     value={taskData.due_date}
                     onChange={(e) =>
                       setTaskData({ ...taskData, due_date: e.target.value })
                     }
-                    placeholder="YYYY-MM-DD"
+                    placeholder="Например: 2025-12-31 или 'до конца недели'"
                   />
                 </div>
 
