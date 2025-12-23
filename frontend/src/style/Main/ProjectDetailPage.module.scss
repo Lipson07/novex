@@ -455,18 +455,30 @@
   flex-wrap: wrap;
 
   @include respond-to(md) {
-    gap: 8px;
+    gap: 6px;
     justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   
   @include respond-to(xs) {
-    gap: 6px;
-    justify-content: space-between;
+    gap: 4px;
+    justify-content: flex-start;
     width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
   
   @include touch-device {
-    gap: 10px;
+    gap: 8px;
   }
 }
 .actionButton {
@@ -509,7 +521,7 @@
     padding: 0;
     margin: 0;
     
-    @include respond-to(xs) {
+    @include respond-to(md) {
       display: none;
     }
   }
@@ -519,18 +531,23 @@
     height: 36px;
     min-width: 36px;
     min-height: 36px;
+    padding: 0 8px;
+    justify-content: center;
+    
+    img, svg {
+      margin: 0;
+    }
   }
   
   @include respond-to(xs) {
-    flex: 1;
-    width: auto;
-    height: 40px;
-    min-width: 0;
-    min-height: 40px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 6px;
     
     p {
-      display: inline;
-      font-size: $font-size-xs;
+      display: none;
     }
   }
 }
