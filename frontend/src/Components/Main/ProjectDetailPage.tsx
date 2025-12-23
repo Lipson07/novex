@@ -15,6 +15,7 @@ import {
 } from "../../assets/MockData/index.js";
 import Dashboard from "./Dashboard";
 import style from "../../style/Main/ProjectDetailPage.module.scss";
+import GitHubRepos from "./GitHubRepos.js";
 
 interface Project {
   id: number;
@@ -181,7 +182,7 @@ function ProjectDetailPage({
 
   const handleAddFiles = (files: FileList | File[]) => {
     const imageFiles = Array.from(files).filter((file) =>
-      file.type.startsWith("image/")
+      file.type.startsWith("image/"),
     );
 
     if (imageFiles.length === 0) return;
@@ -230,7 +231,7 @@ function ProjectDetailPage({
       "Создание задачи для проекта",
       projectId,
       "с данными:",
-      taskData
+      taskData,
     );
     try {
       // Подготовка данных для отправки
@@ -268,7 +269,7 @@ function ProjectDetailPage({
       alert(
         `Ошибка создания задачи: ${
           error instanceof Error ? error.message : "Неизвестная ошибка"
-        }`
+        }`,
       );
     }
   };
@@ -291,7 +292,7 @@ function ProjectDetailPage({
         setLoadingUsers(true);
         const users = await ProjectService.getUsers();
         setAvailableUsers(
-          users.map((user: any) => ({ id: user.id, name: user.name }))
+          users.map((user: any) => ({ id: user.id, name: user.name })),
         );
       } catch (error) {
         console.error("Ошибка загрузки пользователей:", error);
@@ -352,7 +353,7 @@ function ProjectDetailPage({
       setError("");
       const projectData = await ProjectService.getProjectById(
         projectId,
-        user?.id
+        user?.id,
       );
       setProject(projectData);
     } catch (error) {
@@ -392,7 +393,7 @@ function ProjectDetailPage({
   const handleDeleteProject = async (projectId: number) => {
     console.log(
       "handleDeleteProject вызван в ProjectDetailPage для проекта",
-      projectId
+      projectId,
     );
 
     // Временное решение для отладки: всегда удаляем без подтверждения
@@ -424,7 +425,7 @@ function ProjectDetailPage({
         }
       } else {
         alert(
-          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`
+          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`,
         );
       }
     } catch (error) {
@@ -432,7 +433,7 @@ function ProjectDetailPage({
       alert(
         `Не удалось удалить проект: ${
           error instanceof Error ? error.message : "Неизвестная ошибка"
-        }`
+        }`,
       );
     }
   };
@@ -596,8 +597,8 @@ function ProjectDetailPage({
                       {project.priority === "high"
                         ? "Высокий"
                         : project.priority === "medium"
-                        ? "Средний"
-                        : "Низкий"}
+                          ? "Средний"
+                          : "Низкий"}
                     </span>
                   </div>
                 )}
@@ -1091,146 +1092,7 @@ function ProjectDetailPage({
           {activeTab === "overview" && (
             <div className={style.overviewContent}>
               {/* GitHub репозитории */}
-              <div className={style.githubCard}>
-                <div className={style.cardHeader}>
-                  <div className={style.cardHeaderLeft}>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                    </svg>
-                    <h3 className={style.cardTitle}>GitHub репозитории</h3>
-                  </div>
-                  {githubRepos.length > 0 ? (
-                    <button
-                      className={style.repoLink}
-                      onClick={handleAddGithubRepo}
-                    >
-                      + Добавить репозиторий
-                    </button>
-                  ) : null}
-                </div>
-                {loadingRepos ? (
-                  <div className={style.loadingRepos}>
-                    <div className={style.spinnerSmall}></div>
-                    <p>Загрузка репозиториев...</p>
-                  </div>
-                ) : githubRepos.length === 0 ? (
-                  <div className={style.noRepos}>
-                    <svg
-                      width="48"
-                      height="48"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    >
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                    </svg>
-                    <h4>Нет привязанных репозиториев</h4>
-                    <p>
-                      Привяжите GitHub репозиторий для отслеживания коммитов и
-                      веток
-                    </p>
-                    <button
-                      className={style.addRepoButton}
-                      onClick={handleAddGithubRepo}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M12 5v14M5 12h14"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                      Добавить GitHub репозиторий
-                    </button>
-                  </div>
-                ) : (
-                  <div className={style.githubContent}>
-                    {githubRepos.map((repo) => (
-                      <div key={repo.id} className={style.repoItem}>
-                        <div className={style.repoHeader}>
-                          <div className={style.repoName}>
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                            >
-                              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                            </svg>
-                            <span>{repo.name}</span>
-                          </div>
-                          <a
-                            href={repo.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={style.repoLinkSmall}
-                          >
-                            Открыть
-                          </a>
-                        </div>
-                        <div className={style.repoDetails}>
-                          <div className={style.branchesCompact}>
-                            <h4 className={style.subsectionTitle}>Ветки</h4>
-                            <div className={style.branchesListCompact}>
-                              {repo.branches.map(
-                                (branch: string, idx: number) => (
-                                  <div
-                                    key={idx}
-                                    className={style.branchItemCompact}
-                                  >
-                                    <svg
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                    >
-                                      <path d="M6 3v12a4 4 0 0 0 4 4 4 4 0 0 0 4-4V3" />
-                                    </svg>
-                                    <span className={style.branchNameCompact}>
-                                      {branch}
-                                    </span>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          </div>
-                          <div className={style.commitsCompact}>
-                            <h4 className={style.subsectionTitle}>
-                              Последний коммит
-                            </h4>
-                            <div className={style.commitItemCompact}>
-                              <span className={style.commitHashCompact}>
-                                {repo.lastCommit.hash}
-                              </span>
-                              <p className={style.commitMessageCompact}>
-                                {repo.lastCommit.message}
-                              </p>
-                              <div className={style.commitMetaCompact}>
-                                <span>{repo.lastCommit.author}</span>
-                                <span>•</span>
-                                <span>{repo.lastCommit.date}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <GitHubRepos projectId={projectId} />
 
               {/* Логи последних действий */}
               <div className={style.activityCard}>
@@ -1362,8 +1224,8 @@ function ProjectDetailPage({
                           {member.status === "online"
                             ? "Активен"
                             : member.status === "away"
-                            ? "Отошёл"
-                            : "Не в сети"}
+                              ? "Отошёл"
+                              : "Не в сети"}
                         </div>
                       </div>
                     ))

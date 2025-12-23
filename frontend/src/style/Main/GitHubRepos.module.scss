@@ -1,0 +1,633 @@
+@use "./variables.module" as *;
+
+.githubRepos {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  margin-bottom: 24px;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+
+  @media (max-width: $breakpoint-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+.cardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0;
+}
+
+.reposCount {
+  background: rgba(102, 126, 234, 0.1);
+  color: $primary-purple;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.addRepoButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: $primary-purple;
+  color: white;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    background: color-mix(in srgb, $primary-purple, black 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: white;
+  }
+}
+
+.loadingRepos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 16px;
+}
+
+.spinnerSmall {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(102, 126, 234, 0.2);
+  border-top-color: $primary-purple;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.errorMessage {
+  text-align: center;
+  padding: 32px 24px;
+  color: $accent-red;
+
+  p {
+    margin-bottom: 16px;
+    font-size: $font-size-md;
+  }
+
+  button {
+    padding: 10px 20px;
+    background: $primary-purple;
+    color: white;
+    border: none;
+    border-radius: $border-radius-md;
+    font-size: $font-size-sm;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $transition-default;
+
+    &:hover {
+      background: color-mix(in srgb, $primary-purple, black 10%);
+    }
+  }
+}
+
+.noRepos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 16px;
+
+  h4 {
+    margin: 0;
+    font-size: $font-size-lg;
+    color: $text-main;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    max-width: 400px;
+    line-height: 1.5;
+  }
+}
+
+.reposGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.repoCard {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  padding: 20px;
+  transition: $transition-default;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover {
+    border-color: $primary-purple;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.repoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.repoName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: $text-main;
+  font-size: $font-size-md;
+  flex: 1;
+  min-width: 0;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: $text-main;
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &.active {
+    background: rgba(76, 175, 80, 0.12);
+    color: #4CAF50;
+  }
+
+  &.archived {
+    background: rgba(158, 158, 158, 0.12);
+    color: #9E9E9E;
+  }
+
+  &.hidden {
+    background: rgba(244, 67, 54, 0.12);
+    color: #F44336;
+  }
+}
+
+.repoActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.repoLinkSmall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: $border-radius-md;
+  color: $primary-purple;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.syncButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.2);
+    color: $primary-purple;
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.spinnerMini {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-top-color: $primary-purple;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.removeRepoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: $border-radius-md;
+  color: $accent-red;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    background: rgba(244, 67, 54, 0.2);
+    transform: scale(1.05);
+  }
+}
+
+.repoOwner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin-bottom: 12px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: $text-secondary;
+  }
+}
+
+.repoDescription {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.repoStats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.repoStat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: $text-secondary;
+  }
+}
+
+.languageBadge {
+  background: rgba(102, 126, 234, 0.12);
+  color: $primary-purple;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.repoTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.repoTag {
+  background: rgba(102, 126, 234, 0.08);
+  color: $primary-purple;
+  padding: 4px 8px;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: 500;
+}
+
+.moreTags {
+  color: $text-muted;
+  font-size: $font-size-xs;
+  padding: 4px 8px;
+  font-weight: 500;
+}
+
+.repoFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: $font-size-xs;
+  color: $text-muted;
+  border-top: 1px solid $border-light;
+  padding-top: 12px;
+  margin-top: auto;
+
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Модальное окно стили
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-card;
+  position: relative;
+  z-index: 1001;
+  animation: slideUp 0.3s ease-out;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 20px;
+    width: calc(100% - 32px);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+}
+
+.modalTitle {
+  font-size: $font-size-xl;
+  font-weight: 600;
+  margin: 0;
+  color: $text-main;
+}
+
+.modalCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: $font-size-sm;
+    font-weight: 500;
+    color: $text-secondary;
+  }
+
+  input {
+    background: $input-bg;
+    border: $input-border;
+    border-radius: $border-radius-md;
+    padding: 12px 16px;
+    color: $text-main;
+    font-size: $font-size-sm;
+    transition: $transition-default;
+    box-sizing: border-box;
+    font-family: inherit;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-purple;
+      box-shadow: $state-focus-ring;
+    }
+  }
+}
+
+.inputHint {
+  color: $text-muted;
+  font-size: $font-size-xs;
+  margin-top: 4px;
+  display: block;
+}
+
+.note {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: $border-radius-md;
+  padding: 12px;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  line-height: 1.5;
+
+  strong {
+    color: #FF9800;
+  }
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 10px 20px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid;
+  transition: $transition-default;
+}
+
+.cancelButton {
+  background: transparent;
+  border-color: rgba($accent-red, 0.3);
+  color: $accent-red;
+
+  &:hover {
+    background: rgba($accent-red, 0.1);
+  }
+}
+
+.submitButton {
+  background: $primary-purple;
+  border-color: $primary-purple;
+  color: white;
+
+  &:hover {
+    background: color-mix(in srgb, $primary-purple, black 10%);
+    border-color: color-mix(in srgb, $primary-purple, black 10%);
+  }
+}
+
+.requiredLabel {
+  color: $accent-red;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

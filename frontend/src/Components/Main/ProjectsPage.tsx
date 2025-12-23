@@ -104,14 +104,14 @@ function ProjectsPage({
         (project) =>
           project.title.toLowerCase().includes(query) ||
           project.description?.toLowerCase().includes(query) ||
-          project.status?.toLowerCase().includes(query)
+          project.status?.toLowerCase().includes(query),
       );
     }
 
     // Фильтрация по статусу
     if (activeFilter !== "all") {
       filtered = filtered.filter(
-        (project) => project.status?.toLowerCase() === activeFilter
+        (project) => project.status?.toLowerCase() === activeFilter,
       );
     }
 
@@ -140,16 +140,16 @@ function ProjectsPage({
 
   const handleDeleteProject = async (projectId: number) => {
     console.log("handleDeleteProject вызван для проекта", projectId);
-    
+
     // Временное решение для отладки: всегда удаляем без подтверждения
     // TODO: вернуть confirm после отладки
     const shouldDelete = true; // confirm("Вы уверены, что хотите удалить проект? Это действие нельзя отменить.");
-    
+
     if (!shouldDelete) {
       console.log("Удаление отменено пользователем");
       return;
     }
-    
+
     try {
       console.log("Удаление проекта", projectId);
       if (!user?.id) {
@@ -165,7 +165,7 @@ function ProjectsPage({
         fetchProjects();
       } else {
         alert(
-          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`
+          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`,
         );
       }
     } catch (error) {
@@ -173,7 +173,7 @@ function ProjectsPage({
       alert(
         `Не удалось удалить проект: ${
           error instanceof Error ? error.message : "Неизвестная ошибка"
-        }`
+        }`,
       );
     }
   };
@@ -261,7 +261,7 @@ function ProjectsPage({
     const date = new Date(deadline);
     const today = new Date();
     const diffDays = Math.ceil(
-      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (diffDays < 0) return { text: "Просрочено", color: "#FF6467" };
@@ -435,8 +435,8 @@ function ProjectsPage({
                       ? `${Math.round(
                           projects.reduce(
                             (acc, p) => acc + (p.progress || 0),
-                            0
-                          ) / projects.length
+                            0,
+                          ) / projects.length,
                         )}%`
                       : "0%"}
                   </span>
@@ -472,8 +472,8 @@ function ProjectsPage({
                   {searchQuery
                     ? "Попробуйте изменить поисковый запрос"
                     : activeFilter !== "all"
-                    ? "Измените фильтр статуса"
-                    : "Создайте свой первый проект, чтобы начать работу"}
+                      ? "Измените фильтр статуса"
+                      : "Создайте свой первый проект, чтобы начать работу"}
                 </p>
               </div>
             ) : (
@@ -495,7 +495,7 @@ function ProjectsPage({
                               className={style.statusBadge}
                               style={{
                                 backgroundColor: `${getStatusColor(
-                                  project.status
+                                  project.status,
                                 )}20`,
                                 color: getStatusColor(project.status),
                               }}
@@ -516,7 +516,6 @@ function ProjectsPage({
                                   project.priority}
                               </span>
                             )}
-                    
                           </div>
                         </div>
                         {project.owner_name && (
@@ -784,7 +783,10 @@ function ProjectsPage({
             <div className={style.modal} onClick={(e) => e.stopPropagation()}>
               <div className={style.modalHeader}>
                 <h3>Создать новый проект</h3>
-                <button onClick={handleCloseCreateModal} className={style.closeButton}>
+                <button
+                  onClick={handleCloseCreateModal}
+                  className={style.closeButton}
+                >
                   <svg
                     width="18"
                     height="18"
@@ -798,8 +800,13 @@ function ProjectsPage({
                 </button>
               </div>
 
-              <form onSubmit={handleCreateProjectSubmit} className={style.modalForm}>
-                {createError && <div className={style.formError}>{createError}</div>}
+              <form
+                onSubmit={handleCreateProjectSubmit}
+                className={style.modalForm}
+              >
+                {createError && (
+                  <div className={style.formError}>{createError}</div>
+                )}
 
                 <div className={style.formGroup}>
                   <label>Название проекта *</label>

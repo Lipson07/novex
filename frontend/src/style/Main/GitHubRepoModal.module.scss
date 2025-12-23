@@ -1,0 +1,394 @@
+@use "./variables.module" as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: $shadow-card;
+  position: relative;
+  z-index: 1001;
+  animation: slideUp 0.3s ease-out;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 20px;
+    width: calc(100% - 32px);
+    max-height: 90vh;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+}
+
+.modalTitle {
+  font-size: $font-size-xl;
+  font-weight: 600;
+  margin: 0;
+  color: $text-main;
+}
+
+.modalCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: $transition-default;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: $primary-purple;
+  }
+}
+
+.searchContainer {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  color: $text-secondary;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  background: $input-bg;
+  border: $input-border;
+  border-radius: $border-radius-lg;
+  color: $text-main;
+  font-size: $font-size-md;
+  transition: $transition-default;
+  box-sizing: border-box;
+  font-family: inherit;
+
+  &::placeholder {
+    color: $text-secondary;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-purple;
+    box-shadow: $state-focus-ring;
+  }
+}
+
+.spinnerSmall {
+  position: absolute;
+  right: 16px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-top-color: $primary-purple;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.errorMessage {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: $border-radius-md;
+  padding: 12px 16px;
+  color: $accent-red;
+  font-size: $font-size-sm;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.searchResults {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.25);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.35);
+    }
+  }
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: $transition-default;
+  background: $bg-card;
+
+  &:hover {
+    border-color: $primary-purple;
+    background: rgba(102, 126, 234, 0.05);
+    transform: translateY(-1px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.repoAvatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $border-light;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.repoInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.repoName {
+  margin-bottom: 8px;
+
+  strong {
+    color: $text-main;
+    font-size: $font-size-md;
+    font-weight: 600;
+    line-height: 1.3;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.repoDescription {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.repoMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.repoMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  white-space: nowrap;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    color: $text-secondary;
+  }
+}
+
+.languageDot {
+  width: 10px;
+  height: 10px;
+  background: $primary-purple;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.selectRepoButton {
+  background: $primary-purple;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-default;
+  flex-shrink: 0;
+  align-self: center;
+
+  &:hover {
+    background: color-mix(in srgb, $primary-purple, black 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+  }
+
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+.noResults {
+  text-align: center;
+  padding: 40px 24px;
+  color: $text-secondary;
+
+  svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    color: $text-muted;
+  }
+
+  p {
+    font-size: $font-size-md;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: $text-main;
+  }
+
+  small {
+    font-size: $font-size-sm;
+    color: $text-muted;
+  }
+}
+
+.modalFooter {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid $border-light;
+}
+
+.hint {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+
+  strong {
+    color: $primary-purple;
+    font-weight: 600;
+  }
+}
+
+// Анимации
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Стили для мобильных устройств
+@media (max-width: $breakpoint-md) {
+  .modalContent {
+    max-height: 90vh;
+  }
+
+  .searchResultItem {
+    padding: 12px;
+  }
+
+  .repoMeta {
+    gap: 8px;
+  }
+}
+
+// Стили для скроллбара на Firefox
+.searchResults {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.25) rgba(102, 126, 234, 0.08);
+}
