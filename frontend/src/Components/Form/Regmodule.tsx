@@ -14,7 +14,7 @@ function Regmodule() {
         setNotification({ message, type });
         setTimeout(() => {
             setNotification(null);
-        }, 5000);
+        }, 0);
     };
 
     
@@ -22,7 +22,7 @@ function Regmodule() {
         showNotification('Проверка пройдена! Переходим к подтверждению email...', 'success');
         setTimeout(() => {
             navigate('/auth/email-check');
-        }, 1500);
+        }, 0);
     };
 
     const handleRegistrationError = (errorMessage: string) => {
@@ -39,7 +39,7 @@ function Regmodule() {
  
         setTimeout(() => {
             navigate('/auth');
-        }, 2000);
+        }, 0);
     };
 
 
@@ -49,7 +49,7 @@ function Regmodule() {
  
         setTimeout(() => {
             navigate('/');
-        }, 1500);
+        }, 0);
     };
 
     const handleLoginError = (errorMessage: string) => {

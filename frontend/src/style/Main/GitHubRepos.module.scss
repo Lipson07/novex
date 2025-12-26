@@ -51,24 +51,27 @@
   margin-left: 8px;
 }
 
-.addRepoButton {
+.repoLink {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 10px 20px;
   background: $primary-purple;
   color: white;
   border: none;
-  border-radius: $border-radius-md;
+  border-radius: $border-radius-lg;
   font-size: $font-size-sm;
   font-weight: 600;
   cursor: pointer;
   transition: $transition-default;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background: color-mix(in srgb, $primary-purple, black 10%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    background: color-mix(in srgb, $primary-purple, black 15%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
   }
 
   &:active {
@@ -76,10 +79,76 @@
     box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+  }
+
+  &:hover::after {
+    left: 100%;
+  }
+
   svg {
     width: 16px;
     height: 16px;
     stroke: white;
+  }
+}
+
+.addRepoButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, $primary-purple, color-mix(in srgb, $primary-purple, $accent-blue 30%));
+  color: white;
+  border: none;
+  border-radius: $border-radius-lg;
+  font-size: $font-size-md;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-default;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, $primary-purple, black 10%), color-mix(in srgb, $accent-blue, black 10%));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+    stroke-width: 2.5;
   }
 }
 
@@ -308,18 +377,43 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba(244, 67, 54, 0.1);
-  border: 1px solid rgba(244, 67, 54, 0.2);
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.15), rgba(244, 67, 54, 0.25));
+  border: 1px solid rgba(244, 67, 54, 0.3);
   border-radius: $border-radius-md;
   color: $accent-red;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
   transition: $transition-default;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.2);
 
   &:hover {
-    background: rgba(244, 67, 54, 0.2);
-    transform: scale(1.05);
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.25), rgba(244, 67, 54, 0.35));
+    border-color: rgba(244, 67, 54, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+  }
+
+  &:active {
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.2);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+  }
+
+  &:hover::after {
+    left: 100%;
   }
 }
 

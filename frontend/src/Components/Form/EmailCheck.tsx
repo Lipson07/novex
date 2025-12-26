@@ -179,7 +179,7 @@ function EmailCheck({ onSuccess, onNotification }: EmailCheckProps) {
 
         setTimeout(() => {
           onSuccess?.();
-        }, 1500);
+        }, 0);
       } else {
         if ((data.errors || data.error) && response.status === 422) {
           const errorMsg = Array.isArray(data.errors)

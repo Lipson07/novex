@@ -163,11 +163,15 @@ class ProjectService {
 
   // ========== GitHub методы ==========
 
-  // Получить GitHub репозитории проекта
+  // Получить GitHub репозитории проекта (использует ID текущего пользователя)
   async getProjectGitHubRepos(projectId: number): Promise<GitHubRepo[]> {
-    return httpClient.get<GitHubRepo[]>(
-      `/github-projects/user/${projectId}/projects`,
-    );
+    // Временное решение: используем ID текущего пользователя
+    // TODO: создать endpoint для получения репозиториев по projectId
+    const user = await this.getCurrentUser();
+    if (!user?.id) {
+      throw new Error("Пользователь не авторизован");
+    }
+    return this.getUserGitHubRepos(user.id);
   }
 
   // Получить GitHub репозитории пользователя
@@ -175,6 +179,13 @@ class ProjectService {
     return httpClient.get<GitHubRepo[]>(
       `/github-projects/user/${userId}/projects`,
     );
+  }
+
+  // Вспомогательный метод для получения текущего пользователя
+  private async getCurrentUser(): Promise<{ id: number } | null> {
+    // Здесь должна быть логика получения текущего пользователя
+    // Временная заглушка - возвращаем null
+    return null;
   }
 
   // Получить конкретный GitHub репозиторий

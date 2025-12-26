@@ -40,6 +40,84 @@ class GitHubProjectController
         ]);
     }
 
+    /**
+     * Получить данные репозитория из GitHub API
+     */
+    public function getRepoFromGitHub(Request $request): JsonResponse
+    {
+        $owner = $request->get('owner');
+        $repo = $request->get('repo');
+        
+        if (!$owner || !$repo) {
+            return response()->json([
+                "success" => false,
+                "message" => "Owner and repo parameters are required.",
+            ], 400);
+        }
+
+        $githubToken = env('GITHUB_API_TOKEN');
+        $url = "https://api.github.com/repos/{$owner}/{$repo}";
+        
+        $headers = [
+            'Accept' => 'application/vnd.github.v3+json',
+            'User-Agent' => 'Novexx-App/1.0',
+        ];
+        
+        if ($githubToken) {
+            $headers['Authorization'] = "token {$githubToken}";
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get($url, [
+                'headers' => $headers,
+                'timeout' => 15,
+            ]);
+            
+            $statusCode = $response->getStatusCode();
+            $data = json_decode($response->getBody(), true);
+            
+            if ($statusCode === 200) {
+                return response()->json([
+                    "success" => true,
+                    "data" => $data,
+                    "source" => "github_api",
+                ]);
+            } else {
+                return response()->json([
+                    "success" => false,
+                    "message" => "GitHub API returned status: {$statusCode}",
+                    "status" => $statusCode,
+                ], $statusCode);
+            }
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            
+            // Если это 403 и нет токена, предлагаем решение
+            if ($statusCode === 403 && !$githubToken) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "GitHub API rate limit exceeded for unauthenticated requests.",
+                    "status" => $statusCode,
+                    "solution" => "Add a GitHub personal access token to your .env file as GITHUB_API_TOKEN",
+                    "details" => "Unauthenticated requests to GitHub API are limited to 60 requests per hour. Please add a GitHub token or try again later.",
+                ], $statusCode);
+            }
+            
+            return response()->json([
+                "success" => false,
+                "message" => "GitHub API error: {$statusCode}",
+                "status" => $statusCode,
+                "details" => $statusCode === 403 ? "Rate limit exceeded or access denied. Try again later or add GitHub token." : "Repository not found or access denied.",
+            ], $statusCode);
+        } catch (\Exception $e) {
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to fetch repository data: " . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [

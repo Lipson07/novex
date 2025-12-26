@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store/user.js";
+import DeleteConfirmationModal from "../Common/DeleteConfirmationModal";
 import style from "../../style/Main/GitHubRepos.module.scss";
 
 interface GitHubRepo {
@@ -22,6 +25,7 @@ interface GitHubReposProps {
 }
 
 const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
+  const user = useSelector(selectUser);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,25 +33,43 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
   const [newRepoUrl, setNewRepoUrl] = useState("");
   const [syncLoading, setSyncLoading] = useState<number | null>(null);
   const [addingRepo, setAddingRepo] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    repoId: number | null;
+    repoName: string;
+  }>({
+    isOpen: false,
+    repoId: null,
+    repoName: "",
+  });
 
   // Базовый URL для API (должен совпадать с backend)
   const API_BASE_URL = "http://localhost:8000/api";
 
   useEffect(() => {
     fetchRepos();
-  }, [projectId]);
+  }, [projectId, user?.id]);
 
   const fetchRepos = async () => {
     try {
       setLoading(true);
+
+      // Используем ID текущего пользователя вместо projectId
+      const userId = user?.id;
+      if (!userId) {
+        setError("Пользователь не авторизован");
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(
-        `${API_BASE_URL}/github-projects/user/${projectId}/projects`,
+        `${API_BASE_URL}/github-projects/user/${userId}/projects`,
         {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       if (!response.ok) {
@@ -78,7 +100,7 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
 
   // Функция для парсинга GitHub URL
   const parseGitHubUrl = (
-    url: string,
+    url: string
   ): { owner: string; repo: string } | null => {
     try {
       // Добавляем протокол, если его нет
@@ -115,6 +137,12 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
       return;
     }
 
+    // Проверяем авторизацию пользователя
+    if (!user?.id) {
+      alert("Ошибка: пользователь не авторизован");
+      return;
+    }
+
     setAddingRepo(true);
     setError("");
 
@@ -123,36 +151,64 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
       const parsed = parseGitHubUrl(newRepoUrl);
       if (!parsed) {
         throw new Error(
-          "Некорректный URL GitHub репозитория. Ожидается: https://github.com/username/repository",
+          "Некорректный URL GitHub репозитория. Ожидается: https://github.com/username/repository"
         );
       }
 
       const { owner, repo } = parsed;
 
-      // Получаем данные о репозитории из GitHub API
-      console.log(`Fetching from GitHub API: ${owner}/${repo}`);
+      // Получаем данные о репозитории через наш backend API
+      console.log(`Fetching from GitHub API via backend: ${owner}/${repo}`);
       const githubResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}`,
+        `${API_BASE_URL}/github-projects/github/repo?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repo)}`,
         {
           headers: {
-            Accept: "application/vnd.github.v3+json",
+            Accept: "application/json",
           },
-        },
+        }
       );
 
       if (!githubResponse.ok) {
+        const errorData = await githubResponse.json().catch(() => ({}));
+        const errorMessage = errorData.message || `GitHub API error: ${githubResponse.status}`;
+        const solution = errorData.solution || '';
+        const details = errorData.details || '';
+        
         if (githubResponse.status === 404) {
           throw new Error(`Репозиторий не найден: ${owner}/${repo}. Проверьте:
           1. Существует ли репозиторий
           2. Является ли он публичным
           3. Правильно ли указаны имя владельца и название репозитория`);
+        } else if (githubResponse.status === 403) {
+          let errorMsg = `Ошибка доступа к GitHub API (403). Возможные причины:
+          1. Превышен лимит запросов к GitHub API (60 запросов в час для неавторизованных запросов)
+          2. Репозиторий является приватным и требует авторизации
+          3. Проблемы с сетевым доступом`;
+          
+          if (solution) {
+            errorMsg += `\n\nРешение: ${solution}`;
+          }
+          if (details) {
+            errorMsg += `\n\nДетали: ${details}`;
+          }
+          
+          errorMsg += `\n\nКак исправить:
+          1. Добавьте GitHub токен в файл backend/.env как GITHUB_API_TOKEN
+          2. Или подождите час для сброса лимита
+          3. Или используйте ручной ввод данных репозитория`;
+          
+          throw new Error(errorMsg);
         }
-        throw new Error(
-          `GitHub API error: ${githubResponse.status} ${githubResponse.statusText}`,
-        );
+        throw new Error(errorMessage);
       }
 
-      const repoData = await githubResponse.json();
+      const githubResponseData = await githubResponse.json();
+      
+      if (!githubResponseData.success) {
+        throw new Error(githubResponseData.message || "Ошибка при получении данных репозитория");
+      }
+      
+      const repoData = githubResponseData.data;
 
       // Создаем проект в нашей системе
       const payload = {
@@ -189,7 +245,7 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
         archived: repoData.archived || false,
         disabled: repoData.disabled || false,
         template: repoData.template || false,
-        user_id: projectId,
+        user_id: user.id,
         status: "active",
         tags: [],
       };
@@ -217,13 +273,13 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
       } catch (parseError) {
         console.error("Error parsing JSON:", parseError);
         throw new Error(
-          `Invalid JSON response from server: ${responseText.substring(0, 100)}`,
+          `Invalid JSON response from server: ${responseText.substring(0, 100)}`
         );
       }
 
       if (!response.ok) {
         throw new Error(
-          responseData.message || `HTTP error! status: ${response.status}`,
+          responseData.message || `HTTP error! status: ${response.status}`
         );
       }
 
@@ -234,24 +290,36 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
         alert("Репозиторий успешно добавлен!");
       } else {
         throw new Error(
-          responseData.message || "Ошибка при добавлении репозитория",
+          responseData.message || "Ошибка при добавлении репозитория"
         );
       }
     } catch (err: any) {
       console.error("Error adding repo:", err);
       alert(
-        err instanceof Error
-          ? err.message
-          : "Ошибка при добавлении репозитория",
+        err instanceof Error ? err.message : "Ошибка при добавлении репозитория"
       );
     } finally {
       setAddingRepo(false);
     }
   };
 
-  const handleRemoveRepo = async (repoId: number) => {
-    if (!confirm("Вы уверены, что хотите удалить этот репозиторий?")) return;
+  const openDeleteModal = (repoId: number, repoName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      repoId,
+      repoName,
+    });
+  };
 
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      repoId: null,
+      repoName: "",
+    });
+  };
+
+  const handleRemoveRepo = async (repoId: number) => {
     try {
       const response = await fetch(
         `${API_BASE_URL}/github-projects/${repoId}`,
@@ -260,7 +328,7 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
           headers: {
             Accept: "application/json",
           },
-        },
+        }
       );
 
       if (!response.ok) {
@@ -278,6 +346,8 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
     } catch (err) {
       console.error("Error removing repo:", err);
       alert("Ошибка при удалении репозитория");
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -291,7 +361,7 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
           headers: {
             Accept: "application/json",
           },
-        },
+        }
       );
 
       if (!response.ok) {
@@ -304,8 +374,8 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
         // Обновляем данные репозитория в списке
         setRepos(
           repos.map((repo) =>
-            repo.id === repoId ? { ...repo, ...data.data } : repo,
-          ),
+            repo.id === repoId ? { ...repo, ...data.data } : repo
+          )
         );
         alert("Репозиторий синхронизирован!");
       } else {
@@ -417,8 +487,8 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
                       {repo.status === "active"
                         ? "Активен"
                         : repo.status === "archived"
-                          ? "Архивирован"
-                          : "Скрыт"}
+                        ? "Архивирован"
+                        : "Скрыт"}
                     </span>
                   )}
                 </div>
@@ -479,7 +549,7 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
                   </button>
                   <button
                     className={style.removeRepoButton}
-                    onClick={() => handleRemoveRepo(repo.id)}
+                    onClick={() => openDeleteModal(repo.id, repo.name)}
                     title="Удалить репозиторий"
                   >
                     ×
@@ -670,6 +740,21 @@ const GitHubRepos: React.FC<GitHubReposProps> = ({ projectId }) => {
           </div>
         </div>
       )}
+
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={() => {
+          if (deleteModal.repoId) {
+            handleRemoveRepo(deleteModal.repoId);
+          }
+        }}
+        title="Удалить репозиторий?"
+        message={`Вы уверены, что хотите удалить репозиторий "${deleteModal.repoName}"? Это действие нельзя отменить.`}
+        confirmText="Удалить"
+        cancelText="Отмена"
+        type="default"
+      />
     </div>
   );
 };
