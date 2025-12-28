@@ -39,9 +39,7 @@ const GitHubRepoModal: React.FC<GitHubRepoModalProps> = ({
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
-    null,
-  );
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   // Функция для очистки имени репозитория
   const cleanRepoName = (repoName: string): string => {
