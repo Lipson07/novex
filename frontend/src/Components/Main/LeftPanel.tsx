@@ -1,14 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import style from "../../style/Main/LeftPanel.module.scss";
 import { leftPanelIcons } from "../../assets/LeftPanel/index.js";
 import { useSelector } from "react-redux";
 import "../../App.scss";
 import { selectUser } from "../../store/user.js";
 import { ProjectService, formatDate } from "../../assets/MockData/index.js";
-import {
-  themes as themesMap,
-  themeNames,
-} from "../../assets/LeftPanel/themes.js";
 
 interface Project {
   id: number;
@@ -64,35 +60,6 @@ function LeftPanel({
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false); // Состояние свертывания всей панели
   const [isMobileExpanded, setIsMobileExpanded] = useState(false); // Состояние расширения на мобильных
 
-  // Список доступных тем (берём из src/assets/LeftPanel/themes.ts)
-  const themes = [...themeNames];
-
-  // Функция для получения основных цветов темы для предпросмотра
-  const getThemePreviewColors = (themeName: string): string[] => {
-    const theme = themesMap[themeName];
-    if (!theme) return [];
-    // Возьмем основные цвета для предпросмотра
-    const colors = [
-      theme["bg-primary"],
-      theme["accent-primary"],
-      theme["accent-secondary"],
-      theme["border-primary"],
-    ].filter(Boolean);
-    return colors.slice(0, 4); // максимум 4 цвета
-  };
-
-  // Выбранная тема (инициализация из localStorage)
-  const [selectedTheme, setSelectedTheme] = useState<string>(() => {
-    try {
-      return localStorage.getItem("theme") || "";
-    } catch {
-      return "";
-    }
-  });
-  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
-  const themeMenuRef = useRef<HTMLDivElement | null>(null);
-  const currentThemeLabel = selectedTheme || "По умолчанию";
-
   const categoryToPage: Record<string, string> = {
     Главная: "main",
     Проекты: "projects",
@@ -100,7 +67,6 @@ function LeftPanel({
     "Панель управления": "dashboard",
     Настройки: "settings",
     AI: "ai",
-    Тема: "settings", // Тема ведет в настройки
   };
 
   const pageToCategory: Record<string, string> = {
@@ -264,76 +230,6 @@ function LeftPanel({
     setIsMobileExpanded(!isMobileExpanded);
   };
 
-  const toggleTheme = () => {
-    setIsThemeMenuOpen((s) => !s);
-  };
-
-  const handleThemeChange = (theme: string) => {
-    setSelectedTheme(theme);
-    setIsThemeMenuOpen(false);
-  };
-
-  useEffect(() => {
-    try {
-      // Удаляем существующие theme-* классы
-      Array.from(document.body.classList)
-        .filter(
-          (c): c is string => typeof c === "string" && c.startsWith("theme-")
-        )
-        .forEach((c) => document.body.classList.remove(c));
-
-      if (selectedTheme) {
-        // Добавляем класс вида theme-<name> — классы и переменные определены в src/style/Main/_variables.module.scss
-        document.body.classList.add(`theme-${selectedTheme}`);
-
-        // Сохраняем и дублируем в data-theme для совместимости
-        document.body.setAttribute("data-theme", selectedTheme);
-        localStorage.setItem("theme", selectedTheme);
-
-        // Отладочный лог
-        // eslint-disable-next-line no-console
-        console.log("[Theme] applied", selectedTheme);
-      } else {
-        // Убираем data-theme
-        document.body.removeAttribute("data-theme");
-        localStorage.removeItem("theme");
-
-        // Отладочный лог
-        // eslint-disable-next-line no-console
-        console.log("[Theme] cleared");
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error("[Theme] apply error", e);
-    }
-
-    // Синхронизируем старое булево состояние dark, если где-то используется
-    setIsDarkMode(!!selectedTheme && selectedTheme.includes("dark"));
-  }, [selectedTheme]);
-
-  useEffect(() => {
-    function onClickOutside(e: MouseEvent) {
-      if (
-        isThemeMenuOpen &&
-        themeMenuRef.current &&
-        !themeMenuRef.current.contains(e.target as Node)
-      ) {
-        setIsThemeMenuOpen(false);
-      }
-    }
-    function onEsc(e: KeyboardEvent) {
-      if (isThemeMenuOpen && e.key === "Escape") {
-        setIsThemeMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onClickOutside);
-    document.addEventListener("keydown", onEsc);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-      document.removeEventListener("keydown", onEsc);
-    };
-  }, [isThemeMenuOpen]);
-
   return (
     <>
       <div
@@ -397,22 +293,6 @@ function LeftPanel({
                 </svg>
               </button>
             )}
-          </div>
-          <div className={style.searchcont}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6 0C9.3136 1.28863e-07 11.9998 2.68644 12 6C12 7.41644 11.5074 8.7168 10.6865 9.74316L13.1377 12.1953C13.398 12.4557 13.398 12.8773 13.1377 13.1377C12.8773 13.398 12.4557 13.398 12.1953 13.1377L9.74316 10.6865C8.7168 11.5074 7.41644 12 6 12C2.68644 11.9998 1.28867e-07 9.3136 0 6C0.000175991 2.68655 2.68655 0.000175988 6 0ZM6 1.33398C3.42293 1.33416 1.33416 3.42293 1.33398 6C1.33398 8.57722 3.42282 10.6668 6 10.667C8.57733 10.667 10.667 8.57733 10.667 6C10.6668 3.42282 8.57722 1.33398 6 1.33398Z"
-                fill="white"
-                fillOpacity="0.4"
-              />
-            </svg>
-            <input type="text" placeholder="Поиск" />
           </div>
           <button
             className={style.collapseToggleButton}
@@ -559,75 +439,6 @@ function LeftPanel({
               );
             }
 
-            // Специальная обработка кнопки Тема — показываем меню выбора темы
-            if (element.name === "Тема") {
-              return (
-                <div
-                  key={element.name}
-                  className={`${style.categoryItem} ${
-                    selectedTheme ? style.active : ""
-                  }`}
-                  title="Выбрать тему"
-                  ref={themeMenuRef}
-                >
-                  <div
-                    className={style.themeToggle}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleTheme();
-                    }}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d={element.icon} />
-                    </svg>
-                    <p>{element.name}</p>
-                    <span className={style.themeName}>{currentThemeLabel}</span>
-
-                    {isThemeMenuOpen && (
-                      <div className={style.themeDropdown} role="menu">
-                        {themes.map((t) => {
-                          const previewColors = getThemePreviewColors(t);
-                          return (
-                            <button
-                              key={t}
-                              type="button"
-                              className={`${style.themeItem} ${
-                                selectedTheme === t ? style.themeActive : ""
-                              }`}
-                              onClick={(ev) => {
-                                ev.stopPropagation();
-                                handleThemeChange(t);
-                              }}
-                            >
-                              <span>{t}</span>
-                              {previewColors.length > 0 && (
-                                <div className={style.themeColorPreview}>
-                                  {previewColors.map((color, idx) => (
-                                    <div
-                                      key={idx}
-                                      className={style.themeColorDot}
-                                      style={{ backgroundColor: color }}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            }
-
             return (
               <div
                 key={element.name}
@@ -765,94 +576,6 @@ function LeftPanel({
           </div>
         </div>
       </div>
-
-      {/* Модальное окно создания проекта */}
-      {isModalOpen && (
-        <div className={style.modalOverlay} onClick={closeModal}>
-          <div className={style.modal} onClick={(e) => e.stopPropagation()}>
-            <div className={style.modalHeader}>
-              <h3>Создать новый проект</h3>
-              <button onClick={closeModal} className={style.closeButton}>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className={style.modalForm}>
-              {error && <div className={style.formError}>{error}</div>}
-
-              <div className={style.formGroup}>
-                <label>Название проекта *</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                    setError("");
-                  }}
-                  placeholder="Введите название проекта"
-                  className={style.formInput}
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div className={style.formGroup}>
-                <label>Описание</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Опишите ваш проект..."
-                  rows={4}
-                  className={style.formTextarea}
-                />
-              </div>
-
-              <div className={style.modalActions}>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  disabled={isLoading}
-                  className={style.cancelButton}
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  disabled={!title.trim() || isLoading}
-                  className={style.submitButton}
-                >
-                  {isLoading ? (
-                    <>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                      </svg>
-                      Создание...
-                    </>
-                  ) : (
-                    "Создать проект"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 }

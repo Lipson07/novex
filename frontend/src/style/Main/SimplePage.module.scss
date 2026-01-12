@@ -1,49 +1,74 @@
 @use "./variables.module" as *;
 
 // Дополнительные переменные для карточек настроек
-$bg-card-hover: color-mix(in srgb, $bg-card, $primary-color 5%);
-$border-hover: color-mix(in srgb, $border-light, $primary-color 20%);
+$bg-card-hover: color-mix(in srgb, $bg-card, $primary-color 8%);
+$border-hover: color-mix(in srgb, $border-light, $primary-color 30%);
 $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
+$shadow-card-active: 0 8px 24px rgba(0, 0, 0, 0.25);
+$shadow-focus: 0 0 0 3px rgba($primary-color, 0.3);
 
 .page {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   color: $text-main;
-  height: 100vh;
+  min-height: 100vh;
   overflow-y: auto;
+  background: linear-gradient(135deg, $bg-dark 0%, $bg-panel 100%);
 
   @media (max-width: $breakpoint-md) {
-    padding: 16px;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    padding: 16px 12px;
+    gap: 12px;
   }
 }
 
 .pageHeader {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+
+  @media (max-width: $breakpoint-md) {
+    gap: 6px;
+    padding-bottom: 12px;
+  }
 }
 
 .filtersRow {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   flex-wrap: wrap;
+  align-items: center;
 
   @media (max-width: $breakpoint-xs) {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
   }
 }
 
 .pageTitle {
   font-size: $font-size-3xl;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
   color: $text-main;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 
   @media (max-width: $breakpoint-md) {
     font-size: $font-size-2xl;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    font-size: $font-size-xl;
   }
 }
 
@@ -51,24 +76,35 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
   font-size: $font-size-md;
   color: $text-secondary;
   margin: 0;
+  line-height: 1.5;
+  max-width: 800px;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-sm;
+  }
 }
 
 // Контейнер вкладок
 .tabsContainer {
-  margin-top: 16px;
-  margin-bottom: 8px;
+  margin-top: 20px;
+  margin-bottom: 16px;
+  position: relative;
+
+  @media (max-width: $breakpoint-md) {
+    margin-top: 16px;
+    margin-bottom: 12px;
+  }
 }
 
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   flex-wrap: wrap;
-  border-bottom: 1px solid $border-light;
-  padding-bottom: 8px;
+  border-bottom: 2px solid $border-light;
+  padding-bottom: 0;
 
   @media (max-width: $breakpoint-md) {
-    gap: 6px;
-    padding-bottom: 6px;
+    gap: 2px;
   }
 
   @media (max-width: $breakpoint-xs) {
@@ -76,42 +112,65 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     flex-wrap: nowrap;
-    padding-bottom: 4px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
 .tab {
-  padding: 8px 16px;
-  border-radius: $border-radius-lg;
+  padding: 12px 20px;
+  border-radius: $border-radius-lg $border-radius-lg 0 0;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
   color: $text-secondary;
   font-size: $font-size-sm;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all $animation-duration-normal $animation-timing-ease;
   flex-shrink: 0;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
 
   @media (max-width: $breakpoint-md) {
-    padding: 6px 12px;
+    padding: 10px 16px;
     font-size: $font-size-xs;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    padding: 8px 12px;
+  }
+
+  &:hover {
+    color: $text-main;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba($primary-color, 0.3);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: $border-radius-md;
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 }
 
-.tab:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: $text-main;
-}
-
 .tabActive {
-  background: $primary-color;
-  color: white;
-  border-color: $primary-color;
-}
+  color: $primary-color;
+  background: rgba($primary-color, 0.1);
+  border-bottom-color: $primary-color;
+  font-weight: 700;
 
-.tabActive:hover {
-  background: $primary-color;
-  color: white;
+  &:hover {
+    color: $primary-color;
+    background: rgba($primary-color, 0.15);
+    border-bottom-color: $primary-color;
+  }
 }
 
 .cardsGrid {
@@ -133,118 +192,252 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
 .settingsList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-top: 8px;
+  gap: 32px;
+  margin-top: 16px;
+
+  @media (max-width: $breakpoint-md) {
+    gap: 24px;
+    margin-top: 12px;
+  }
 }
 
 .settingsGroup {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  background: rgba($bg-card, 0.5);
+  border-radius: $border-radius-xl;
+  padding: 24px;
+  border: 1px solid $border-light;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    padding: 16px;
+    gap: 12px;
+  }
 }
 
 .groupTitle {
   font-size: $font-size-xl;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
   color: $text-main;
-  padding-bottom: 8px;
-  border-bottom: 1px solid $border-light;
+  padding-bottom: 12px;
+  border-bottom: 2px solid $border-light;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-lg;
+    padding-bottom: 10px;
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    width: 4px;
+    height: 20px;
+    background: $primary-color;
+    border-radius: 2px;
+  }
 }
 
 .groupContent {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+
+  @media (max-width: $breakpoint-md) {
+    gap: 12px;
+  }
 }
 
 .card {
   background: $bg-card;
   border: 1px solid $border-light;
   border-radius: $border-radius-lg;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: all 0.2s ease;
-  min-height: 80px;
+  gap: 12px;
+  transition: all $animation-duration-normal $animation-timing-ease;
   position: relative;
   overflow: hidden;
-}
 
-.card:hover {
-  border-color: $border-hover;
-  box-shadow: $shadow-card-hover;
-  background: $bg-card-hover;
-  transform: translateY(-2px);
+  @media (max-width: $breakpoint-md) {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: $primary-color;
+    opacity: 0;
+    transition: opacity $animation-duration-normal ease;
+  }
+
+  &:hover {
+    border-color: $border-hover;
+    box-shadow: $shadow-card-hover;
+    background: $bg-card-hover;
+    transform: translateY(-4px);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: $shadow-focus;
+  }
 }
 
 .settingItem {
   background: $bg-card;
   border: 1px solid $border-light;
   border-radius: $border-radius-lg;
-  padding: 10px 12px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  transition: all 0.2s ease;
-  min-height: auto;
-}
+  gap: 16px;
+  transition: all $animation-duration-normal $animation-timing-ease;
+  position: relative;
 
-.settingItem:hover {
-  border-color: $border-hover;
-  background: $bg-card-hover;
-  transform: translateY(-2px);
-  box-shadow: $shadow-card-hover;
+  &.settingItemTheme {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: $primary-color;
+    border-radius: $border-radius-lg 0 0 $border-radius-lg;
+    opacity: 0;
+    transition: opacity $animation-duration-normal ease;
+  }
+
+  &:hover {
+    border-color: $border-hover;
+    background: $bg-card-hover;
+    transform: translateY(-2px);
+    box-shadow: $shadow-card-hover;
+
+    &::before {
+      opacity: 0.7;
+    }
+  }
+
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: $shadow-focus;
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
 }
 
 .settingItemContent {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-xs) {
+    gap: 6px;
+  }
 }
 
 .settingItemTitle {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: $font-size-sm;
+  gap: 12px;
+  font-size: $font-size-md;
   font-weight: 600;
   margin: 0;
   color: $text-main;
+  line-height: 1.3;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-sm;
+    gap: 10px;
+  }
 }
 
 .settingItemDescription {
   margin: 0;
-  font-size: $font-size-xs;
+  font-size: $font-size-sm;
   color: $text-secondary;
-  line-height: 1.3;
+  line-height: 1.5;
+  max-width: 600px;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-xs;
+  }
 }
 
 .settingItemMeta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 8px;
+
+  @media (max-width: $breakpoint-md) {
+    gap: 8px;
+    margin-top: 6px;
+  }
 }
 
-// Переключатель (toggle) - компактный и стилизованный под тему
+// Переключатель (toggle) - улучшенные состояния
 .toggle {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 22px;
+  width: 52px;
+  height: 26px;
   flex-shrink: 0;
+
+  @media (max-width: $breakpoint-md) {
+    width: 48px;
+    height: 24px;
+  }
 }
 
 .toggleInput {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
 .toggleSlider {
@@ -254,43 +447,87 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid $border-light;
-  border-radius: 22px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid $border-light;
+  border-radius: 34px;
+  transition: all $animation-duration-normal $animation-timing-bounce;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: $border-hover;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .toggleSlider:before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
   left: 2px;
   bottom: 2px;
   background-color: $text-secondary;
   border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all $animation-duration-normal $animation-timing-bounce;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+
+  @media (max-width: $breakpoint-md) {
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .toggleInput:checked + .toggleSlider {
   background-color: $primary-color;
   border-color: $primary-color;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 8px rgba($primary-color, 0.4);
+
+  &:hover {
+    background-color: $primary-color;
+    border-color: $primary-color;
+  }
 }
 
 .toggleInput:checked + .toggleSlider:before {
-  transform: translateX(22px);
+  transform: translateX(26px);
   background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+
+  @media (max-width: $breakpoint-md) {
+    transform: translateX(24px);
+  }
 }
 
 .toggleInput:focus + .toggleSlider {
-  box-shadow: 0 0 0 2px rgba($primary-color, 0.4);
+  box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+  border-color: $primary-color;
+}
+
+.toggleInput:focus:checked + .toggleSlider {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba($primary-color, 0.3);
 }
 
 .toggleInput:disabled + .toggleSlider {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
+  background-color: rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: $border-light;
+  }
+}
+
+.toggleInput:disabled:checked + .toggleSlider {
+  opacity: 0.5;
+  background-color: rgba($primary-color, 0.5);
 }
 
 // Иконка внутри карточки
@@ -326,35 +563,139 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
   margin-top: 2px;
 }
 
+// Улучшенные стили для доступности
+*:focus-visible {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+  border-radius: $border-radius-sm;
+}
+
+// Улучшенные бейджи с лучшей контрастностью
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: $border-radius-md;
   font-size: $font-size-xs;
-  font-weight: 600;
-  border: 1px solid $border-light;
-  color: $text-secondary;
-  background: rgba(255, 255, 255, 0.03);
+  font-weight: 700;
+  border: 2px solid transparent;
+  color: $text-main;
+  background: rgba(255, 255, 255, 0.1);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
 }
 
 .badgeSuccess {
-  color: #05df72;
-  border-color: rgba(5, 223, 114, 0.35);
-  background: rgba(5, 223, 114, 0.08);
+  color: #00ff88;
+  border-color: rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.12);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 .badgeWarning {
-  color: #f5a524;
-  border-color: rgba(245, 165, 36, 0.35);
-  background: rgba(245, 165, 36, 0.08);
+  color: #ffb347;
+  border-color: rgba(255, 179, 71, 0.3);
+  background: rgba(255, 179, 71, 0.12);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 .badgeInfo {
   color: $primary-color;
-  border-color: color-mix(in srgb, $primary-color, transparent 50%);
-  background: color-mix(in srgb, $primary-color, transparent 90%);
+  border-color: rgba($primary-color, 0.3);
+  background: rgba($primary-color, 0.12);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+// Улучшенная контрастность для текста
+.cardTitle,
+.settingItemTitle {
+  color: $text-main;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.cardText,
+.settingItemDescription {
+  color: color-mix(in srgb, $text-secondary, white 20%);
+}
+
+// Улучшенные стили для иконок с лучшей видимостью
+.cardIcon,
+.settingItemIcon {
+  filter: brightness(1.1) contrast(1.2);
+  transition: filter $animation-duration-normal ease;
+
+  .card:hover &,
+  .settingItem:hover & {
+    filter: brightness(1.3) contrast(1.3);
+  }
+}
+
+// Улучшенные стили для состояний фокуса
+.tab:focus-visible,
+.select:focus-visible,
+.input:focus-visible,
+.actionButton:focus-visible,
+.themeTile:focus-visible {
+  outline: 3px solid $primary-color;
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+// Улучшенная видимость для disabled состояний
+.toggleInput:disabled + .toggleSlider,
+.select:disabled,
+.input:disabled,
+.actionButton:disabled {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+
+// Улучшенные стили для high-contrast режима
+@media (prefers-contrast: high) {
+  .badge {
+    border-width: 3px;
+  }
+
+  .tabActive {
+    border-width: 3px;
+  }
+
+  .toggleSlider {
+    border-width: 3px;
+  }
+
+  .select,
+  .input {
+    border-width: 3px;
+  }
+}
+
+// Улучшенные стили для reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .card,
+  .settingItem,
+  .tab,
+  .toggleSlider,
+  .select,
+  .input,
+  .actionButton,
+  .themeTile {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .toggleSlider:before {
+    transition: none !important;
+  }
 }
 
 .metaRow {
@@ -369,51 +710,108 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
 
 // Стили для select
 .select {
-  padding: 8px 12px;
-  border: 1px solid $border-light;
+  padding: 10px 14px;
+  border: 2px solid $border-light;
   border-radius: $border-radius-md;
   background: $bg-card;
   color: $text-main;
   font-size: $font-size-sm;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 120px;
-}
+  transition: all $animation-duration-normal $animation-timing-ease;
+  min-width: 140px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
 
-.select:hover {
-  border-color: $border-hover;
-}
+  @media (max-width: $breakpoint-md) {
+    padding: 8px 12px;
+    padding-right: 32px;
+    min-width: 120px;
+    font-size: $font-size-xs;
+  }
 
-.select:focus {
-  outline: none;
-  border-color: $primary-color;
-  box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  &:hover {
+    border-color: $border-hover;
+    background-color: rgba($bg-card, 0.8);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: $shadow-focus;
+    background-color: $bg-card;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: rgba($bg-card, 0.5);
+  }
 }
 
 // Стили для input
 .input {
-  padding: 8px 12px;
-  border: 1px solid $border-light;
+  padding: 10px 14px;
+  border: 2px solid $border-light;
   border-radius: $border-radius-md;
   background: $bg-card;
   color: $text-main;
   font-size: $font-size-sm;
-  transition: all 0.2s ease;
-  min-width: 200px;
-}
+  font-weight: 500;
+  transition: all $animation-duration-normal $animation-timing-ease;
+  min-width: 220px;
+  width: 100%;
+  max-width: 300px;
 
-.input:hover {
-  border-color: $border-hover;
-}
+  @media (max-width: $breakpoint-md) {
+    padding: 8px 12px;
+    min-width: 180px;
+    font-size: $font-size-xs;
+  }
 
-.input:focus {
-  outline: none;
-  border-color: $primary-color;
-  box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
-}
+  @media (max-width: $breakpoint-xs) {
+    min-width: 100%;
+    max-width: 100%;
+  }
 
-.input::placeholder {
-  color: $text-secondary;
+  &:hover {
+    border-color: $border-hover;
+    background-color: rgba($bg-card, 0.8);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: $shadow-focus;
+    background-color: $bg-card;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: rgba($bg-card, 0.5);
+  }
+
+  &::placeholder {
+    color: $text-secondary;
+    opacity: 0.7;
+  }
+
+  &:focus::placeholder {
+    opacity: 0.5;
+  }
 }
 
 // Подсказка для карточки
@@ -428,25 +826,75 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
 
 // Кнопка действия в карточке
 .actionButton {
-  padding: 6px 12px;
-  border: 1px solid $primary-color;
+  padding: 8px 16px;
+  border: 2px solid $primary-color;
   border-radius: $border-radius-md;
   background: transparent;
   color: $primary-color;
-  font-size: $font-size-xs;
+  font-size: $font-size-sm;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all $animation-duration-normal $animation-timing-ease;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-}
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 
-.actionButton:hover {
-  background: $primary-color;
-  color: white;
+  @media (max-width: $breakpoint-md) {
+    padding: 6px 12px;
+    font-size: $font-size-xs;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: $primary-color;
+    transition: left $animation-duration-normal $animation-timing-ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: white;
+    border-color: $primary-color;
+
+    &::before {
+      left: 0;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    border-color: $primary-color;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: $border-light;
+    color: $text-secondary;
+
+    &:hover {
+      background: transparent;
+      color: $text-secondary;
+
+      &::before {
+        left: -100%;
+      }
+    }
+  }
 }
 
 // Текущее значение для селекта
@@ -472,4 +920,94 @@ $shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.35);
   gap: 8px;
   margin-top: 4px;
   flex-wrap: wrap;
+}
+
+// Сетка плиток для выбора темы
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+
+  @media (max-width: $breakpoint-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+.themeTile {
+  background: $bg-card;
+  border: 2px solid $border-light;
+  border-radius: $border-radius-lg;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
+
+  &:hover {
+    border-color: $border-hover;
+    background: $bg-card-hover;
+    transform: translateY(-2px);
+    box-shadow: $shadow-card-hover;
+  }
+
+  &.selected {
+    border-color: $primary-color;
+    background: color-mix(in srgb, $primary-color, transparent 90%);
+    box-shadow: 0 0 0 1px $primary-color;
+  }
+}
+
+.themeTilePreview {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.themeTileColor {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.themeTileName {
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: $text-main;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.themeTileBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: $primary-color;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+// Класс для выбранного состояния (используется в SettingsPage)
+.selected {
+  // Стили определены в .themeTile.selected
 }

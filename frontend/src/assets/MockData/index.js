@@ -36,21 +36,44 @@ export const getStatusText = (status) => {
 
 // Хелпер для форматирования даты дедлайна
 export const formatDeadlineDate = (dateString) => {
+  if (!dateString) return '';
   const date = new Date(dateString);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  if (date.toDateString() === today.toDateString()) {
-    return "Сегодня";
-  } else if (date.toDateString() === tomorrow.toDateString()) {
-    return "Завтра";
-  } else {
-    return date.toLocaleDateString("ru-RU", {
-      day: "numeric",
-      month: "short",
-    });
+  // Сбрасываем время для сравнения дат
+  const isToday = date.toDateString() === today.toDateString();
+  const isTomorrow = date.toDateString() === tomorrow.toDateString();
+
+  if (isToday) {
+    return 'Сегодня';
   }
+  if (isTomorrow) {
+    return 'Завтра';
+  }
+
+  const diffMs = date.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays > 1 && diffDays <= 7) {
+    // Склонение для дней
+    const pluralize = (count, one, two, five) => {
+      const n = Math.abs(count) % 100;
+      const n1 = n % 10;
+      if (n > 10 && n < 20) return five;
+      if (n1 === 1) return one;
+      if (n1 >= 2 && n1 <= 4) return two;
+      return five;
+    };
+    return `Через ${diffDays} ${pluralize(diffDays, 'день', 'дня', 'дней')}`;
+  }
+
+  // Если больше недели, показываем дату
+  return date.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'short',
+  });
 };
 
 // Хелпер для получения цвета приоритета

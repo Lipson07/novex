@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
 import { taskService } from "../../services/taskService.ts";
 import type { Task as ApiTask } from "../../services/taskService.ts";
+import { formatDeadlineDisplay } from "../../utils/deadlineParser";
 import styles from "../../style/Main/SimplePage.module.scss";
 
 type StatusTone = "info" | "warning" | "success";
@@ -67,13 +68,7 @@ const TasksPage: React.FC = () => {
           // Форматируем дату выполнения
           let due: string | undefined;
           if (task.due_date) {
-            const dueDate = new Date(task.due_date);
-            const today = new Date();
-            const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-            if (diffDays === 0) due = "Сегодня";
-            else if (diffDays === 1) due = "Завтра";
-            else if (diffDays > 1 && diffDays <= 7) due = `Через ${diffDays} дня`;
-            else due = dueDate.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+            due = formatDeadlineDisplay(task.due_date);
           }
 
           // Название проекта (пока неизвестно, нужно загрузить отдельно или из задачи)

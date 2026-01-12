@@ -1,26 +1,34 @@
-import React from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import style from "../../style/Common/DeleteConfirmationModal.module.scss";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  /** Название элемента для удаления (например, "Мой проект") */
+  itemName?: string;
+  /** Тип элемента: project, task, repository, default */
+  type?: "project" | "task" | "repository" | "default";
+  /** Заголовок модального окна (если не указан, будет сгенерирован автоматически) */
   title?: string;
+  /** Сообщение в теле модального окна (если не указано, будет сгенерировано автоматически) */
   message?: string;
+  /** Текст на кнопке подтверждения */
   confirmText?: string;
+  /** Текст на кнопке отмены */
   cancelText?: string;
-  type?: "project" | "task" | "default";
 }
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  itemName,
+  type = "default",
   title,
   message,
   confirmText = "Удалить",
   cancelText = "Отмена",
-  type = "default",
 }) => {
   if (!isOpen) return null;
 
@@ -30,35 +38,110 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         return "Удалить проект?";
       case "task":
         return "Удалить задачу?";
+      case "repository":
+        return "Удалить репозиторий?";
       default:
         return "Подтверждение удаления";
     }
   };
 
   const getDefaultMessage = () => {
+    const base = "Вы уверены, что хотите удалить";
+    let itemText = "";
     switch (type) {
       case "project":
-        return "Вы уверены, что хотите удалить проект? Это действие нельзя отменить. Все связанные задачи и данные будут удалены.";
+        itemText = "проект";
+        break;
       case "task":
-        return "Вы уверены, что хотите удалить задачу? Это действие нельзя отменить.";
+        itemText = "задачу";
+        break;
+      case "repository":
+        itemText = "репозиторий";
+        break;
       default:
-        return "Вы уверены, что хотите удалить этот элемент? Это действие нельзя отменить.";
+        itemText = "этот элемент";
     }
+    const namePart = itemName ? ` "${itemName}"` : "";
+    const suffix = "? Это действие нельзя отменить.";
+    return `${base} ${itemText}${namePart}${suffix}`;
   };
 
   const modalTitle = title || getDefaultTitle();
   const modalMessage = message || getDefaultMessage();
 
-  const handleConfirm = () => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+
+  const handleConfirm = useCallback(() => {
     onConfirm();
     onClose();
-  };
+  }, [onConfirm, onClose]);
+
+  // Фокус на первую кнопку при открытии
+  useEffect(() => {
+    if (isOpen) {
+      previouslyFocusedElement.current = document.activeElement as HTMLElement;
+      // Даем время на отрисовку, затем фокусируемся на кнопке отмены
+      setTimeout(() => {
+        cancelButtonRef.current?.focus();
+      }, 10);
+    }
+
+    return () => {
+      // Возвращаем фокус при закрытии
+      if (previouslyFocusedElement.current) {
+        previouslyFocusedElement.current.focus();
+      }
+    };
+  }, [isOpen]);
+
+  // Обработка нажатия Escape
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === "Escape") {
+        onClose();
+      }
+      if (e.key === "Enter" && e.ctrlKey) {
+        handleConfirm();
+      }
+    },
+    [isOpen, onClose, handleConfirm]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  // Генерация уникальных ID для ARIA
+  const titleId = "delete-modal-title";
+  const descId = "delete-modal-description";
 
   return (
-    <div className={style.modalOverlay} onClick={onClose}>
-      <div className={style.modalContent} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={style.modalOverlay}
+      onClick={onClose}
+      role="presentation"
+      aria-hidden={!isOpen}
+    >
+      <div
+        ref={modalRef}
+        className={style.modalContent}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descId}
+        tabIndex={-1}
+      >
         <div className={style.modalHeader}>
-          <div className={style.modalIcon}>
+          <div className={style.modalIcon} aria-hidden="true">
             <svg
               version="1.0"
               xmlns="http://www.w3.org/2000/svg"
@@ -66,6 +149,8 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               height="1126.000000pt"
               viewBox="0 0 1280.000000 1126.000000"
               preserveAspectRatio="xMidYMid meet"
+              aria-hidden="true"
+              focusable="false"
             >
               <g
                 transform="translate(0.000000,1126.000000) scale(0.100000,-0.100000)"
@@ -101,8 +186,16 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               </g>
             </svg>
           </div>
-          <h3 className={style.modalTitle}>{modalTitle}</h3>
-          <button className={style.closeButton} onClick={onClose}>
+          <h3 id={titleId} className={style.modalTitle}>
+            {modalTitle}
+          </h3>
+          <button
+            ref={closeButtonRef}
+            className={style.closeButton}
+            onClick={onClose}
+            aria-label="Закрыть диалог"
+            title="Закрыть (Esc)"
+          >
             <svg
               width="18"
               height="18"
@@ -110,6 +203,8 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              aria-hidden="true"
+              focusable="false"
             >
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
@@ -117,14 +212,27 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         </div>
 
         <div className={style.modalBody}>
-          <p className={style.modalMessage}>{modalMessage}</p>
+          <p id={descId} className={style.modalMessage}>
+            {modalMessage}
+          </p>
         </div>
 
         <div className={style.modalFooter}>
-          <button className={style.cancelButton} onClick={onClose}>
+          <button
+            ref={cancelButtonRef}
+            className={style.cancelButton}
+            onClick={onClose}
+            aria-label="Отменить удаление"
+          >
             {cancelText}
           </button>
-          <button className={style.confirmButton} onClick={handleConfirm}>
+          <button
+            ref={confirmButtonRef}
+            className={style.confirmButton}
+            onClick={handleConfirm}
+            aria-label="Подтвердить удаление"
+            autoFocus={false}
+          >
             {confirmText}
           </button>
         </div>

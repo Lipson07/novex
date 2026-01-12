@@ -17,6 +17,7 @@ const TeamChat = lazy(() => import("./TeamChat"));
 const Schedule = lazy(() => import("./Schedule"));
 const QuickNote = lazy(() => import("./QuickNote"));
 const AIAssistantPage = lazy(() => import("./AIAssistantPage"));
+const ProfilePage = lazy(() => import("./ProfilePage"));
 
 type Page =
   | "main"
@@ -28,7 +29,8 @@ type Page =
   | "tasks"
   | "dashboard"
   | "settings"
-  | "ai";
+  | "ai"
+  | "profile";
 
 function MainPage() {
   const user = useSelector(selectUser);
@@ -70,6 +72,7 @@ function MainPage() {
       "dashboard",
       "settings",
       "ai",
+      "profile",
     ];
     if (validPages.includes(page as Page)) {
       setCurrentPage(page as Page);
@@ -198,6 +201,12 @@ function MainPage() {
         return <SettingsPage />;
       case "ai":
         return <AIAssistantPage />;
+      case "profile":
+        return (
+          <div className={style.contentColumn}>
+            <ProfilePage onBack={() => setCurrentPage("main")} />
+          </div>
+        );
       case "main":
       default:
         return (
@@ -206,6 +215,7 @@ function MainPage() {
               onNavigateToProjects={() => setCurrentPage("projects")}
               onProjectClick={handleProjectClick}
               projectRefreshKey={projectRefreshKey}
+              onNavigateToProfile={() => setCurrentPage("profile")}
             />
           </div>
         );

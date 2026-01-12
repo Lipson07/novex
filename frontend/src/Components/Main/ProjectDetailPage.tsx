@@ -16,6 +16,8 @@ import {
 import Dashboard from "./Dashboard";
 import style from "../../style/Main/ProjectDetailPage.module.scss";
 import GitHubRepos from "./GitHubRepos.js";
+import TaskCreationModal from "../Common/TaskCreationModal.tsx";
+import DeleteConfirmationModal from "../Common/DeleteConfirmationModal.tsx";
 
 interface Project {
   id: number;
@@ -66,24 +68,12 @@ function ProjectDetailPage({
   onProjectDeleted,
 }: ProjectDetailPageProps) {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [taskData, setTaskData] = useState<TaskFormData>({
-    title: "",
-    description: "",
-    due_date: "",
-    status: "pending",
-    priority: "medium",
-    assigned_to: null,
-    tags: [],
-    files: [],
-  });
 
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
   const [isAIDropdownOpen, setIsAIDropdownOpen] = useState(false);
   const aiDropdownRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "tasks">("overview");
   const [chatMessage, setChatMessage] = useState("");
-  const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [availableUsers, setAvailableUsers] = useState<
     { id: number; name: string }[]
   >([]);
@@ -93,6 +83,11 @@ function ProjectDetailPage({
   const [projectMembers, setProjectMembers] = useState<any[]>([]);
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [taskRefreshKey, setTaskRefreshKey] = useState(0);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    projectId: null as number | null,
+    projectTitle: "",
+  });
 
   const aiSuggestions = [
     "Обзор дорожной карты Q4",
@@ -180,53 +175,8 @@ function ProjectDetailPage({
     }
   };
 
-  const handleAddFiles = (files: FileList | File[]) => {
-    const imageFiles = Array.from(files).filter((file) =>
-      file.type.startsWith("image/"),
-    );
 
-    if (imageFiles.length === 0) return;
-
-    setTaskData((prev) => ({
-      ...prev,
-      files: [...prev.files, ...imageFiles],
-    }));
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragOver(false);
-    if (event.dataTransfer?.files) {
-      handleAddFiles(event.dataTransfer.files);
-    }
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      handleAddFiles(event.target.files);
-      event.target.value = "";
-    }
-  };
-
-  const handleRemoveFile = (fileName: string) => {
-    setTaskData((prev) => ({
-      ...prev,
-      files: prev.files.filter((file) => file.name !== fileName),
-    }));
-  };
-
-  const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleTaskSubmit = async (taskData: TaskFormData) => {
     console.log(
       "Создание задачи для проекта",
       projectId,
@@ -247,18 +197,6 @@ function ProjectDetailPage({
       // Вызов API
       const createdTask = await ProjectService.createTask(taskPayload);
       console.log("Задача успешно создана:", createdTask);
-      // Сброс формы
-      setTaskData({
-        title: "",
-        description: "",
-        due_date: "",
-        status: "pending",
-        priority: "medium",
-        assigned_to: null,
-        tags: [],
-        files: [],
-      });
-      setIsTaskModalOpen(false);
       // Увеличиваем ключ обновления для перезагрузки Dashboard
       setTaskRefreshKey((prev) => prev + 1);
       // Можно показать уведомление или обновить список задач
@@ -271,6 +209,8 @@ function ProjectDetailPage({
           error instanceof Error ? error.message : "Неизвестная ошибка"
         }`,
       );
+      // Пробрасываем ошибку, чтобы модалка могла её обработать
+      throw error;
     }
   };
   const user = useSelector(selectUser);
@@ -390,20 +330,36 @@ function ProjectDetailPage({
     alert(`Редактирование проекта ${projectId} (заглушка)`);
   };
 
+  const openDeleteModal = (projectId: number, projectTitle: string) => {
+    setDeleteModal({
+      isOpen: true,
+      projectId,
+      projectTitle,
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      projectId: null,
+      projectTitle: "",
+    });
+  };
+
   const handleDeleteProject = async (projectId: number) => {
     console.log(
       "handleDeleteProject вызван в ProjectDetailPage для проекта",
       projectId,
     );
 
-    // Временное решение для отладки: всегда удаляем без подтверждения
-    // TODO: вернуть confirm после отладки
-    const shouldDelete = true; // confirm("Вы уверены, что хотите удалить проект? Это действие нельзя отменить.");
-
-    if (!shouldDelete) {
-      console.log("Удаление отменено пользователем");
-      return;
+    if (project) {
+      openDeleteModal(projectId, project.title);
     }
+  };
+
+  const confirmDeleteProject = async () => {
+    const { projectId } = deleteModal;
+    if (!projectId) return;
 
     try {
       console.log("Удаление проекта", projectId);
@@ -414,7 +370,6 @@ function ProjectDetailPage({
       const result = await ProjectService.deleteProject(projectId, user.id);
       console.log("Результат удаления:", result);
       if (result.success) {
-        alert(`Проект ${projectId} успешно удален`);
         // Вызываем callback для обновления данных в других компонентах
         if (onProjectDeleted) {
           onProjectDeleted();
@@ -435,6 +390,8 @@ function ProjectDetailPage({
           error instanceof Error ? error.message : "Неизвестная ошибка"
         }`,
       );
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -848,225 +805,14 @@ function ProjectDetailPage({
         </div>
 
         {/* Модальное окно создания задачи */}
-        {isTaskModalOpen && (
-          <div
-            className={style.modalOverlay}
-            onClick={() => setIsTaskModalOpen(false)}
-          >
-            <div
-              className={style.modalContent}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className={style.modalTitle}>Создать новую задачу</h2>
-
-              <form onSubmit={handleTaskSubmit} className={style.modalForm}>
-                <div className={style.formGroup}>
-                  <label htmlFor="task-title">Название задачи</label>
-                  <input
-                    id="task-title"
-                    type="text"
-                    value={taskData.title}
-                    onChange={(e) =>
-                      setTaskData({ ...taskData, title: e.target.value })
-                    }
-                    placeholder="Введите название задачи"
-                    required
-                  />
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-description">Описание задачи</label>
-                  <textarea
-                    id="task-description"
-                    value={taskData.description}
-                    onChange={(e) =>
-                      setTaskData({ ...taskData, description: e.target.value })
-                    }
-                    placeholder="Опишите задачу подробно..."
-                    rows={4}
-                  />
-                </div>
-
-                <div className={style.formGroup}>
-                  <label>
-                    Фото задачи
-                    <span className={style.optionalLabel}> (png/jpg)</span>
-                  </label>
-                  <div
-                    className={`${style.dropZone} ${
-                      isDragOver ? style.dragOver : ""
-                    }`}
-                    onDragOver={handleDragOver}
-                    onDragEnter={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <div className={style.dropZoneContent}>
-                      <svg
-                        width="28"
-                        height="28"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className={style.dropZoneIcon}
-                      >
-                        <path d="M12 5v14M5 12h14" />
-                        <rect
-                          x="3"
-                          y="3"
-                          width="18"
-                          height="18"
-                          rx="4"
-                          ry="4"
-                        />
-                      </svg>
-                      <p>Перетащите фото сюда или нажмите, чтобы выбрать</p>
-                      <span className={style.dropZoneHint}>
-                        Поддерживаются изображения (PNG, JPG)
-                      </span>
-                    </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className={style.fileInput}
-                      onChange={handleFileChange}
-                    />
-                  </div>
-
-                  {taskData.files.length > 0 && (
-                    <div className={style.fileList}>
-                      {taskData.files.map((file, index) => (
-                        <div
-                          key={`${file.name}-${index}`}
-                          className={style.fileItem}
-                        >
-                          <div className={style.fileInfo}>
-                            <div className={style.fileName}>{file.name}</div>
-                            <div className={style.fileSize}>
-                              {(file.size / 1024).toFixed(1)} КБ
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            className={style.removeFileButton}
-                            onClick={() => handleRemoveFile(file.name)}
-                            aria-label={`Удалить файл ${file.name}`}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-due-date">Дата выполнения</label>
-                  <input
-                    id="task-due-date"
-                    type="date"
-                    value={taskData.due_date}
-                    onChange={(e) =>
-                      setTaskData({ ...taskData, due_date: e.target.value })
-                    }
-                    placeholder="YYYY-MM-DD"
-                  />
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-status">Статус</label>
-                  <select
-                    id="task-status"
-                    value={taskData.status}
-                    onChange={(e) =>
-                      setTaskData({ ...taskData, status: e.target.value })
-                    }
-                  >
-                    <option value="pending">Ожидание</option>
-                    <option value="in_progress">В работе</option>
-                    <option value="completed">Завершено</option>
-                    <option value="cancelled">Отменено</option>
-                  </select>
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-priority">Приоритет</label>
-                  <select
-                    id="task-priority"
-                    value={taskData.priority}
-                    onChange={(e) =>
-                      setTaskData({ ...taskData, priority: e.target.value })
-                    }
-                  >
-                    <option value="low">Низкий</option>
-                    <option value="medium">Средний</option>
-                    <option value="high">Высокий</option>
-                    <option value="urgent">Срочный</option>
-                  </select>
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-assigned-to">Назначить на</label>
-                  <select
-                    id="task-assigned-to"
-                    value={taskData.assigned_to || ""}
-                    onChange={(e) =>
-                      setTaskData({
-                        ...taskData,
-                        assigned_to: e.target.value
-                          ? parseInt(e.target.value)
-                          : null,
-                      })
-                    }
-                  >
-                    <option value="">Не назначено</option>
-                    {availableUsers.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="task-tags">Теги (через запятую)</label>
-                  <input
-                    id="task-tags"
-                    type="text"
-                    value={taskData.tags.join(", ")}
-                    onChange={(e) =>
-                      setTaskData({
-                        ...taskData,
-                        tags: e.target.value
-                          .split(",")
-                          .map((tag) => tag.trim())
-                          .filter((tag) => tag.length > 0),
-                      })
-                    }
-                    placeholder="например, frontend, bug, urgent"
-                  />
-                </div>
-
-                <div className={style.modalButtons}>
-                  <button
-                    type="button"
-                    className={style.cancelButton}
-                    onClick={() => setIsTaskModalOpen(false)}
-                  >
-                    Отмена
-                  </button>
-                  <button type="submit" className={style.submitButton}>
-                    Создать задачу
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        <TaskCreationModal
+          isOpen={isTaskModalOpen}
+          onClose={() => setIsTaskModalOpen(false)}
+          onSubmit={handleTaskSubmit}
+          availableUsers={availableUsers}
+          loadingUsers={loadingUsers}
+          projectId={projectId}
+        />
 
         {/* Разделы Обзор и Задачи */}
         <div className={style.sectionsContainer}>
@@ -1242,6 +988,15 @@ function ProjectDetailPage({
           )}
         </div>
       </div>
+
+      {/* Модальное окно подтверждения удаления проекта */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDeleteProject}
+        type="project"
+        itemName={deleteModal.projectTitle}
+      />
     </div>
   );
 }

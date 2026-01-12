@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../store/user.js";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from "../../store/user.ts";
+import { selectTheme, setTheme } from "../../store/theme";
 import styles from "../../style/Main/SimplePage.module.scss";
+import { themes, themeNames } from "../../assets/LeftPanel/themes";
 
 type SettingGroup =
   | "account"
@@ -23,7 +25,7 @@ type SettingCard = {
   icon?: string;
   hasToggle?: boolean;
   toggleState?: boolean;
-  type?: "category" | "toggle" | "select" | "input" | "checkbox";
+  type?: "category" | "toggle" | "select" | "input" | "checkbox" | "theme";
   options?: { value: string; label: string }[];
   inputType?: "text" | "email" | "password" | "tel" | "number" | "url";
   checkboxState?: boolean;
@@ -155,6 +157,14 @@ const settings: SettingCard[] = [
     hasToggle: true,
     toggleState: true,
     icon: "variant=21.svg",
+    group: "appearance",
+  },
+  {
+    id: 54,
+    title: "Тема интерфейса",
+    description: "Выберите цветовую схему для всего приложения.",
+    icon: "variant=1.svg",
+    type: "theme",
     group: "appearance",
   },
 
@@ -549,56 +559,58 @@ const groupOrder: SettingGroup[] = [
 ];
 
 const SettingsPage: React.FC = () => {
-  const user = useSelector(selectUser);
-  const [activeGroup, setActiveGroup] = useState<SettingGroup>("account");
-  const [githubLinked, setGithubLinked] = useState(false);
-  const [githubReposCount, setGithubReposCount] = useState(0);
-  const [toggleStates, setToggleStates] = useState<Record<number, boolean>>(
-    () => {
-      const initial: Record<number, boolean> = {};
-      settings.forEach((setting) => {
-        if (setting.hasToggle) {
-          initial[setting.id] = setting.toggleState ?? false;
-        }
-      });
-      return initial;
-    }
-  );
-  const [selectValues, setSelectValues] = useState<Record<number, string>>(
-    () => {
-      const initial: Record<number, string> = {};
-      settings.forEach((setting) => {
-        if (
-          setting.type === "select" &&
-          setting.options &&
-          setting.options.length > 0
-        ) {
-          initial[setting.id] = setting.value ?? setting.options[0].value;
-        }
-      });
-      return initial;
-    }
-  );
-  const [inputValues, setInputValues] = useState<Record<number, string>>(() => {
-    const initial: Record<number, string> = {};
+const user = useSelector(selectUser);
+const themeValue = useSelector(selectTheme);
+const dispatch = useDispatch();
+const [activeGroup, setActiveGroup] = useState<SettingGroup>("account");
+const [githubLinked, setGithubLinked] = useState(false);
+const [githubReposCount, setGithubReposCount] = useState(0);
+const [toggleStates, setToggleStates] = useState<Record<number, boolean>>(
+  () => {
+    const initial: Record<number, boolean> = {};
     settings.forEach((setting) => {
-      if (setting.type === "input") {
-        initial[setting.id] = setting.value ?? "";
+      if (setting.hasToggle) {
+        initial[setting.id] = setting.toggleState ?? false;
       }
     });
     return initial;
-  });
-  const [checkboxStates, setCheckboxStates] = useState<Record<number, boolean>>(
-    () => {
-      const initial: Record<number, boolean> = {};
-      settings.forEach((setting) => {
-        if (setting.type === "checkbox") {
-          initial[setting.id] = setting.checkboxState ?? false;
-        }
-      });
-      return initial;
+  }
+);
+const [selectValues, setSelectValues] = useState<Record<number, string>>(
+  () => {
+    const initial: Record<number, string> = {};
+    settings.forEach((setting) => {
+      if (
+        setting.type === "select" &&
+        setting.options &&
+        setting.options.length > 0
+      ) {
+        initial[setting.id] = setting.value ?? setting.options[0].value;
+      }
+    });
+    return initial;
+  }
+);
+const [inputValues, setInputValues] = useState<Record<number, string>>(() => {
+  const initial: Record<number, string> = {};
+  settings.forEach((setting) => {
+    if (setting.type === "input") {
+      initial[setting.id] = setting.value ?? "";
     }
-  );
+  });
+  return initial;
+});
+const [checkboxStates, setCheckboxStates] = useState<Record<number, boolean>>(
+  () => {
+    const initial: Record<number, boolean> = {};
+    settings.forEach((setting) => {
+      if (setting.type === "checkbox") {
+        initial[setting.id] = setting.checkboxState ?? false;
+      }
+    });
+    return initial;
+  }
+);
 
   const getBadgeClass = (tone?: SettingCard["tone"]) => {
     if (tone === "success") return `${styles.badge} ${styles.badgeSuccess}`;
@@ -622,6 +634,37 @@ const SettingsPage: React.FC = () => {
   const handleCheckboxChange = (id: number, checked: boolean) => {
     setCheckboxStates((prev) => ({ ...prev, [id]: checked }));
   };
+
+  const handleThemeChange = (theme: string) => {
+    dispatch(setTheme(theme as import("../../assets/LeftPanel/themes").ThemeName | ""));
+  };
+
+  // Применение темы при загрузке страницы
+  useEffect(() => {
+    if (themeValue) {
+      // Применяем тему к DOM при монтировании компонента
+      const applyTheme = (theme: string) => {
+        if (typeof window === "undefined") return;
+        
+        try {
+          // Удаляем существующие theme-* классы
+          Array.from(document.body.classList)
+            .filter(
+              (c): c is string => typeof c === "string" && c.startsWith("theme-")
+            )
+            .forEach((c) => document.body.classList.remove(c));
+
+          // Добавляем класс вида theme-<name>
+          document.body.classList.add(`theme-${theme}`);
+          document.body.setAttribute("data-theme", theme);
+        } catch (e) {
+          console.error("Error applying theme to DOM:", e);
+        }
+      };
+
+      applyTheme(themeValue);
+    }
+  }, [themeValue]);
 
   // Проверка статуса привязки GitHub
   useEffect(() => {
@@ -648,7 +691,7 @@ const SettingsPage: React.FC = () => {
           setGithubLinked(repos.length > 0);
         }
       } catch (error) {
-        console.error("Error checking GitHub status:", error);
+        console.error("Error checking GitHub status:", error instanceof Error ? error.message : String(error));
       }
     };
 
@@ -662,6 +705,40 @@ const SettingsPage: React.FC = () => {
     alert(
       "Для привязки GitHub аккаунта добавьте репозитории на странице проектов. GitHub репозитории автоматически привязываются к вашему профилю при добавлении."
     );
+  };
+
+  // Вспомогательные функции для тем
+  const getThemePreviewColors = (themeName: string): string[] => {
+    const theme = themes[themeName];
+    if (!theme) return [];
+    const colors = [
+      theme["bg-primary"],
+      theme["accent-primary"],
+      theme["accent-secondary"],
+      theme["border-primary"],
+    ].filter(Boolean);
+    return colors.slice(0, 4);
+  };
+
+  const getThemeDisplayName = (theme: string): string => {
+    const nameMap: Record<string, string> = {
+      "dark-plus": "Dark+",
+      "light-plus": "Light+",
+      "solarized-dark": "Solarized Dark",
+      "solarized-light": "Solarized Light",
+      "github-dark": "GitHub Dark",
+      "github-light": "GitHub Light",
+      "one-dark-pro": "One Dark Pro",
+      "material-theme-darker": "Material Darker",
+      "night-owl": "Night Owl",
+      "synthwave-84": "Synthwave 84",
+      "tokyo-night": "Tokyo Night",
+      "catppuccin-mocha": "Catppuccin Mocha",
+      "ayu-dark": "Ayu Dark",
+      "gruvbox-dark": "Gruvbox Dark",
+      "kimbie-dark": "Kimbie Dark",
+    };
+    return nameMap[theme] || theme.replace(/-/g, " ");
   };
 
   // Группировка настроек по группам
@@ -910,6 +987,71 @@ const SettingsPage: React.FC = () => {
                         handleCheckboxChange(setting.id, checked)
                       }
                     />
+                  </div>
+                );
+              } else if (setting.type === "theme") {
+                return (
+                  <div key={setting.id} className={`${styles.settingItem} ${styles.settingItemTheme}`}>
+                    <div className={styles.settingItemContent}>
+                      <h3 className={styles.settingItemTitle}>
+                        {setting.icon && (
+                          <img
+                            src={`/src/assets/icons/${setting.icon}`}
+                            alt=""
+                            className={styles.settingItemIcon}
+                          />
+                        )}
+                        {setting.title}
+                      </h3>
+                      <p className={styles.settingItemDescription}>
+                        {setting.description}
+                      </p>
+                      <div className={styles.settingItemMeta}>
+                        {setting.badge && (
+                          <span className={getBadgeClass(setting.tone)}>
+                            {setting.badge}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.themeGrid}>
+                        {Array.isArray(themeNames) && themeNames.map((theme) => {
+                          const previewColors = getThemePreviewColors(theme);
+                          const isSelected = themeValue === theme;
+                          const displayName = getThemeDisplayName(theme);
+                          return (
+                            <button
+                              key={theme}
+                              type="button"
+                              className={`${styles.themeTile} ${
+                                isSelected ? styles.selected : ""
+                              }`}
+                              onClick={() => handleThemeChange(theme)}
+                              aria-label={`Тема: ${displayName}`}
+                              aria-pressed={isSelected}
+                            >
+                              <div className={styles.themeTilePreview}>
+                                {previewColors.map((color, idx) => (
+                                  <div
+                                    key={`${theme}-${idx}`}
+                                    className={styles.themeTileColor}
+                                    style={{ backgroundColor: color }}
+                                    aria-hidden="true"
+                                  />
+                                ))}
+                              </div>
+                              <span className={styles.themeTileName}>
+                                {displayName}
+                              </span>
+                              {isSelected && (
+                                <span className={styles.themeTileBadge}>
+                                  ✓
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 );
               }

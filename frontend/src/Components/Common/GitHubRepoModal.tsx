@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import style from "../../style/Main/GitHubRepoModal.module.scss";
+import style from "../../style/Common/GitHubRepoModal.module.scss";
 
 interface GitHubRepoModalProps {
   isOpen: boolean;

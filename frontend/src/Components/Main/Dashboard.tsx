@@ -524,7 +524,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId, refreshKey }) => {
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         type="task"
-        title={taskToDeleteTitle}
+        itemName={taskToDeleteTitle}
       />
     </div>
   );

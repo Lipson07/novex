@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import user from "./user";
+import theme from "./theme";
 
 const persistUser = {
   key: "user",
@@ -10,11 +11,19 @@ const persistUser = {
   whitelist: ["id","name", "email", "password", "isVerified"],
 };
 
+const persistTheme = {
+  key: "theme",
+  storage,
+  whitelist: ["currentTheme"],
+};
+
 const persistUserReducer = persistReducer(persistUser, user);
+const persistThemeReducer = persistReducer(persistTheme, theme);
 
 const store = configureStore({
   reducer: {
     user: persistUserReducer,
+    theme: persistThemeReducer,
   },
 });
 

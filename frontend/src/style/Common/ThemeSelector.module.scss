@@ -1,0 +1,417 @@
+@use "../Main/variables.module.scss" as vars;
+
+.themeSelector {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-family-base);
+}
+
+// Стили для кнопки-триггера
+.themeSelectorButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  user-select: none;
+
+  &:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  &.open {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb, 0, 122, 204), 0.1);
+  }
+}
+
+// Размеры
+.size-small {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.size-medium {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.size-large {
+  padding: 10px 16px;
+  font-size: 15px;
+}
+
+// Варианты
+.variant-button {
+  min-width: 140px;
+}
+
+.variant-dropdown {
+  min-width: 180px;
+}
+
+.variant-inline {
+  border: none;
+  background: transparent;
+  padding: 4px 8px;
+  min-width: auto;
+
+  &:hover {
+    background: var(--bg-tertiary);
+  }
+}
+
+// Контент кнопки
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.buttonColorPreview {
+  display: flex;
+  gap: 3px;
+}
+
+.buttonColorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.buttonText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Стили для inline варианта
+.inlineTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--bg-tertiary);
+  }
+}
+
+.inlineLabel {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.inlineValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.inlineColorPreview {
+  display: flex;
+  gap: 2px;
+}
+
+.inlineColorDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.placeholder {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+// Chevron иконка
+.chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.rotated {
+  transform: rotate(180deg);
+}
+
+// Dropdown меню
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  min-width: 320px;
+  max-width: 500px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  animation: dropdownFadeIn 0.2s ease;
+  padding: 16px 0;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 16px 16px 0 0;
+    animation: slideUp 0.3s ease;
+    padding: 20px 0;
+  }
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  margin-bottom: 8px;
+}
+
+.dropdownTitle {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dropdownSubtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+// Список тем в виде сетки
+.themeList {
+  padding: 0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 6px;
+  }
+}
+
+.themeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 80px;
+
+  &:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  &.themeItemSelected {
+    background-color: var(--selection);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb, 0, 122, 204), 0.2);
+  }
+}
+
+.themeItemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.themeItemInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.themeItemName {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.themeItemBadge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background-color: var(--accent-primary);
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.themeItemColors {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.themeItemColor {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.checkIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+  z-index: 1;
+}
+
+// Футер dropdown
+.dropdownFooter {
+  padding: 12px 16px 0;
+  border-top: 1px solid var(--border-secondary);
+  margin-top: 8px;
+}
+
+.resetButton {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+}
+
+// Адаптивность
+@media (max-width: 480px) {
+  .themeSelectorButton {
+    min-width: 120px;
+  }
+
+  .dropdownMenu {
+    min-width: calc(100vw - 32px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+// Темная тема адаптации
+@media (prefers-color-scheme: dark) {
+  .buttonColorDot,
+  .inlineColorDot,
+  .themeItemColor {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Анимация для плавного открытия/закрытия
+.themeSelector {
+  .dropdownMenu {
+    animation: dropdownFadeIn 0.2s ease;
+  }
+}
+
+// Улучшенная доступность
+.themeSelectorButton:focus-visible,
+.themeItem:focus-visible,
+.resetButton:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+// Состояние disabled (если понадобится)
+.themeSelectorButton:disabled,
+.themeItem:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

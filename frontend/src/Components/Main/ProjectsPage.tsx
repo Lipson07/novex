@@ -8,6 +8,8 @@ import {
   getStatusColor,
   getStatusText,
 } from "../../assets/MockData/index.js";
+import ProjectCreationModal from "../Common/ProjectCreationModal.tsx";
+import DeleteConfirmationModal from "../Common/DeleteConfirmationModal.tsx";
 
 interface Project {
   id: number;
@@ -64,10 +66,12 @@ function ProjectsPage({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [newProjectTitle, setNewProjectTitle] = useState("");
-  const [newProjectDescription, setNewProjectDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
-  const [createError, setCreateError] = useState("");
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    projectId: null as number | null,
+    projectTitle: "",
+  });
 
   useEffect(() => {
     if (user?.id) {
@@ -104,14 +108,14 @@ function ProjectsPage({
         (project) =>
           project.title.toLowerCase().includes(query) ||
           project.description?.toLowerCase().includes(query) ||
-          project.status?.toLowerCase().includes(query),
+          project.status?.toLowerCase().includes(query)
       );
     }
 
     // Фильтрация по статусу
     if (activeFilter !== "all") {
       filtered = filtered.filter(
-        (project) => project.status?.toLowerCase() === activeFilter,
+        (project) => project.status?.toLowerCase() === activeFilter
       );
     }
 
@@ -138,17 +142,35 @@ function ProjectsPage({
     alert(`Редактирование проекта ${projectId} (заглушка)`);
   };
 
+  const openDeleteModal = (projectId: number, projectTitle: string) => {
+    setDeleteModal({
+      isOpen: true,
+      projectId,
+      projectTitle,
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      projectId: null,
+      projectTitle: "",
+    });
+  };
+
   const handleDeleteProject = async (projectId: number) => {
     console.log("handleDeleteProject вызван для проекта", projectId);
 
-    // Временное решение для отладки: всегда удаляем без подтверждения
-    // TODO: вернуть confirm после отладки
-    const shouldDelete = true; // confirm("Вы уверены, что хотите удалить проект? Это действие нельзя отменить.");
-
-    if (!shouldDelete) {
-      console.log("Удаление отменено пользователем");
-      return;
+    // Находим проект для получения названия
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      openDeleteModal(projectId, project.title);
     }
+  };
+
+  const confirmDeleteProject = async () => {
+    const { projectId } = deleteModal;
+    if (!projectId) return;
 
     try {
       console.log("Удаление проекта", projectId);
@@ -160,12 +182,11 @@ function ProjectsPage({
       const result = await ProjectService.deleteProject(projectId, user.id);
       console.log("Результат удаления:", result);
       if (result.success) {
-        alert(`Проект ${projectId} успешно удален`);
         // Обновить список проектов
         fetchProjects();
       } else {
         alert(
-          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`,
+          `Ошибка удаления проекта: ${result.message || "Неизвестная ошибка"}`
         );
       }
     } catch (error) {
@@ -173,8 +194,10 @@ function ProjectsPage({
       alert(
         `Не удалось удалить проект: ${
           error instanceof Error ? error.message : "Неизвестная ошибка"
-        }`,
+        }`
       );
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -195,49 +218,31 @@ function ProjectsPage({
     setIsCreateModalOpen(true);
   };
 
-  const handleCreateProjectSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newProjectTitle.trim()) {
-      setCreateError("Пожалуйста, введите название проекта");
-      return;
-    }
+  const handleCreateProjectSubmit = async (projectData: { title: string; description: string }) => {
     if (!user?.id) {
-      setCreateError("Ошибка: пользователь не авторизован");
-      return;
+      throw new Error("Ошибка: пользователь не авторизован");
     }
 
     setIsCreating(true);
-    setCreateError("");
-
     try {
-      const projectData = {
-        tittle: newProjectTitle.trim(), // API ожидает поле "tittle" (с двумя t)
-        description: newProjectDescription.trim(),
+      const payload = {
+        tittle: projectData.title.trim(), // API ожидает поле "tittle" (с двумя t)
+        description: projectData.description.trim(),
         owner_id: user.id,
       };
-      console.log("Отправка данных проекта:", projectData);
-      const newProject = await ProjectService.createProject(projectData);
+      console.log("Отправка данных проекта:", payload);
+      const newProject = await ProjectService.createProject(payload);
       console.log("Проект создан:", newProject);
-      // Сброс формы и закрытие модалки
-      setNewProjectTitle("");
-      setNewProjectDescription("");
-      setIsCreateModalOpen(false);
       // Обновить список проектов
       fetchProjects();
     } catch (error) {
       console.error("Ошибка создания проекта:", error);
-      setCreateError("Ошибка создания проекта");
+      throw new Error("Ошибка создания проекта");
     } finally {
       setIsCreating(false);
     }
   };
 
-  const handleCloseCreateModal = () => {
-    setIsCreateModalOpen(false);
-    setNewProjectTitle("");
-    setNewProjectDescription("");
-    setCreateError("");
-  };
 
   const getStatusBadgeText = (status?: string) => {
     if (!status) return "Без статуса";
@@ -261,7 +266,7 @@ function ProjectsPage({
     const date = new Date(deadline);
     const today = new Date();
     const diffDays = Math.ceil(
-      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     if (diffDays < 0) return { text: "Просрочено", color: "#FF6467" };
@@ -435,8 +440,8 @@ function ProjectsPage({
                       ? `${Math.round(
                           projects.reduce(
                             (acc, p) => acc + (p.progress || 0),
-                            0,
-                          ) / projects.length,
+                            0
+                          ) / projects.length
                         )}%`
                       : "0%"}
                   </span>
@@ -472,8 +477,8 @@ function ProjectsPage({
                   {searchQuery
                     ? "Попробуйте изменить поисковый запрос"
                     : activeFilter !== "all"
-                      ? "Измените фильтр статуса"
-                      : "Создайте свой первый проект, чтобы начать работу"}
+                    ? "Измените фильтр статуса"
+                    : "Создайте свой первый проект, чтобы начать работу"}
                 </p>
               </div>
             ) : (
@@ -495,7 +500,7 @@ function ProjectsPage({
                               className={style.statusBadge}
                               style={{
                                 backgroundColor: `${getStatusColor(
-                                  project.status,
+                                  project.status
                                 )}20`,
                                 color: getStatusColor(project.status),
                               }}
@@ -776,102 +781,22 @@ function ProjectsPage({
             )}
           </>
         )}
+        {/* Модальное окно создания проекта */}
+        <ProjectCreationModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={handleCreateProjectSubmit}
+          isCreating={isCreating}
+        />
 
-        {/* Модальное окно создания проекта (из LeftPanel) */}
-        {isCreateModalOpen && (
-          <div className={style.modalOverlay} onClick={handleCloseCreateModal}>
-            <div className={style.modal} onClick={(e) => e.stopPropagation()}>
-              <div className={style.modalHeader}>
-                <h3>Создать новый проект</h3>
-                <button
-                  onClick={handleCloseCreateModal}
-                  className={style.closeButton}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <form
-                onSubmit={handleCreateProjectSubmit}
-                className={style.modalForm}
-              >
-                {createError && (
-                  <div className={style.formError}>{createError}</div>
-                )}
-
-                <div className={style.formGroup}>
-                  <label>Название проекта *</label>
-                  <input
-                    type="text"
-                    value={newProjectTitle}
-                    onChange={(e) => {
-                      setNewProjectTitle(e.target.value);
-                      setCreateError("");
-                    }}
-                    placeholder="Введите название проекта"
-                    className={style.formInput}
-                    required
-                    autoFocus
-                  />
-                </div>
-
-                <div className={style.formGroup}>
-                  <label>Описание</label>
-                  <textarea
-                    value={newProjectDescription}
-                    onChange={(e) => setNewProjectDescription(e.target.value)}
-                    placeholder="Опишите ваш проект..."
-                    rows={4}
-                    className={style.formTextarea}
-                  />
-                </div>
-
-                <div className={style.modalActions}>
-                  <button
-                    type="button"
-                    onClick={handleCloseCreateModal}
-                    disabled={isCreating}
-                    className={style.cancelButton}
-                  >
-                    Отмена
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!newProjectTitle.trim() || isCreating}
-                    className={style.submitButton}
-                  >
-                    {isCreating ? (
-                      <>
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                        </svg>
-                        Создание...
-                      </>
-                    ) : (
-                      "Создать проект"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {/* Модальное окно подтверждения удаления проекта */}
+        <DeleteConfirmationModal
+          isOpen={deleteModal.isOpen}
+          onClose={closeDeleteModal}
+          onConfirm={confirmDeleteProject}
+          type="project"
+          itemName={deleteModal.projectTitle}
+        />
       </div>
     </div>
   );

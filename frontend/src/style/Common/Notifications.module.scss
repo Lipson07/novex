@@ -1,0 +1,223 @@
+@use "../Main/variables.module" as *;
+
+.notificationsOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.notificationsPanel {
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  background: $bg-card;
+  border-radius: $border-radius-3xl;
+  box-shadow: $shadow-card;
+  display: flex;
+  flex-direction: column;
+  pointer-events: all;
+  overflow: hidden;
+  border: 1px solid $border-color;
+}
+
+.notificationsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid $border-color;
+}
+
+.notificationsTitle {
+  font-size: $font-size-2xl;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $bg-content;
+    color: $text-main;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.notificationsContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  color: $text-secondary;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid $border-color;
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notificationItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: $bg-content;
+  border-radius: $border-radius-xl;
+  border: 1px solid $border-color;
+  transition: $transition-default;
+  cursor: pointer;
+
+  &:hover {
+    background: $bg-card;
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: $shadow-hover;
+  }
+}
+
+.notificationItemUnread {
+  border-left: 3px solid $primary-color;
+  background: $glass-bg;
+}
+
+.notificationIcon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-lg;
+  background: $glass-bg;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.notificationContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.notificationHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.notificationTitle {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: $text-main;
+  margin: 0;
+}
+
+.notificationTime {
+  font-size: $font-size-sm;
+  color: $text-muted;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.notificationMessage {
+  font-size: $font-size-md;
+  color: $text-secondary;
+  margin: 0;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.notificationProject {
+  font-size: $font-size-sm;
+  color: $primary-color;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  color: $text-secondary;
+  text-align: center;
+
+  svg {
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-md;
+  }
+}
+
+@media (max-width: 768px) {
+  .notificationsOverlay {
+    padding: 0;
+  }
+
+  .notificationsPanel {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+}
+

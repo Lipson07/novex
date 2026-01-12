@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import style from "../../style/Main/Hero.module.scss";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/user.js";
+import Notifications from "../Common/Notifications";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -9,6 +10,7 @@ interface HeroProps {
   onNavigateToProjects?: () => void;
   onProjectClick?: (projectId: number) => void;
   projectRefreshKey?: number;
+  onNavigateToProfile?: () => void;
 }
 
 interface Project {
@@ -47,6 +49,7 @@ const Hero: React.FC<HeroProps> = ({
   onNavigateToProjects,
   onProjectClick,
   projectRefreshKey,
+  onNavigateToProfile,
 }) => {
   const [heroProjects, setHeroProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,8 +61,10 @@ const Hero: React.FC<HeroProps> = ({
     todayTasks: 0,
   });
   const [viewMode, setViewMode] = useState<"list" | "grid2" | "grid3">("list");
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const user = useSelector(selectUser);
+  const hasProjects = heroProjects.length > 0;
 
   // Загрузка проектов пользователя
   const fetchUserProjects = async (userId: number) => {
@@ -157,11 +162,11 @@ const Hero: React.FC<HeroProps> = ({
     }
   };
 
-  // Загрузка GitHub репозиториев пользователя
-  const fetchUserGitHubRepos = async (userId: number) => {
+  // Загрузка GitHub репозиториев для проекта (по owner_id проекта)
+  const fetchProjectGitHubRepos = async (ownerId: number) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/github-projects/user/${userId}/projects`,
+        `${API_BASE_URL}/github-projects/user/${ownerId}/projects`,
         {
           method: "GET",
           headers: {
@@ -191,21 +196,19 @@ const Hero: React.FC<HeroProps> = ({
       try {
         setIsLoading(true);
 
-        // Загружаем проекты пользователя и GitHub репозитории параллельно
-        const [projects, githubRepos] = await Promise.all([
-          fetchUserProjects(user.id),
-          fetchUserGitHubRepos(user.id),
-        ]);
+        // Загружаем проекты пользователя
+        const projects = await fetchUserProjects(user.id);
 
-        // Загружаем статистику задач для каждого проекта
+        // Загружаем статистику задач и GitHub репозитории для каждого проекта
         const projectsWithStats = await Promise.all(
           projects.map(async (project) => {
-            const taskStats = await fetchProjectTasks(project.id);
+            const [taskStats, githubRepos] = await Promise.all([
+              fetchProjectTasks(project.id),
+              fetchProjectGitHubRepos(project.owner_id),
+            ]);
             
-            // Ищем связанный репозиторий (пока по user_id, можно улучшить если будет связь project_id)
-            const relatedRepo = githubRepos.find(
-              (repo: any) => repo.user_id === project.owner_id || repo.user_id === user.id
-            );
+            // Берем первый репозиторий владельца проекта (можно улучшить если будет связь project_id)
+            const relatedRepo = githubRepos.length > 0 ? githubRepos[0] : null;
 
             // Форматируем дату последнего коммита
             let lastCommitFormatted = null;
@@ -456,7 +459,11 @@ const Hero: React.FC<HeroProps> = ({
               </div>
             </div>
             <div className={style.topButtons}>
-              <button className={style.topButton} title="Уведомления">
+              <button
+                className={style.topButton}
+                title="Уведомления"
+                onClick={() => setNotificationsOpen(true)}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
@@ -474,7 +481,11 @@ const Hero: React.FC<HeroProps> = ({
                   />
                 </svg>
               </button>
-              <div className={style.userProfileHeader}>
+              <div
+                className={style.userProfileHeader}
+                onClick={() => onNavigateToProfile && onNavigateToProfile()}
+                style={{ cursor: onNavigateToProfile ? "pointer" : "default" }}
+              >
                 <div className={style.userAvatarHeader}>
                   <div className={style.avatarCircleHeader}>
                     {user?.name?.charAt(0) || "U"}
@@ -682,22 +693,6 @@ const Hero: React.FC<HeroProps> = ({
           </div>
         </div>
 
-        {/* Quick Actions внутри секции активных проектов */}
-        <div className={style.compactQuickActionsGrid}>
-          {quickActions.map((action) => (
-            <button
-              key={action.id}
-              className={style.compactQuickActionCard}
-              onClick={action.onClick}
-              style={
-                { "--action-color": action.color } as React.CSSProperties
-              }
-            >
-              <div className={style.compactQuickActionIcon}>{action.icon}</div>
-              <span className={style.compactQuickActionTitle}>{action.title}</span>
-            </button>
-          ))}
-        </div>
 
         {isLoading ? (
           <div className={style.loading}>
@@ -764,6 +759,25 @@ const Hero: React.FC<HeroProps> = ({
                   </div>
                   {/* Детальная информация о проекте - компактная сетка */}
                   <div className={style.projectDetailGrid}>
+                    {/* Быстрые действия - перенесены в информацию о проекте */}
+                    {quickActions.map((action) => (
+                      <button
+                        key={action.id}
+                        className={`${style.projectDetailCard} ${style.quickActionCard}`}
+                        onClick={action.onClick}
+                        style={
+                          { "--action-color": action.color } as React.CSSProperties
+                        }
+                      >
+                        <div className={style.quickActionIconWrapper}>
+                          {action.icon}
+                        </div>
+                        <div className={style.projectDetailCardHeader}>
+                          {action.title}
+                        </div>
+                      </button>
+                    ))}
+                    
                     {/* Команда */}
                     <div className={style.projectDetailCard}>
                       <div className={style.projectDetailCardHeader}>
@@ -1013,22 +1027,26 @@ const Hero: React.FC<HeroProps> = ({
           </div>
         ) : (
           <div className={style.emptyState}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <p>Нет активных проектов</p>
-            <button
-              className={style.emptyStateButton}
-              onClick={handleNewProject}
-            >
-              Создать первый проект
-            </button>
+            <div className={style.emptyStateContent}>
+              <div className={style.emptyStateIcon}>
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="32" r="30" stroke="var(--color-primary-soft)" strokeWidth="2" strokeDasharray="4 4" />
+                  <path d="M24 28L32 36L40 28" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="32" cy="24" r="2" fill="var(--color-primary)" />
+                  <circle cx="32" cy="40" r="2" fill="var(--color-primary)" />
+                </svg>
+              </div>
+              <h3 className={style.emptyStateTitle}>Нет активных проектов</h3>
+              <p className={style.emptyStateSubtitle}>
+                Создайте свой первый проект, чтобы начать работу и организовать задачи
+              </p>
+              <button className={style.emptyStateButton} onClick={handleNewProject}>
+                Создать первый проект
+              </button>
+            </div>
+            <div className={`${style.emptyStateDecoration} ${style.dot1}`}></div>
+            <div className={`${style.emptyStateDecoration} ${style.dot2}`}></div>
+            <div className={`${style.emptyStateDecoration} ${style.dot3}`}></div>
           </div>
         )}
       </div>
@@ -1199,6 +1217,11 @@ const Hero: React.FC<HeroProps> = ({
           </div>
         </div>
       </div>
+
+      <Notifications
+        isOpen={notificationsOpen}
+        onClose={() => setNotificationsOpen(false)}
+      />
     </div>
   );
 };
