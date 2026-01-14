@@ -366,6 +366,77 @@ export const OverdueIcon: React.FC<IconProps> = ({
     />
   </svg>
 );
+export const PauseIconRounded: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <rect x="6" y="5" width="3" height="14" rx="1" fill={color} />
+    <rect x="15" y="5" width="3" height="14" rx="1" fill={color} />
+  </svg>
+);
+export const LogoutIcon: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path
+      d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+      fill={color}
+    />
+  </svg>
+);
+export const WarningIcon: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path
+      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+      fill={color}
+    />
+  </svg>
+);
+export const ArrowRightIcon: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path d="M10 17l5-5-5-5v10z" fill={color} />
+  </svg>
+);
 export const BlockedIcon: React.FC<IconProps> = ({
   width = 20,
   height = 20,
@@ -519,5 +590,72 @@ export const StatusIcon: React.FC<IconProps> = ({
     className={className}>
     <circle cx="8" cy="8" r="6" stroke={color} strokeWidth="1.5" fill="none" />
     <path d="M8 4V8L10 10" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const MenuIcon: React.FC<IconProps> = ({
+  width = 24,
+  height = 24,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path
+      d="M3 12H21"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3 6H21"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3 18H21"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CloseIcon: React.FC<IconProps> = ({
+  width = 24,
+  height = 24,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path
+      d="M18 6L6 18"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6 6L18 18"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );

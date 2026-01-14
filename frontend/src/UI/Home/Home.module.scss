@@ -8,6 +8,16 @@
   margin: 0;
   padding-top: 0;
   padding-bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+
+  @media (max-width: 1400px) {
+  }
+
+  @media (max-width: 1024px) {
+    padding-left: 0;
+  }
 }
 
 .pageHeader {
@@ -21,6 +31,42 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @media (min-width: 1400px) {
+    padding-left: 30px;
+    padding-right: 30px;
+    left: 250px;
+  }
+
+  @media (max-width: 1400px) {
+    padding-left: 30px;
+    padding-right: 30px;
+    left: 200px;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 15px 20px;
+    padding-left: 70px; // Отступ для бургер-кнопки
+    z-index: 998; // Ниже бургер-кнопки
+    gap: 15px;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 15px;
+    padding-left: 64px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 480px) {
+    padding-left: 64px;
+  }
 
   .searchBar {
     display: flex;
@@ -28,12 +74,28 @@
     gap: 10px;
     flex: 1;
     max-width: 500px;
+    min-width: 0;
+
+    @media (max-width: 1024px) {
+      max-width: 400px;
+    }
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+      width: 100%;
+      order: 1;
+    }
 
     svg {
       width: 20px;
       height: 20px;
       color: $dracula-comment;
       flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        width: 18px;
+        height: 18px;
+      }
     }
 
     input {
@@ -45,6 +107,12 @@
       color: $dracula-foreground;
       font-size: 14px;
       font-family: inherit;
+      min-width: 0;
+
+      @media (max-width: 480px) {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
 
       &::placeholder {
         color: $dracula-comment;
@@ -62,16 +130,27 @@
       background-color: $dracula-purple;
       color: $dracula-background;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 14px;
       font-family: inherit;
       transition: all 0.2s ease;
       white-space: nowrap;
+      flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
 
       &:hover {
-        opacity: 0.9;
+        background-color: $dracula-indigo;
       }
     }
   }
@@ -81,6 +160,18 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      order: 2;
+      width: 100%;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 6px;
+    }
   }
 
   // Кнопка уведомлений
@@ -98,6 +189,13 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
+      flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+      }
 
       &:hover {
         background-color: $dracula-selection;
@@ -108,6 +206,11 @@
         width: 20px;
         height: 20px;
         display: block;
+
+        @media (max-width: 480px) {
+          width: 18px;
+          height: 18px;
+        }
       }
 
       // Индикатор новых уведомлений
@@ -122,6 +225,13 @@
         border-radius: 50%;
         border: 2px solid $dracula-background;
         display: none; // Показывать только если есть уведомления
+
+        @media (max-width: 480px) {
+          top: 6px;
+          right: 6px;
+          width: 6px;
+          height: 6px;
+        }
       }
 
       &.hasNotifications::after {
@@ -132,6 +242,7 @@
 
   // Стили для блока аккаунта
   .account {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -139,12 +250,17 @@
     background-color: $dracula-background;
     border: 1px solid $dracula-selection;
     border-radius: 12px;
-    transition: all 0.3s ease;
+    min-width: 0;
 
-    &:hover {
-      background-color: $dracula-selection;
-      border-color: $dracula-purple;
-      box-shadow: 0 2px 8px $dracula-purple-rgba-015;
+    @media (max-width: 768px) {
+      padding: 6px 10px;
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 6px 8px;
+      gap: 8px;
+      border-radius: 10px;
     }
 
     .accountInfo {
@@ -152,24 +268,48 @@
       align-items: center;
       gap: 12px;
       flex: 1;
+      min-width: 0;
+
+      @media (max-width: 480px) {
+        gap: 8px;
+      }
     }
 
     .accountAvatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, $dracula-purple 0%, $dracula-pink 100%);
+      background-color: $dracula-purple;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      border: 2px solid $dracula-purple-rgba-03;
-      transition: all 0.3s ease;
+      border: 1px solid $dracula-selection;
+
+      @media (max-width: 768px) {
+        width: 36px;
+        height: 36px;
+      }
+
+      @media (max-width: 480px) {
+        width: 32px;
+        height: 32px;
+      }
 
       svg {
         width: 22px;
         height: 22px;
         color: $dracula-background;
+
+        @media (max-width: 768px) {
+          width: 20px;
+          height: 20px;
+        }
+
+        @media (max-width: 480px) {
+          width: 18px;
+          height: 18px;
+        }
       }
     }
 
@@ -188,6 +328,14 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 13px;
+        }
       }
 
       .accountRole {
@@ -199,19 +347,139 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        @media (max-width: 768px) {
+          font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 11px;
+        }
       }
     }
   }
 }
+.modalProfile {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 30px;
+  margin-top: 10px;
+  min-width: 200px;
+  border-radius: 12px;
+  background-color: $dracula-background;
+  border: 1px solid $dracula-selection;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
 
+  @media (max-width: 768px) {
+    right: 15px;
+    min-width: 180px;
+  }
+
+  @media (max-width: 480px) {
+    right: 10px;
+    min-width: 160px;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+
+  a {
+    color: $dracula-foreground;
+    text-decoration: none;
+  }
+
+  .btnProfile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    margin: 4px;
+
+    @media (max-width: 480px) {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    &:hover {
+      background-color: $dracula-selection;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+
+      @media (max-width: 480px) {
+        font-size: 13px;
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 18px;
+        height: 18px;
+
+        @media (max-width: 480px) {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .logOut {
+    svg {
+      color: $dracula-red;
+    }
+  }
+}
 .dashboard {
   padding: 30px;
+
+  @media (max-width: 1024px) {
+    padding: 25px 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px 12px;
+  }
 
   > h1 {
     color: $dracula-foreground;
     font-size: 32px;
     font-weight: 700;
     margin: 0 0 20px 0;
+
+    @media (max-width: 1024px) {
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
   }
 }
 
@@ -234,81 +502,141 @@
 
   @media (max-width: 1400px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  @media (max-width: 1024px) {
+    gap: 16px;
+    margin-bottom: 30px;
   }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 20px;
   }
 }
 
 .metricCard {
   background-color: $dracula-current-line;
   border: 1px solid $dracula-selection;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
 
-  &:hover {
-    box-shadow: 0 4px 12px $dracula-shadow-dark;
+  @media (max-width: 1024px) {
+    padding: 18px;
+    min-height: 140px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    min-height: 130px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    min-height: 120px;
+    border-radius: 10px;
   }
 
   .cardHeader {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    gap: 8px;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $dracula-selection;
 
-    h1 {
-      color: $dracula-foreground;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
+    @media (max-width: 768px) {
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
     }
+
+    @media (max-width: 480px) {
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+    }
+
     .svgdiv {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 45px;
-      height: 45px;
-      border-radius: 10px;
-      background-color: $dracula-shadow-medium;
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background-color: $dracula-background;
+      border: 1px solid $dracula-selection;
+      flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+      }
+
+      @media (max-width: 480px) {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+      }
 
       svg {
-        width: 30px;
-        height: 30px;
-        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
         color: $dracula-purple;
+
+        @media (max-width: 768px) {
+          width: 24px;
+          height: 24px;
+        }
+
+        @media (max-width: 480px) {
+          width: 22px;
+          height: 22px;
+        }
       }
     }
 
-    button {
-      background: none;
-      border: none;
-      color: $dracula-comment;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
+    h1 {
+      color: $dracula-foreground;
+      font-size: 19px;
+      font-weight: 600;
+      margin: 0;
+      flex: 1;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      min-width: 0;
 
-      &:hover {
-        color: $dracula-purple;
-        background-color: $dracula-purple-rgba-01;
+      @media (max-width: 768px) {
+        font-size: 17px;
       }
 
-      svg {
-        width: 16px;
-        height: 16px;
+      @media (max-width: 480px) {
+        font-size: 15px;
+      }
+    }
+
+    h3 {
+      color: $dracula-comment;
+      font-size: 13px;
+      font-weight: 500;
+      margin: 0;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+      flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        font-size: 12px;
       }
     }
   }
@@ -316,55 +644,262 @@
   .cardContent {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    color: $dracula-foreground;
-    font-size: 14px;
-    line-height: 1.6;
-    svg {
-      width: 30px;
-      height: 30px;
+    gap: 0;
+    flex: 1;
+    justify-content: center;
+
+    // Company Teams - горизонтальное отображение
+    .cardContentrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0;
+
+      @media (max-width: 480px) {
+        gap: 10px;
+      }
+
+      p:first-child {
+        color: $dracula-comment;
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+
+        @media (max-width: 480px) {
+          font-size: 12px;
+        }
+      }
+
+      p:last-child {
+        font-weight: 700;
+        color: $dracula-foreground;
+        font-size: 32px;
+        margin: 0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+
+        @media (max-width: 768px) {
+          font-size: 28px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 24px;
+        }
+      }
     }
 
-    .cardContentrow {
+    // Global Metrics - горизонтальная сетка
+    .cardInfo {
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 5px;
-      p {
-        font-weight: 300;
-        color: $dracula-foreground;
-        font-size: 20px;
-      }
-    }
-    .cardInfo {
-      display: flex;
-      align-items: center;
-      flex-flow: row wrap;
-      gap: 5px;
-      p {
-        font-weight: 300;
-        color: $dracula-foreground;
-        font-size: 25px;
-      }
-    }
+      justify-content: space-around;
+      gap: 16px;
+      padding: 0;
+      flex-wrap: wrap;
 
-    // Стили для текстовых метрик
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
 
-    // Стили для чисел/статистики
-    strong {
-      color: $dracula-purple;
-      font-size: 20px;
-      font-weight: 700;
+      h1 {
+        color: $dracula-foreground;
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        text-align: center;
+
+        @media (max-width: 768px) {
+          font-size: 28px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 24px;
+        }
+      }
+
+      p {
+        font-weight: 400;
+        color: $dracula-comment;
+        font-size: 12px;
+        margin: 4px 0 0 0;
+        text-align: center;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+
+        @media (max-width: 480px) {
+          font-size: 11px;
+        }
+      }
+
+      // Обертка для каждой метрики
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        min-width: 80px;
+
+        @media (max-width: 480px) {
+          min-width: 70px;
+        }
+      }
     }
   }
+
+  // Company Projects - горизонтальная сетка статусов
   .infoTasks {
     display: flex;
     flex-direction: row;
-    gap: 5px;
-    p {
-      color: $dracula-foreground;
-      font-size: 25px;
-      font-weight: 700;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: stretch;
+
+    @media (max-width: 480px) {
+      gap: 6px;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 8px;
+      background-color: $dracula-background;
+      border: 1px solid $dracula-selection;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 0;
+
+      @media (max-width: 768px) {
+        padding: 8px 6px;
+        gap: 5px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 8px 4px;
+        gap: 4px;
+        border-radius: 6px;
+      }
+
+      svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+
+        @media (max-width: 768px) {
+          width: 20px;
+          height: 20px;
+        }
+
+        @media (max-width: 480px) {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      p {
+        color: $dracula-foreground;
+        font-size: 11px;
+        font-weight: 500;
+        margin: 0;
+        text-align: center;
+        line-height: 1.3;
+        letter-spacing: 0.01em;
+        word-break: break-word;
+
+        @media (max-width: 480px) {
+          font-size: 10px;
+        }
+      }
+
+      // Число в отдельном элементе
+      .metricValue {
+        font-size: 20px;
+        font-weight: 700;
+        color: $dracula-foreground;
+        margin: 2px 0;
+        line-height: 1;
+
+        @media (max-width: 768px) {
+          font-size: 18px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .active {
+      border-top: 3px solid $dracula-green;
+
+      svg {
+        color: $dracula-green;
+        filter: brightness(1.1);
+      }
+    }
+
+    .blocked {
+      border-top: 3px solid $dracula-cyan;
+
+      svg {
+        color: $dracula-cyan;
+        filter: brightness(1.1);
+      }
+    }
+
+    .warning {
+      border-top: 3px solid $dracula-red;
+
+      svg {
+        color: $dracula-red;
+        filter: brightness(1.1);
+      }
+    }
+  }
+
+  // Company Teams - аватары в одну строку с числом
+  .avatars {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    overflow-x: auto;
+    padding: 8px 0;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $dracula-background;
+      border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $dracula-selection;
+      border-radius: 2px;
+    }
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: $dracula-comment;
+      padding: 5px;
+      background-color: $dracula-background;
+      border-radius: 50%;
+      border: 1px solid $dracula-selection;
+      flex-shrink: 0;
     }
   }
 }
@@ -381,7 +916,7 @@
     display: block;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, var(--dracula-purple) 0%, var(--dracula-cyan) 100%);
+    background-color: $dracula-purple;
     border-radius: 4px;
     transition: width 0.3s ease;
   }
@@ -394,9 +929,36 @@
   justify-content: center;
   flex-flow: row nowrap;
   gap: 5px;
+
+  @media (max-width: 768px) {
+    margin-top: 12px;
+    gap: 4px;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 10px;
+    gap: 3px;
+    flex-wrap: wrap;
+    height: auto;
+  }
+
   .progressText {
     color: $dracula-foreground;
     font-size: 25px;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
+  }
+
+  p {
+    @media (max-width: 480px) {
+      font-size: 12px;
+    }
   }
 }
 // Projects Focus Grid - адаптивная сетка
@@ -417,10 +979,12 @@
   gap: 20px;
   padding: 20px 0;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1500px) {
     grid-template-columns: repeat(2, 1fr);
   }
-
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -431,14 +995,30 @@
   border: 1px solid $dracula-selection;
   border-radius: 8px;
   padding: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover {
-    box-shadow: 0 4px 12px $dracula-shadow-dark;
+  @media (max-width: 1024px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    border-radius: 6px;
   }
 
   .taskHeader {
     margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 14px;
+    }
 
     .taskInfo {
       position: relative;
@@ -453,33 +1033,58 @@
         justify-content: space-between;
         gap: 10px;
         position: relative;
+        min-width: 0;
+
+        @media (max-width: 768px) {
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 15px;
+          margin-bottom: 6px;
+          gap: 8px;
+        }
 
         // Кнопка статуса в заголовке задачи
         button {
-          background: none;
-          border: none;
+          background-color: $dracula-background;
+          border: 1px solid $dracula-selection;
           color: $dracula-comment;
           cursor: pointer;
           padding: 4px;
-          border-radius: 4px;
+          border-radius: 6px;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: all 0.2s ease;
-          width: 24px;
-          height: 24px;
+          width: 32px;
+          height: 32px;
           flex-shrink: 0;
           margin-left: auto;
 
+          @media (max-width: 480px) {
+            width: 28px;
+            height: 28px;
+            padding: 3px;
+            border-radius: 4px;
+          }
+
           &:hover {
             color: $dracula-purple;
+            border-color: $dracula-purple;
             background-color: $dracula-purple-rgba-01;
           }
 
           svg {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             display: block;
+
+            @media (max-width: 480px) {
+              width: 18px;
+              height: 18px;
+            }
           }
         }
       }
@@ -495,29 +1100,46 @@
   .taskMetrics {
     .metricButtons {
       display: flex;
+      gap: 8px;
 
       button {
-        width: 100%;
-        height: 40px;
-        padding: 6px 14px;
-        border: none;
+        flex: 1;
+        height: 44px;
+        padding: 8px 12px;
+        border: 1px solid $dracula-selection;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        background: $dracula-current-line;
+        justify-content: center;
+        gap: 8px;
+        background-color: $dracula-background;
         color: $dracula-foreground;
-        font-size: 20px;
+        font-size: 14px;
         font-weight: 500;
-        cursor: default;
+        border-radius: 8px;
+        cursor: pointer;
         user-select: none;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: $dracula-purple;
+          background-color: $dracula-purple-rgba-01;
+        }
 
         .label {
           opacity: 0.7;
+          font-size: 12px;
         }
 
         .value {
           font-weight: 700;
           letter-spacing: 0.3px;
+          font-size: 16px;
+        }
+
+        svg {
+          width: 18px;
+          height: 18px;
+          flex-shrink: 0;
         }
 
         /* ========================= */
@@ -525,9 +1147,11 @@
         /* ========================= */
 
         &.btnActive {
-          background-color: $dracula-cyan;
+          svg {
+            color: $dracula-green;
+          }
           .value {
-            color: $dracula-foreground;
+            color: $dracula-green;
           }
         }
 
@@ -535,10 +1159,12 @@
         /* ===== STATUS: BLOCKED === */
         /* ========================= */
 
-        &.btnPaused {
-          background-color: $dracula-violet;
+        &.btnBlocked {
+          svg {
+            color: $dracula-red;
+          }
           .value {
-            color: $dracula-foreground;
+            color: $dracula-red;
           }
         }
 
@@ -547,9 +1173,11 @@
         /* ========================= */
 
         &.btnOverdue {
-          background-color: $dracula-amber;
+          svg {
+            color: $dracula-orange;
+          }
           .value {
-            color: $dracula-foreground;
+            color: $dracula-orange;
           }
         }
       }
@@ -562,6 +1190,16 @@
     align-items: center;
     flex-wrap: wrap;
     font-size: 14px;
+
+    @media (max-width: 768px) {
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 6px;
+      font-size: 12px;
+    }
 
     span {
       color: $dracula-comment;
@@ -577,39 +1215,112 @@
       padding: 4px 8px;
       background-color: $dracula-cyan-rgba-01;
       border-radius: 4px;
+
+      @media (max-width: 480px) {
+        padding: 3px 6px;
+        font-size: 11px;
+      }
     }
   }
 
   .actionButtons {
     display: flex;
+    flex-wrap: nowrap;
     gap: 10px;
-    flex-wrap: wrap;
+    height: 44px;
 
-    .btnSecondary {
-      padding: 8px 16px;
-      background-color: $dracula-purple;
-      color: $dracula-foreground;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
+    @media (max-width: 768px) {
+      gap: 8px;
+      height: 40px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 6px;
+      height: auto;
+      flex-wrap: wrap;
+    }
+
+    button {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      border: 1px solid $dracula-selection;
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      color: $dracula-foreground;
+      width: 100%;
+      background-color: $dracula-current-line;
+      font-family: inherit;
 
-      &:hover {
-        opacity: 0.9;
-        box-shadow: 0 2px 8px $dracula-purple-rgba-03;
+      @media (max-width: 768px) {
+        padding: 10px 14px;
+        border-radius: 6px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 8px 12px;
+        flex: 1 1 calc(33.333% - 4px);
+        min-width: 0;
+        height: 38px;
+      }
+
+      p {
+        color: currentColor;
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+        text-transform: capitalize;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex: 1;
+        justify-content: center;
+        transition: color 0.2s ease;
+        line-height: 1;
+        letter-spacing: 0.5px;
+
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 12px;
+        }
       }
 
       svg {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
+
+        @media (max-width: 480px) {
+          width: 16px;
+          height: 16px;
+        }
       }
+
+      &:hover {
+        border-color: $dracula-purple;
+        background-color: $dracula-purple-rgba-01;
+      }
+    }
+
+    .btnBoard {
+      border: 1px solid #1e90ff;
+      background-color: #1e90ff;
+      color: #ffffff;
+    }
+
+    .btnGithub {
+      border: 1px solid #333333;
+      background-color: #333333;
+      color: #ffffff;
+    }
+
+    .btnAnalytics {
+      background-color: $dracula-green;
+      color: #ffffff;
     }
   }
 }
@@ -623,6 +1334,17 @@
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 25px;
   }
 }
 
@@ -636,6 +1358,19 @@
   flex-direction: column;
   min-height: 100%;
 
+  @media (max-width: 1024px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    border-radius: 6px;
+  }
+
   .sectionHeader {
     display: flex;
     justify-content: space-between;
@@ -643,16 +1378,44 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+
+    @media (max-width: 768px) {
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
     .sort {
       display: flex;
       flex-flow: row wrap;
       gap: 10px;
+
+      @media (max-width: 480px) {
+        gap: 8px;
+      }
     }
+
     .sectionTitle {
       color: $dracula-foreground;
       font-size: 24px;
       font-weight: 700;
       margin: 0;
+
+      @media (max-width: 1024px) {
+        font-size: 22px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 20px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 18px;
+      }
     }
 
     .Overdue {
@@ -660,24 +1423,39 @@
       font-size: 14px;
       font-weight: 600;
       margin: 0;
+
+      @media (max-width: 480px) {
+        font-size: 12px;
+      }
     }
 
     .btnSecondary {
       padding: 8px 16px;
-      background-color: $dracula-purple;
+      background-color: $dracula-background;
       color: $dracula-foreground;
-      border: none;
-      border-radius: 6px;
+      border: 1px solid $dracula-selection;
+      border-radius: 8px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
 
+      @media (max-width: 768px) {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 6px;
+      }
+
       &:hover {
-        opacity: 0.9;
-        background-color: $dracula-background;
+        border-color: $dracula-purple;
+        background-color: $dracula-purple-rgba-01;
       }
     }
   }
@@ -688,15 +1466,27 @@
     gap: 15px;
     flex: 1;
 
+    @media (max-width: 768px) {
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 10px;
+    }
+
     > div {
       background-color: $dracula-background;
       border: 1px solid $dracula-selection;
       border-radius: 6px;
       padding: 15px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-      &:hover {
-        box-shadow: 0 4px 8px $dracula-shadow-medium;
+      @media (max-width: 768px) {
+        padding: 12px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 10px;
+        border-radius: 4px;
       }
 
       .Lowcardstatus {
@@ -708,6 +1498,12 @@
         margin-bottom: 10px;
         background-color: $dracula-green;
         color: $dracula-background;
+
+        @media (max-width: 480px) {
+          padding: 3px 6px;
+          font-size: 11px;
+          margin-bottom: 8px;
+        }
       }
 
       .Mediumcardstatus {
@@ -719,6 +1515,12 @@
         margin-bottom: 10px;
         background-color: $dracula-yellow;
         color: $dracula-background;
+
+        @media (max-width: 480px) {
+          padding: 3px 6px;
+          font-size: 11px;
+          margin-bottom: 8px;
+        }
       }
 
       .Hightcardstatus {
@@ -730,6 +1532,12 @@
         margin-bottom: 10px;
         background-color: $dracula-red;
         color: $dracula-background;
+
+        @media (max-width: 480px) {
+          padding: 3px 6px;
+          font-size: 11px;
+          margin-bottom: 8px;
+        }
       }
 
       &:last-child {
@@ -741,6 +1549,12 @@
         justify-content: space-between;
         align-items: flex-start;
         width: 100%;
+        gap: 12px;
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+          gap: 8px;
+        }
       }
 
       .taskName {
@@ -749,6 +1563,16 @@
         font-weight: 600;
         margin: 0;
         flex: 1;
+        min-width: 0;
+        word-break: break-word;
+
+        @media (max-width: 768px) {
+          font-size: 15px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 14px;
+        }
       }
 
       .datesContainer {
@@ -756,6 +1580,13 @@
         flex-direction: column;
         align-items: flex-end;
         margin-left: 16px;
+        flex-shrink: 0;
+
+        @media (max-width: 480px) {
+          margin-left: 0;
+          align-items: flex-start;
+          width: 100%;
+        }
       }
 
       .taskCreatedAt,
@@ -764,10 +1595,22 @@
         font-size: 14px;
         margin: 0;
         white-space: nowrap;
+
+        @media (max-width: 768px) {
+          font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 12px;
+        }
       }
 
       .taskDedline {
         margin-top: 4px;
+
+        @media (max-width: 480px) {
+          margin-top: 2px;
+        }
       }
     }
   }
@@ -778,6 +1621,14 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
 }
 
 // My Stats Section
@@ -787,6 +1638,19 @@
   border-radius: 8px;
   padding: 20px;
 
+  @media (max-width: 1024px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    border-radius: 6px;
+  }
+
   .sectionHeader {
     display: flex;
     justify-content: space-between;
@@ -795,29 +1659,62 @@
     flex-wrap: wrap;
     gap: 15px;
 
+    @media (max-width: 768px) {
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
     .sectionTitle {
       color: $dracula-foreground;
       font-size: 24px;
       font-weight: 700;
       margin: 0;
+
+      @media (max-width: 1024px) {
+        font-size: 22px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 20px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 18px;
+      }
     }
 
     .btnSecondary {
       padding: 8px 16px;
-      background-color: $dracula-purple;
-      color: $dracula-background;
-      border: none;
-      border-radius: 6px;
+      background-color: $dracula-background;
+      color: $dracula-foreground;
+      border: 1px solid $dracula-selection;
+      border-radius: 8px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
 
+      @media (max-width: 768px) {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 6px;
+      }
+
       &:hover {
-        opacity: 0.9;
-        box-shadow: 0 2px 8px $dracula-purple-rgba-03;
+        border-color: $dracula-purple;
+        background-color: $dracula-purple-rgba-01;
       }
     }
   }
@@ -827,6 +1724,14 @@
     flex-direction: column;
     gap: 15px;
 
+    @media (max-width: 768px) {
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 10px;
+    }
+
     .taskscomplited {
       color: $dracula-foreground;
       font-size: 16px;
@@ -835,6 +1740,17 @@
       background-color: $dracula-background;
       border-radius: 6px;
       border: 1px solid $dracula-selection;
+
+      @media (max-width: 768px) {
+        padding: 12px;
+        font-size: 15px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
     }
 
     .tasksoverdue {
@@ -845,6 +1761,17 @@
       background-color: $dracula-background;
       border-radius: 6px;
       border: 1px solid $dracula-selection;
+
+      @media (max-width: 768px) {
+        padding: 12px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 10px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
     }
   }
 }
@@ -857,17 +1784,50 @@
   padding: 20px;
   flex: 1;
 
+  @media (max-width: 1024px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    border-radius: 6px;
+  }
+
   .sectionHeader {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 20px;
 
+    @media (max-width: 768px) {
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 14px;
+      gap: 8px;
+    }
+
     svg {
       width: 24px;
       height: 24px;
       color: $dracula-purple;
       flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        width: 22px;
+        height: 22px;
+      }
+
+      @media (max-width: 480px) {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     .sectionTitle {
@@ -875,11 +1835,27 @@
       font-size: 24px;
       font-weight: 700;
       margin: 0;
+
+      @media (max-width: 1024px) {
+        font-size: 22px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 20px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 18px;
+      }
     }
   }
 
   > div {
     margin-bottom: 12px;
+
+    @media (max-width: 480px) {
+      margin-bottom: 10px;
+    }
 
     &:last-child {
       margin-bottom: 0;
@@ -894,11 +1870,16 @@
     background-color: $dracula-background;
     border: 1px solid $dracula-selection;
     border-radius: 6px;
-    transition: all 0.2s ease;
 
-    &:hover {
-      border-color: $dracula-purple;
-      box-shadow: 0 2px 8px $dracula-purple-rgba-02;
+    @media (max-width: 768px) {
+      padding: 12px;
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 10px;
+      gap: 8px;
+      border-radius: 4px;
     }
 
     svg {
@@ -907,6 +1888,16 @@
       color: $dracula-purple;
       flex-shrink: 0;
       margin-top: 2px;
+
+      @media (max-width: 768px) {
+        width: 18px;
+        height: 18px;
+      }
+
+      @media (max-width: 480px) {
+        width: 16px;
+        height: 16px;
+      }
     }
 
     .aiName {
@@ -914,6 +1905,15 @@
       font-size: 14px;
       font-weight: 600;
       margin: 0 0 4px 0;
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
     }
 
     p {
@@ -922,6 +1922,15 @@
       margin: 0;
       line-height: 1.5;
 
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
       &:not(.aiName) {
         color: $dracula-comment;
       }
@@ -929,53 +1938,44 @@
   }
 }
 
-// Адаптивность для мобильных устройств
-@media (max-width: 768px) {
+// Дополнительные адаптивные улучшения для очень маленьких экранов
+@media (max-width: 360px) {
   .homeContainer {
     padding-left: 0;
   }
 
   .pageHeader {
-    padding: 15px;
-    flex-wrap: wrap;
-    gap: 15px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
 
-    .searchBar {
-      max-width: 100%;
-      width: 100%;
-      order: 1;
+  .dashboard {
+    padding: 12px 10px;
+
+    > h1 {
+      font-size: 18px;
     }
+  }
 
-    .avatar {
-      order: 2;
-      width: 100%;
-      justify-content: flex-end;
-    }
+  .metricCard {
+    padding: 12px;
 
-    .account {
-      .accountDetails {
-        .accountName {
-          font-size: 14px;
-        }
-
-        .accountRole {
-          font-size: 12px;
-        }
-      }
-
-      .accountAvatar {
-        width: 36px;
-        height: 36px;
-
-        svg {
-          width: 20px;
-          height: 20px;
-        }
+    .cardHeader {
+      h1 {
+        font-size: 14px;
       }
     }
   }
 
-  .dashboard {
-    padding: 20px 15px;
+  .taskCard {
+    padding: 12px;
+
+    .taskHeader .taskInfo h1 {
+      font-size: 14px;
+    }
+  }
+
+  .sectionTitle {
+    font-size: 16px !important;
   }
 }

@@ -18,4 +18,10 @@ export {
   ActiveIcon,
   OverdueIcon,
   BlockedIcon,
+  ArrowRightIcon,
+  WarningIcon,
+  PauseIconRounded,
+  LogoutIcon,
+  MenuIcon,
+  CloseIcon,
 } from './Icon';

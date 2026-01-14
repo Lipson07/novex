@@ -18,6 +18,11 @@ import {
   ActiveIcon,
   OverdueIcon,
   BlockedIcon,
+  ArrowRightIcon,
+  WarningIcon,
+  PauseIconRounded,
+  SettingsIcon,
+  LogoutIcon,
 } from '../Icons';
 import { Projects } from '../Projects/Projects.Mockdata';
 import { Tasks } from '../../Tasks/Tasks.mockData';
@@ -29,10 +34,7 @@ export default function Home() {
     { userid: 1, name: 'bnix', online: true, role: 'junior ', avatar: false },
     { userid: 2, name: 'test', online: true, role: 'Senior', avatar: false },
   ]);
-  const [mockTasks, setMockTasks] = useState<TaskInterface[]>(Tasks);
-  const [sortBy, setSortBy] = useState('Dedline');
-  const [sort, setSort] = useState([]);
-  const [isUp, setIsUp] = useState(true);
+
   const [mockAI, setMockAI] = useState([
     {
       id: 0,
@@ -46,6 +48,12 @@ export default function Home() {
     },
   ]);
 
+  const [mockTasks, setMockTasks] = useState<TaskInterface[]>(Tasks);
+  const [sortBy, setSortBy] = useState('Dedline');
+  const [sort, setSort] = useState([]);
+  const [isUp, setIsUp] = useState(true);
+  const [isopenProfile, setIsopenProfile] = useState(false);
+
   const progress = (title: string) => {
     return Math.floor(
       (mockTasks.filter((task) => task.project === title && task.success).length /
@@ -53,6 +61,9 @@ export default function Home() {
         100,
     );
   };
+  useEffect(() => {
+    isUp ? sortUpTasks() : sortDownTasks();
+  }, [mockTasks, sortBy, isUp]);
 
   function sortUpTasks() {
     if (sortBy === 'Dedline') {
@@ -73,6 +84,7 @@ export default function Home() {
       );
     }
   }
+
   function sortDownTasks() {
     if (sortBy === 'Dedline') {
       setSort(
@@ -92,9 +104,6 @@ export default function Home() {
       );
     }
   }
-  useEffect(() => {
-    isUp ? sortUpTasks() : sortDownTasks();
-  }, [mockTasks, sortBy, isUp]);
 
   function SetStatistikActive(title: string) {
     return Math.floor(
@@ -112,7 +121,12 @@ export default function Home() {
       mockTasks.filter((task) => task.project === title && task.overdue === true).length,
     );
   }
+
   const onlineCount = mockUsers.filter((user) => user.online).length;
+
+  function OpenModalProfile() {
+    isopenProfile === false ? setIsopenProfile(true) : setIsopenProfile(false);
+  }
   return (
     <div className={styles.homeContainer}>
       <section className={styles.pageHeader}>
@@ -131,16 +145,39 @@ export default function Home() {
           {mockUsers.map(
             (user) =>
               user.role === 'Admin' && (
-                <div className={styles.account}>
-                  <div className={styles.accountInfo}>
-                    <div className={styles.accountAvatar}>
-                      <AccountIcon />
-                    </div>
-                    <div className={styles.accountDetails}>
-                      <p className={styles.accountName}>{user.name}</p>
-                      <p className={styles.accountRole}>{user.role}</p>
+                <div className={styles.allAccount} onClick={OpenModalProfile}>
+                  <div className={styles.account}>
+                    <div className={styles.accountInfo}>
+                      <div className={styles.accountAvatar}>
+                        <AccountIcon />
+                      </div>
+                      <div className={styles.accountDetails}>
+                        <p className={styles.accountName}>{user.name}</p>
+                        <p className={styles.accountRole}>{user.role}</p>
+                      </div>
                     </div>
                   </div>
+                  {isopenProfile ? (
+                    <div className={styles.modalProfile}>
+                      {' '}
+                      <Link to="/profile/">
+                        <div className={styles.btnProfile}>
+                          <button className={styles.settings}>
+                            <SettingsIcon />
+                          </button>
+                          <p>Account settings</p>
+                        </div>
+                      </Link>
+                      <div className={styles.btnProfile}>
+                        <button className={styles.logOut}>
+                          <LogoutIcon />
+                        </button>
+                        <p>Log out</p>
+                      </div>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
               ),
           )}
@@ -163,15 +200,27 @@ export default function Home() {
 
             <div className={styles.cardContent}>
               <div className={styles.infoTasks}>
-                <p className={styles.cardInfo}>
-                  Active: {Projects.filter((project) => project.status === 'Active').length}
-                </p>
-                <p className={styles.cardInfo}>
-                  Paused: {Projects.filter((project) => project.status === 'Paused').length}
-                </p>
-                <p className={styles.cardInfo}>
-                  Risk: {Projects.filter((project) => project.status === 'Risk').length}
-                </p>
+                <div className={styles.active}>
+                  <ActiveIcon />
+                  <span className={styles.metricValue}>
+                    {Projects.filter((project) => project.status === 'Active').length}
+                  </span>
+                  <p className={styles.cardInfo}>Active</p>
+                </div>
+                <div className={styles.blocked}>
+                  <PauseIconRounded />
+                  <span className={styles.metricValue}>
+                    {Projects.filter((project) => project.status === 'Paused').length}
+                  </span>
+                  <p className={styles.cardInfo}>Paused</p>
+                </div>
+                <div className={styles.warning}>
+                  <WarningIcon />
+                  <span className={styles.metricValue}>
+                    {Projects.filter((project) => project.status === 'Risk').length}
+                  </span>
+                  <p className={styles.cardInfo}>Risk</p>
+                </div>
               </div>
             </div>
           </div>
@@ -205,12 +254,14 @@ export default function Home() {
             </div>
             <div className={styles.cardContent}>
               <div className={styles.cardInfo}>
-                <h1>{mockTasks.length}</h1>
-                <p className={styles.text}>Total tasks</p>
-              </div>
-              <div className={styles.cardInfo}>
-                <h1> {mockTasks.filter((task) => task.overdue === true).length}</h1>
-                <p className={styles.text}>Overdue tasks</p>
+                <div>
+                  <h1>{mockTasks.length}</h1>
+                  <p className={styles.text}>Total tasks</p>
+                </div>
+                <div>
+                  <h1>{mockTasks.filter((task) => task.overdue === true).length}</h1>
+                  <p className={styles.text}>Overdue tasks</p>
+                </div>
               </div>
             </div>
           </div>
@@ -241,7 +292,7 @@ export default function Home() {
                     <h1>
                       {project.title}
                       <button>
-                        <StatusIcon />
+                        <ArrowRightIcon />
                       </button>
                     </h1>
                     <div className={styles.progressContainer}>
@@ -268,20 +319,20 @@ export default function Home() {
                     <div className={styles.metricButtons}>
                       <button className={`${styles.btnActive}`}>
                         <ActiveIcon />
-                        <span className={styles.label}>Active</span>
+                        <span className={styles.label}>Active:</span>
                         <span className={styles.value}>{SetStatistikActive(project.title)}</span>
                       </button>
 
-                      <button className={`${styles.btnPaused}`}>
+                      <button className={`${styles.btnBlocked}`}>
                         <BlockedIcon />
-                        <span className={styles.label}>Blocked</span>
+                        <span className={styles.label}>Blocked:</span>
 
                         <span className={styles.value}>{SetStatistikBlocked(project.title)}</span>
                       </button>
 
                       <button className={`${styles.btnOverdue}`}>
                         <OverdueIcon />
-                        <span className={styles.label}>Overdue</span>
+                        <span className={styles.label}>Overdue:</span>
                         <span className={styles.value}>{SetStatistikOverdue(project.title)}</span>
                       </button>
                     </div>
@@ -290,15 +341,23 @@ export default function Home() {
                   <div className={styles.githubInfo}>
                     <GithubIcon />
                     <span>github:</span>
-                    <span className={styles.githubCommits}>commits:{/* {CountOfCommits} */}</span>
-                    <span className={styles.githubCommits}>PR:{/* {PR} */}</span>
-                    <span className={styles.githubCommits}>CI:{/* {CI} */}</span>
+                    <span className={styles.githubCommits}>
+                      commits:{/* {CountOfCommits} */} 10
+                    </span>
+                    <span className={styles.githubCommits}>PR:{/* {PR} */}7</span>
+                    <span className={styles.githubCommits}>CI:{/* {CI} */}2 </span>
                   </div>
 
                   <div className={styles.actionButtons}>
-                    <button className={styles.btnSecondary}>Open Board</button>
-                    <button className={styles.btnSecondary}>Repo</button>
-                    <button className={styles.btnSecondary}>Analytics</button>
+                    <button className={styles.btnBoard}>
+                      <p>Board</p>
+                    </button>
+                    <button className={styles.btnGithub}>
+                      <p>Repo</p>
+                    </button>
+                    <button className={styles.btnAnalytics}>
+                      <p>Analytics</p>
+                    </button>
                   </div>
                 </div>
               </div>

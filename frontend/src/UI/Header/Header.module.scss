@@ -14,6 +14,86 @@
   z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
+  transition: transform 0.3s ease-in-out;
+
+  @media (max-width: 1024px) {
+    width: 280px;
+    transform: translateX(-100%);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  &.menuOpen {
+    @media (max-width: 1024px) {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Overlay для мобильных
+.overlay {
+  display: none;
+
+  @media (max-width: 1024px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+}
+
+// Бургер-кнопка
+.burgerButton {
+  display: none;
+
+  @media (max-width: 1024px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    width: 44px;
+    height: 44px;
+    background-color: $dracula-current-line;
+    border: 1px solid $dracula-selection;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.2s ease;
+    color: $dracula-foreground;
+
+    &:hover {
+      background-color: $dracula-selection;
+      border-color: $dracula-purple;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: currentColor;
+    }
+  }
+
+  @media (max-width: 480px) {
+    top: 12px;
+    left: 12px;
+    width: 40px;
+    height: 40px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
 .logo_Container {
@@ -217,27 +297,16 @@
   }
 }
 // Адаптивность для мобильных устройств
-@media (max-width: 768px) {
-  .allheader {
-    width: 100%;
-    height: auto;
-    position: relative;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 15px;
-    border-right: none;
+@media (max-width: 1024px) {
+  .logo_Container {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 1px solid $dracula-selection;
   }
 
-  .logo_Container {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
   .Tabs {
-    flex-direction: row;
+    flex-direction: column;
     gap: 4px;
-    flex: 0;
+    flex: 1;
   }
 }
