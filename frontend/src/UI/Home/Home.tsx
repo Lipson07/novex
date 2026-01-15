@@ -26,13 +26,37 @@ import {
 } from '../Icons';
 import { Projects } from '../Projects/Projects.Mockdata';
 import { Tasks } from '../../Tasks/Tasks.mockData';
+import AccountSettings from '../AccountSettings/AccountSettings';
 
 export default function Home() {
   const [mockUsers, setMockUsers] = useState<UserInterface[]>([
-    { userid: 0, name: 'botoli', online: false, role: 'Admin', avatar: false },
-    { userid: 1, name: 'bnix', online: true, role: 'Designer', avatar: false },
-    { userid: 1, name: 'bnix', online: true, role: 'junior ', avatar: false },
-    { userid: 2, name: 'test', online: true, role: 'Senior', avatar: false },
+    {
+      userid: 0,
+      email: 'botoli@gmail.com',
+      password: 'passwd',
+      name: 'botoli',
+      online: false,
+      role: 'Admin',
+      avatar: false,
+    },
+    {
+      userid: 1,
+      email: 'bnix@gmail.com',
+      password: 'passwd',
+      name: 'bnix',
+      online: true,
+      role: 'Designer',
+      avatar: false,
+    },
+    {
+      userid: 2,
+      email: 'test@gmail.com',
+      password: 'passwd',
+      name: 'test',
+      online: true,
+      role: 'Senior',
+      avatar: false,
+    },
   ]);
 
   const [mockAI, setMockAI] = useState([
@@ -53,6 +77,7 @@ export default function Home() {
   const [sort, setSort] = useState([]);
   const [isUp, setIsUp] = useState(true);
   const [isopenProfile, setIsopenProfile] = useState(false);
+  const [isOpenAccountSettings, setIsOpenAccountSettings] = useState(false);
 
   const progress = (title: string) => {
     return Math.floor(
@@ -64,7 +89,9 @@ export default function Home() {
   useEffect(() => {
     isUp ? sortUpTasks() : sortDownTasks();
   }, [mockTasks, sortBy, isUp]);
-
+  function openAccountSettings() {
+    setIsOpenAccountSettings(!isOpenAccountSettings);
+  }
   function sortUpTasks() {
     if (sortBy === 'Dedline') {
       setSort(
@@ -122,13 +149,16 @@ export default function Home() {
     );
   }
 
-  const onlineCount = mockUsers.filter((user) => user.online).length;
-
   function OpenModalProfile() {
     isopenProfile === false ? setIsopenProfile(true) : setIsopenProfile(false);
   }
   return (
     <div className={styles.homeContainer}>
+      <div className={styles.AccountSettingsModal}>
+        {isOpenAccountSettings && (
+          <AccountSettings onclose={() => setIsOpenAccountSettings(!isOpenAccountSettings)} />
+        )}
+      </div>
       <section className={styles.pageHeader}>
         <div className={styles.searchBar}>
           <SearchIcon />
@@ -159,15 +189,12 @@ export default function Home() {
                   </div>
                   {isopenProfile ? (
                     <div className={styles.modalProfile}>
-                      {' '}
-                      <Link to="/profile/">
-                        <div className={styles.btnProfile}>
-                          <button className={styles.settings}>
-                            <SettingsIcon />
-                          </button>
-                          <p>Account settings</p>
-                        </div>
-                      </Link>
+                      <div className={styles.btnProfile} onClick={openAccountSettings}>
+                        <button className={styles.settings}>
+                          <SettingsIcon />
+                        </button>
+                        <p>Account settings</p>
+                      </div>
                       <div className={styles.btnProfile}>
                         <button className={styles.logOut}>
                           <LogoutIcon />

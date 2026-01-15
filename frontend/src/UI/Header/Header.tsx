@@ -44,7 +44,6 @@ export default function Header() {
 
   function toogleActive(name: string) {
     setTabs((item) => item.map((prev) => ({ ...prev, active: prev.name === name })));
-    // Закрываем меню при клике на таб на мобильных
     if (window.innerWidth <= 1024) {
       setIsMenuOpen(false);
     }

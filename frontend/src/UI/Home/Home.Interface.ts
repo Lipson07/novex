@@ -19,6 +19,8 @@ export interface TaskInterface {
 }
 export interface UserInterface {
   userid: number;
+  email: string;
+  password: string;
   name: string;
   online: boolean;
   role: string;

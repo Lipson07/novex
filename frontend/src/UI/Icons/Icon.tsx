@@ -402,6 +402,7 @@ export const LogoutIcon: React.FC<IconProps> = ({
     />
   </svg>
 );
+
 export const WarningIcon: React.FC<IconProps> = ({
   width = 20,
   height = 20,
@@ -613,13 +614,7 @@ export const MenuIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M3 6H21"
-      stroke={color}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M3 6H21" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M3 18H21"
       stroke={color}

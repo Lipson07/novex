@@ -6,6 +6,7 @@ import Header from './UI/Header/Header';
 import Home from './UI/Home/Home';
 import './UI/Styles/app.scss';
 import { ThemeProvider } from './context/Theme.tsx';
+import AccountSettings from './UI/AccountSettings/AccountSettings.tsx';
 function App() {
   return (
     <ThemeProvider>
