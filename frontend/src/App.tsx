@@ -6,7 +6,7 @@ import Header from './UI/Header/Header';
 import Home from './UI/Home/Home';
 import './UI/Styles/app.scss';
 import { ThemeProvider } from './context/Theme.tsx';
-import AccountSettings from './UI/AccountSettings/AccountSettings.tsx';
+import Projects from './UI/Projects/Projects.tsx';
 function App() {
   return (
     <ThemeProvider>
@@ -14,6 +14,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/Projects" element={<Projects />} />
         </Routes>
       </div>
     </ThemeProvider>

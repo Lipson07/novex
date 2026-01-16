@@ -1,80 +1,80 @@
 // CSS Variables для темной и светлой темы
 
 :root {
-  --dracula-background: #2e3440;
-  --dracula-current-line: #3b4252;
-  --dracula-selection: #434c5e;
-  --dracula-foreground: #eceff4;
-  --dracula-comment: #81a1c1;
+  --dracula-background: #1f2430;
+  --dracula-current-line: #2a3142;
+  --dracula-selection: #343c52;
+  --dracula-foreground: #f3f6fb;
+  --dracula-comment: #8fa7c9;
 
-  --dracula-cyan: #88c0d0;
-  --dracula-green: #a3be8c;
-  --dracula-orange: #d08770;
-  --dracula-pink: #b48ead;
-  --dracula-purple: #5e81ac;
-  --dracula-red: #bf616a;
-  --dracula-yellow: #ebcb8b;
+  --dracula-cyan: #2fd3f5;
+  --dracula-green: #8be65c;
+  --dracula-orange: #ff9f6b;
+  --dracula-pink: #d29cff;
+  --dracula-purple: #6c8cff;
+  --dracula-red: #ff5c6c;
+  --dracula-yellow: #ffd866;
 
-  --dracula-blue: #81a1c1;
-  --dracula-teal: #8fbcbb;
-  --dracula-indigo: #5e81ac;
-  --dracula-rose: #bf616a;
-  --dracula-emerald: #a3be8c;
-  --dracula-violet: #b48ead;
-  --dracula-fuchsia: #c678dd;
-  --dracula-sky: #88c0d0;
-  --dracula-lime: #a3be8c;
-  --dracula-amber: #ebcb8b;
+  --dracula-blue: #5cc8ff;
+  --dracula-teal: #4fd1c5;
+  --dracula-indigo: #7a8cff;
+  --dracula-rose: #ff6b81;
+  --dracula-emerald: #6ee7b7;
+  --dracula-violet: #c792ea;
+  --dracula-fuchsia: #ff7edb;
+  --dracula-sky: #7dd3fc;
+  --dracula-lime: #a3ff6f;
+  --dracula-amber: #ffcc66;
 
-  --dracula-purple-rgba-01: rgba(94, 129, 172, 0.1);
-  --dracula-purple-rgba-02: rgba(94, 129, 172, 0.2);
-  --dracula-purple-rgba-03: rgba(94, 129, 172, 0.3);
-  --dracula-purple-rgba-015: rgba(94, 129, 172, 0.15);
-  --dracula-shadow-dark: rgba(0, 0, 0, 0.35);
-  --dracula-shadow-medium: rgba(0, 0, 0, 0.25);
-  --dracula-cyan-rgba-01: rgba(136, 192, 208, 0.1);
-  --dracula-white-rgba-02: rgba(236, 239, 244, 0.2);
+  --dracula-purple-rgba-01: rgba(108, 140, 255, 0.12);
+  --dracula-purple-rgba-02: rgba(108, 140, 255, 0.22);
+  --dracula-purple-rgba-03: rgba(108, 140, 255, 0.32);
+  --dracula-purple-rgba-015: rgba(108, 140, 255, 0.18);
+
+  --dracula-shadow-dark: rgba(0, 0, 0, 0.45);
+  --dracula-shadow-medium: rgba(0, 0, 0, 0.3);
+
+  --dracula-cyan-rgba-01: rgba(47, 211, 245, 0.15);
+  --dracula-white-rgba-02: rgba(243, 246, 251, 0.25);
 }
 
 // Light Theme
 :root.light-theme {
-  /* Base */
-  --dracula-background: #eceff4;
-  --dracula-current-line: #e5e9f0;
-  --dracula-selection: #d8dee9;
-  --dracula-foreground: #2e3440;
-  --dracula-comment: #5e6778;
+  --dracula-background: #f4f7fb;
+  --dracula-current-line: #e8edf5;
+  --dracula-selection: #dbe3f0;
+  --dracula-foreground: #1f2430;
+  --dracula-comment: #55607a;
 
-  /* Accent colors — приглушённые, холодные */
-  --dracula-cyan: #5fa6b8;
-  --dracula-green: #7fa66f;
-  --dracula-orange: #b07d5d;
-  --dracula-pink: #9a7ea6;
-  --dracula-purple: #506a92;
-  --dracula-red: #a2555c;
-  --dracula-yellow: #bfa15f;
+  --dracula-cyan: #1fb6d9;
+  --dracula-green: #4caf50;
+  --dracula-orange: #e07a3f;
+  --dracula-pink: #b06fd3;
+  --dracula-purple: #5b6cff;
+  --dracula-red: #e5535d;
+  --dracula-yellow: #d4a72c;
 
-  /* Additional */
-  --dracula-blue: #5e81ac;
-  --dracula-teal: #6fa3a0;
-  --dracula-indigo: #506a92;
-  --dracula-rose: #a2555c;
-  --dracula-emerald: #7fa66f;
-  --dracula-violet: #9a7ea6;
-  --dracula-fuchsia: #a06db3;
-  --dracula-sky: #5fa6b8;
-  --dracula-lime: #8fb57a;
-  --dracula-amber: #bfa15f;
+  --dracula-blue: #3f7bdc;
+  --dracula-teal: #2fa4a9;
+  --dracula-indigo: #5b6cff;
+  --dracula-rose: #e5535d;
+  --dracula-emerald: #3fbf8f;
+  --dracula-violet: #9b5de5;
+  --dracula-fuchsia: #c445c4;
+  --dracula-sky: #3fb8e0;
+  --dracula-lime: #6bcf63;
+  --dracula-amber: #d4a72c;
 
-  /* Shadows / overlays — очень мягкие */
-  --dracula-purple-rgba-01: rgba(94, 129, 172, 0.08);
-  --dracula-purple-rgba-02: rgba(94, 129, 172, 0.14);
-  --dracula-purple-rgba-03: rgba(94, 129, 172, 0.22);
-  --dracula-purple-rgba-015: rgba(94, 129, 172, 0.12);
-  --dracula-shadow-dark: rgba(46, 52, 64, 0.15);
-  --dracula-shadow-medium: rgba(46, 52, 64, 0.08);
-  --dracula-cyan-rgba-01: rgba(95, 166, 184, 0.1);
-  --dracula-white-rgba-02: rgba(46, 52, 64, 0.08);
+  --dracula-purple-rgba-01: rgba(91, 108, 255, 0.1);
+  --dracula-purple-rgba-02: rgba(91, 108, 255, 0.18);
+  --dracula-purple-rgba-03: rgba(91, 108, 255, 0.28);
+  --dracula-purple-rgba-015: rgba(91, 108, 255, 0.14);
+
+  --dracula-shadow-dark: rgba(31, 36, 48, 0.18);
+  --dracula-shadow-medium: rgba(31, 36, 48, 0.1);
+
+  --dracula-cyan-rgba-01: rgba(31, 182, 217, 0.14);
+  --dracula-white-rgba-02: rgba(31, 36, 48, 0.1);
 }
 
 // SCSS переменные для обратной совместимости (используют CSS переменные)

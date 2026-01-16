@@ -1,0 +1,484 @@
+@import '../Styles/Variables.scss';
+.ProjectContainer {
+  min-height: 100vh;
+  background-color: $dracula-background;
+  color: $dracula-foreground;
+  padding-left: 250px; // Отступ для сайдбара
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+
+  @media (max-width: 1400px) {
+  }
+
+  @media (max-width: 1024px) {
+    padding-left: 0;
+  }
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background-color: $dracula-current-line;
+  border-bottom: 1px solid $dracula-selection;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @media (min-width: 1400px) {
+    padding-left: 30px;
+    padding-right: 30px;
+    left: 250px;
+  }
+
+  @media (max-width: 1400px) {
+    padding-left: 30px;
+    padding-right: 30px;
+    left: 200px;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 15px 20px;
+    padding-left: 70px; // Отступ для бургер-кнопки
+    z-index: 998; // Ниже бургер-кнопки
+    gap: 15px;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 15px;
+    padding-left: 64px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 480px) {
+    padding-left: 64px;
+  }
+
+  .searchBar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 500px;
+    min-width: 0;
+
+    @media (max-width: 1024px) {
+      max-width: 400px;
+    }
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+      width: 100%;
+      order: 1;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $dracula-comment;
+      flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    input {
+      flex: 1;
+      padding: 10px 15px;
+      background-color: $dracula-background;
+      border: 1px solid $dracula-selection;
+      border-radius: 6px;
+      color: $dracula-foreground;
+      font-size: 14px;
+      font-family: inherit;
+      min-width: 0;
+
+      @media (max-width: 480px) {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      &::placeholder {
+        color: $dracula-comment;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $dracula-purple;
+        box-shadow: 0 0 0 3px $dracula-purple-rgba-01;
+      }
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: $dracula-purple;
+      color: $dracula-background;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      &:hover {
+        background-color: $dracula-indigo;
+      }
+    }
+  }
+
+  // Стили для кнопок уведомлений и аккаунта
+  .avatar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      order: 2;
+      width: 100%;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 6px;
+    }
+  }
+
+  // Кнопка уведомлений
+  > div:nth-of-type(2) {
+    button {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: $dracula-background;
+      border: 1px solid $dracula-selection;
+      color: $dracula-foreground;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+      }
+
+      &:hover {
+        background-color: $dracula-selection;
+        border-color: $dracula-purple;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+
+        @media (max-width: 480px) {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      // Индикатор новых уведомлений
+      &::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background-color: $dracula-red;
+        border-radius: 50%;
+        border: 2px solid $dracula-background;
+        display: none; // Показывать только если есть уведомления
+
+        @media (max-width: 480px) {
+          top: 6px;
+          right: 6px;
+          width: 6px;
+          height: 6px;
+        }
+      }
+
+      &.hasNotifications::after {
+        display: block;
+      }
+    }
+  }
+
+  // Стили для блока аккаунта
+  .account {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background-color: $dracula-background;
+    border: 1px solid $dracula-selection;
+    border-radius: 12px;
+    min-width: 0;
+
+    @media (max-width: 768px) {
+      padding: 6px 10px;
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 6px 8px;
+      gap: 8px;
+      border-radius: 10px;
+    }
+
+    .accountInfo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+
+      @media (max-width: 480px) {
+        gap: 8px;
+      }
+    }
+
+    .accountAvatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: $dracula-purple;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid $dracula-selection;
+
+      @media (max-width: 768px) {
+        width: 36px;
+        height: 36px;
+      }
+
+      @media (max-width: 480px) {
+        width: 32px;
+        height: 32px;
+      }
+
+      svg {
+        width: 22px;
+        height: 22px;
+        color: $dracula-background;
+
+        @media (max-width: 768px) {
+          width: 20px;
+          height: 20px;
+        }
+
+        @media (max-width: 480px) {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+
+    .accountDetails {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+
+      .accountName {
+        color: $dracula-foreground;
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 13px;
+        }
+      }
+
+      .accountRole {
+        color: $dracula-comment;
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media (max-width: 768px) {
+          font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+.modalProfile {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 30px;
+  margin-top: 10px;
+  min-width: 200px;
+  border-radius: 12px;
+  background-color: $dracula-background;
+  border: 1px solid $dracula-selection;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    right: 15px;
+    min-width: 180px;
+  }
+
+  @media (max-width: 480px) {
+    right: 10px;
+    min-width: 160px;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+
+  a {
+    color: $dracula-foreground;
+    text-decoration: none;
+  }
+
+  .btnProfile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    margin: 4px;
+
+    @media (max-width: 480px) {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    &:hover {
+      background-color: $dracula-selection;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+
+      @media (max-width: 480px) {
+        font-size: 13px;
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 18px;
+        height: 18px;
+
+        @media (max-width: 480px) {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .logOut {
+    svg {
+      color: $dracula-red;
+    }
+  }
+}
+.dashboard {
+  padding: 30px;
+
+  @media (max-width: 1024px) {
+    padding: 25px 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px 12px;
+  }
+
+  > h1 {
+    color: $dracula-foreground;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+
+    @media (max-width: 1024px) {
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+  }
+}

@@ -402,7 +402,38 @@ export const LogoutIcon: React.FC<IconProps> = ({
     />
   </svg>
 );
-
+export const ArrowUpIcon: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path d="M12 4l-6 6h4v10h4V10h4l-6-6z" fill={color} />
+  </svg>
+);
+export const ArrowDownIcon: React.FC<IconProps> = ({
+  width = 20,
+  height = 20,
+  className,
+  color = 'currentColor',
+}) => (
+  <svg
+    width={width}
+    height={height}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}>
+    <path d="M12 20l6-6h-4V4h-4v10H6l6 6z" fill={color} />
+  </svg>
+);
 export const WarningIcon: React.FC<IconProps> = ({
   width = 20,
   height = 20,

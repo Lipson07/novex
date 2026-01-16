@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styles from './Home.module.scss';
 import { Tabs } from './Data';
 import { Link } from 'react-router-dom';
-import type { TaskInterface, UserInterface } from './Home.Interface';
+import type { UserInterface } from './Home.Interface';
+
 import {
   SearchIcon,
   NotificationIcon,
@@ -23,42 +24,15 @@ import {
   PauseIconRounded,
   SettingsIcon,
   LogoutIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from '../Icons';
-import { Projects } from '../Projects/Projects.Mockdata';
-import { Tasks } from '../../Tasks/Tasks.mockData';
+import { ProjectsData } from '../Projects/Projects.Mockdata';
+import { Tasks, type TaskInterface } from '../../Tasks/Tasks.mockData';
 import AccountSettings from '../AccountSettings/AccountSettings';
+import { mockUsers } from '../../MockData/UsersMock';
 
 export default function Home() {
-  const [mockUsers, setMockUsers] = useState<UserInterface[]>([
-    {
-      userid: 0,
-      email: 'botoli@gmail.com',
-      password: 'passwd',
-      name: 'botoli',
-      online: false,
-      role: 'Admin',
-      avatar: false,
-    },
-    {
-      userid: 1,
-      email: 'bnix@gmail.com',
-      password: 'passwd',
-      name: 'bnix',
-      online: true,
-      role: 'Designer',
-      avatar: false,
-    },
-    {
-      userid: 2,
-      email: 'test@gmail.com',
-      password: 'passwd',
-      name: 'test',
-      online: true,
-      role: 'Senior',
-      avatar: false,
-    },
-  ]);
-
   const [mockAI, setMockAI] = useState([
     {
       id: 0,
@@ -71,81 +45,63 @@ export default function Home() {
       text: 'Разработать документацию',
     },
   ]);
-
-  const [mockTasks, setMockTasks] = useState<TaskInterface[]>(Tasks);
+  const [users, setUser] = useState([mockUsers]);
+  const [mockTasks, setMockTasks] = useState(Tasks);
   const [sortBy, setSortBy] = useState('Dedline');
   const [sort, setSort] = useState([]);
-  const [isUp, setIsUp] = useState(true);
   const [isopenProfile, setIsopenProfile] = useState(false);
   const [isOpenAccountSettings, setIsOpenAccountSettings] = useState(false);
-
-  const progress = (title: string) => {
+  const [isSortRisk, setIsSortRisk] = useState(true);
+  const [isSortDedline, setIsSortDedline] = useState(true);
+  const progress = (id: number) => {
     return Math.floor(
-      (mockTasks.filter((task) => task.project === title && task.success).length /
-        mockTasks.filter((task) => task.project === title).length) *
+      (mockTasks.filter((task) => task.projectId === id && task.status === 'completed').length /
+        mockTasks.filter((task) => task.projectId === id).length) *
         100,
     );
   };
+
+  function sorty() {
+    const copyMockTasks = [...mockTasks];
+    if (sortBy === 'Dedline') {
+      const SortByDedline = copyMockTasks.sort((a, b) => {
+        const dedlineA = parseInt(a.deadline);
+        const dedlineB = parseInt(b.deadline);
+        return isSortDedline ? dedlineA - dedlineB : dedlineB - dedlineA;
+      });
+      setSort(SortByDedline);
+    }
+
+    if (sortBy === 'Risk') {
+      const sortByRisk = copyMockTasks.sort((a, b) => {
+        const RiskA = a.priority === 'low' ? 1 : a.priority === 'medium' ? 2 : 3;
+        const RiskB = b.priority === 'low' ? 1 : b.priority === 'medium' ? 2 : 3;
+        return isSortRisk ? RiskA - RiskB : RiskB - RiskA;
+      });
+      setSort(sortByRisk);
+    }
+  }
   useEffect(() => {
-    isUp ? sortUpTasks() : sortDownTasks();
-  }, [mockTasks, sortBy, isUp]);
+    sorty();
+  }, [mockTasks, sortBy, isSortDedline, isSortRisk]);
   function openAccountSettings() {
     setIsOpenAccountSettings(!isOpenAccountSettings);
   }
-  function sortUpTasks() {
-    if (sortBy === 'Dedline') {
-      setSort(
-        [...mockTasks].sort((a, b) => {
-          const A = parseInt(a.dedline);
-          const B = parseInt(b.dedline);
-          return A - B;
-        }),
-      );
-    } else if (sortBy === 'Risk') {
-      setSort(
-        [...mockTasks].sort((a, b) => {
-          const A = a.riskId;
-          const B = b.riskId;
-          return A - B;
-        }),
-      );
-    }
-  }
 
-  function sortDownTasks() {
-    if (sortBy === 'Dedline') {
-      setSort(
-        [...mockTasks].sort((a, b) => {
-          const A = parseInt(a.dedline);
-          const B = parseInt(b.dedline);
-          return B - A;
-        }),
-      );
-    } else if (sortBy === 'Risk') {
-      setSort(
-        [...mockTasks].sort((a, b) => {
-          const A = a.riskId;
-          const B = b.riskId;
-          return B - A;
-        }),
-      );
-    }
-  }
-
-  function SetStatistikActive(title: string) {
+  function SetStatistikActive(id: number) {
     return Math.floor(
-      mockTasks.filter((task) => task.project === title && task.active === true).length,
+      mockTasks.filter((task) => task.projectId === id && task.status === 'active').length,
     );
   }
 
-  function SetStatistikBlocked(title: string) {
+  function SetStatistikBlocked(id: number) {
     return Math.floor(
-      mockTasks.filter((task) => task.project === title && task.blocked === true).length,
+      mockTasks.filter((task) => task.projectId === id && task.status === 'blocked').length,
     );
   }
-  function SetStatistikOverdue(title: string) {
+  function SetStatistikOverdue(id: number) {
     return Math.floor(
-      mockTasks.filter((task) => task.project === title && task.overdue === true).length,
+      mockTasks.filter((task) => task.projectId === id && task.status === 'overdue').length,
     );
   }
 
@@ -187,7 +143,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  {isopenProfile ? (
+                  {isopenProfile && (
                     <div className={styles.modalProfile}>
                       <div className={styles.btnProfile} onClick={openAccountSettings}>
                         <button className={styles.settings}>
@@ -202,8 +158,6 @@ export default function Home() {
                         <p>Log out</p>
                       </div>
                     </div>
-                  ) : (
-                    ''
                   )}
                 </div>
               ),
@@ -218,35 +172,85 @@ export default function Home() {
           {/* Company Projects Card */}
           <div className={styles.metricCard}>
             <div className={styles.cardHeader}>
-              <div className={styles.svgdiv}>
-                <ProjectsIcon width={40} height={40} />
+              <div className={`${styles.svgdiv} ${styles.projectsIcon}`}>
+                <ProjectsIcon width={32} height={32} />
               </div>
-              <h1>Company Projects</h1>
-              <h3 className={styles.cardInfo}>Total: {Projects.length}</h3>
+              <div className={styles.headerTitle}>
+                <h1>Company Projects</h1>
+                <p className={styles.cardSubtitle}>Status overview</p>
+              </div>
+              <div className={styles.totalBadge}>
+                <span>{ProjectsData.length}</span>
+                <span>Total</span>
+              </div>
             </div>
 
             <div className={styles.cardContent}>
-              <div className={styles.infoTasks}>
-                <div className={styles.active}>
-                  <ActiveIcon />
-                  <span className={styles.metricValue}>
-                    {Projects.filter((project) => project.status === 'Active').length}
-                  </span>
-                  <p className={styles.cardInfo}>Active</p>
+              <div className={styles.projectsGrid}>
+                <div className={`${styles.projectStatus} ${styles.active}`}>
+                  <div className={styles.statusHeader}>
+                    <ActiveIcon className={styles.statusIcon} />
+                    <span className={styles.statusCount}>
+                      {ProjectsData.filter((project) => project.status === 'Active').length}
+                    </span>
+                  </div>
+                  <p className={styles.statusLabel}>Active</p>
+                  <div className={styles.statusBar}>
+                    <div
+                      className={styles.statusBarFill}
+                      style={{
+                        width: `${
+                          (ProjectsData.filter((p) => p.status === 'Active').length /
+                            ProjectsData.length) *
+                            100 || 0
+                        }%`,
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className={styles.blocked}>
-                  <PauseIconRounded />
-                  <span className={styles.metricValue}>
-                    {Projects.filter((project) => project.status === 'Paused').length}
-                  </span>
-                  <p className={styles.cardInfo}>Paused</p>
+
+                <div className={`${styles.projectStatus} ${styles.paused}`}>
+                  <div className={styles.statusHeader}>
+                    <PauseIconRounded className={styles.statusIcon} />
+                    <span className={styles.statusCount}>
+                      {ProjectsData.filter((project) => project.status === 'Paused').length}
+                    </span>
+                  </div>
+                  <p className={styles.statusLabel}>Paused</p>
+                  <div className={styles.statusBar}>
+                    <div
+                      className={styles.statusBarFill}
+                      style={{
+                        width: `${
+                          (ProjectsData.filter((p) => p.status === 'Paused').length /
+                            ProjectsData.length) *
+                            100 || 0
+                        }%`,
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className={styles.warning}>
-                  <WarningIcon />
-                  <span className={styles.metricValue}>
-                    {Projects.filter((project) => project.status === 'Risk').length}
-                  </span>
-                  <p className={styles.cardInfo}>Risk</p>
+
+                <div className={`${styles.projectStatus} ${styles.risk}`}>
+                  <div className={styles.statusHeader}>
+                    <WarningIcon className={styles.statusIcon} />
+                    <span className={styles.statusCount}>
+                      {ProjectsData.filter((project) => project.status === 'Risk').length}
+                    </span>
+                  </div>
+                  <p className={styles.statusLabel}>At Risk</p>
+                  <div className={styles.statusBar}>
+                    <div
+                      className={styles.statusBarFill}
+                      style={{
+                        width: `${
+                          (ProjectsData.filter((p) => p.status === 'Risk').length /
+                            ProjectsData.length) *
+                            100 || 0
+                        }%`,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -255,18 +259,68 @@ export default function Home() {
           {/* Company Teams Card */}
           <div className={styles.metricCard}>
             <div className={styles.cardHeader}>
-              <div className={styles.svgdiv}>
-                <TeamIcon width={40} height={40} />
+              <div className={`${styles.svgdiv} ${styles.teamsIcon}`}>
+                <TeamIcon width={32} height={32} />
               </div>
-              <h1>Company Teams</h1>
+              <div className={styles.headerTitle}>
+                <h1>Company Teams</h1>
+                <p className={styles.cardSubtitle}>Online members</p>
+              </div>
             </div>
+
             <div className={styles.cardContent}>
-              <div className={styles.cardContentrow}>
-                <p> Online:</p>
-                <p>{mockUsers.filter((user) => user.online).length}</p>
+              <div className={styles.teamsStats}>
+                <div className={styles.statBlock}>
+                  <div className={styles.statRow}>
+                    <span className={styles.statLabel}>Total Members</span>
+                    <span className={styles.statValue}>{mockUsers.length}</span>
+                  </div>
+                  <div className={styles.statProgress}>
+                    <div className={styles.statProgressFill} style={{ width: '100%' }} />
+                  </div>
+                </div>
+
+                <div className={styles.statBlock}>
+                  <div className={styles.statRow}>
+                    <span className={styles.statLabel}>Currently Online</span>
+                    <div className={styles.onlineStat}>
+                      <span className={`${styles.statValue} ${styles.onlineValue}`}>
+                        {mockUsers.filter((user) => user.online).length}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles.statProgress}>
+                    <div
+                      className={`${styles.statProgressFill} ${styles.onlineProgress}`}
+                      style={{
+                        width: `${
+                          (mockUsers.filter((u) => u.online).length / mockUsers.length) * 100 || 0
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className={styles.avatars}>
-                {mockUsers.map((user) => user.online && <AccountIcon />)}
+
+              <div className={styles.onlineUsers}>
+                <div className={styles.avatarsRow}>
+                  {mockUsers
+                    .filter((user) => user.online)
+                    .slice(0, 6)
+                    .map((user) => (
+                      <div key={user.userid} className={styles.avatarWrapper}>
+                        <AccountIcon className={styles.avatar} />
+                      </div>
+                    ))}
+                  {mockUsers.filter((user) => user.online).length > 6 && (
+                    <div className={styles.moreUsers}>
+                      +{mockUsers.filter((user) => user.online).length - 6}
+                    </div>
+                  )}
+                </div>
+                <p className={styles.onlineHint}>
+                  {mockUsers.filter((u) => u.online).length} of {mockUsers.length} online
+                </p>
               </div>
             </div>
           </div>
@@ -274,20 +328,66 @@ export default function Home() {
           {/* Global Metrics Card */}
           <div className={styles.metricCard}>
             <div className={styles.cardHeader}>
-              <div className={styles.svgdiv}>
-                <MetricsIcon width={40} height={40} />
+              <div className={`${styles.svgdiv} ${styles.metricsIcon}`}>
+                <MetricsIcon width={32} height={32} />
               </div>
-              <h1>Global Metrics</h1>
+              <div className={styles.headerTitle}>
+                <h1>Global Metrics</h1>
+                <p className={styles.cardSubtitle}>Task performance</p>
+              </div>
             </div>
+
             <div className={styles.cardContent}>
-              <div className={styles.cardInfo}>
-                <div>
-                  <h1>{mockTasks.length}</h1>
-                  <p className={styles.text}>Total tasks</p>
+              <div className={styles.metricsOverview}>
+                <div className={styles.metricItem}>
+                  <div className={styles.metricHeader}>
+                    <span className={styles.metricNumber}>{mockTasks.length}</span>
+                    <div className={`${styles.metricTrend} ${styles.neutral}`}>
+                      <span>Total</span>
+                    </div>
+                  </div>
+                  <p className={styles.metricDescription}>All tasks in system</p>
                 </div>
-                <div>
-                  <h1>{mockTasks.filter((task) => task.overdue === true).length}</h1>
-                  <p className={styles.text}>Overdue tasks</p>
+
+                <div className={styles.metricDivider} />
+
+                <div className={styles.metricItem}>
+                  <div className={styles.metricHeader}>
+                    <span className={`${styles.metricNumber} ${styles.overdue}`}>
+                      {mockTasks.filter((task) => task.status === 'overdue').length}
+                    </span>
+                    <div className={`${styles.metricTrend} ${styles.negative}`}>
+                      <span>Overdue</span>
+                    </div>
+                  </div>
+                  <p className={styles.metricDescription}>Require attention</p>
+                </div>
+              </div>
+
+              <div className={styles.tasksProgress}>
+                <div className={styles.progressInfo}>
+                  <span className={styles.progressLabel}>On Time</span>
+                  <span className={styles.progressValue}>
+                    {Math.round(
+                      ((mockTasks.length - mockTasks.filter((t) => t.status === 'overdue').length) /
+                        mockTasks.length) *
+                        100 || 0,
+                    )}
+                    %
+                  </span>
+                </div>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressBarFill}
+                    style={{
+                      width: `${
+                        ((mockTasks.length -
+                          mockTasks.filter((t) => t.status === 'overdue').length) /
+                          mockTasks.length) *
+                          100 || 0
+                      }%`,
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -296,14 +396,54 @@ export default function Home() {
           {/* CI/CD Health Card */}
           <div className={styles.metricCard}>
             <div className={styles.cardHeader}>
-              <div className={styles.svgdiv}>
-                <CICDHealthIcon width={40} height={40} />
+              <div className={`${styles.svgdiv} ${styles.cicdIcon}`}>
+                <CICDHealthIcon width={32} height={32} />
               </div>
-              <h1>CI/CD Health</h1>
+              <div className={styles.headerTitle}>
+                <h1>CI/CD Health</h1>
+                <p className={styles.cardSubtitle}>Pipeline status</p>
+              </div>
+              <div className={styles.healthScore}>
+                <span>85%</span>
+              </div>
             </div>
+
             <div className={styles.cardContent}>
-              <h1></h1>
-              <h1></h1>
+              <div className={styles.pipelineStats}>
+                <div className={styles.pipelineItem}>
+                  <div className={`${styles.statusIndicator} ${styles.success}`} />
+                  <div className={styles.pipelineInfo}>
+                    <span className={styles.pipelineCount}>24</span>
+                    <span className={styles.pipelineLabel}>Successful</span>
+                  </div>
+                </div>
+
+                <div className={styles.pipelineItem}>
+                  <div className={`${styles.statusIndicator} ${styles.failed}`} />
+                  <div className={styles.pipelineInfo}>
+                    <span className={styles.pipelineCount}>3</span>
+                    <span className={styles.pipelineLabel}>Failed</span>
+                  </div>
+                </div>
+
+                <div className={styles.pipelineItem}>
+                  <div className={`${styles.statusIndicator} ${styles.running}`} />
+                  <div className={styles.pipelineInfo}>
+                    <span className={styles.pipelineCount}>2</span>
+                    <span className={styles.pipelineLabel}>Running</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.deploymentFrequency}>
+                <div className={styles.deploymentHeader}>
+                  <span className={styles.deploymentLabel}>Avg. deployment time</span>
+                  <span className={styles.deploymentValue}>12m 34s</span>
+                </div>
+                <div className={styles.deploymentBar}>
+                  <div className={styles.deploymentBarFill} style={{ width: '78%' }} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -312,7 +452,7 @@ export default function Home() {
         <div className={styles.tasksSection}>
           <h1 className={styles.sectionTitle}>Projects Focus</h1>
           <div className={styles.gridProjects}>
-            {Projects?.map((project) => (
+            {ProjectsData?.map((project) => (
               <div key={project.id} className={styles.taskCard}>
                 <div className={styles.taskHeader}>
                   <div className={styles.taskInfo}>
@@ -323,19 +463,19 @@ export default function Home() {
                       </button>
                     </h1>
                     <div className={styles.progressContainer}>
-                      <p className={styles.progressText}>{progress(project.title)}%</p>
+                      <p className={styles.progressText}>{progress(project.id)}%</p>
                       <div className={styles.progressDiv}>
                         <div
                           className={styles.progressBar}
-                          style={{ width: progress(project.title) + '%' }}></div>
+                          style={{ width: progress(project.id) + '%' }}></div>
                       </div>
                       <p>
                         {Math.floor(
                           Tasks.filter(
-                            (task) => task.project === project.title && task.success === true,
+                            (task) => task.projectId === project.id && task.status === 'completed',
                           ).length,
                         )}
-                        /{Math.floor(Tasks.filter((task) => task.project === project.title).length)}
+                        /{Math.floor(Tasks.filter((task) => task.projectId === project.id).length)}
                       </p>
                     </div>
                   </div>
@@ -347,20 +487,20 @@ export default function Home() {
                       <button className={`${styles.btnActive}`}>
                         <ActiveIcon />
                         <span className={styles.label}>Active:</span>
-                        <span className={styles.value}>{SetStatistikActive(project.title)}</span>
+                        <span className={styles.value}>{SetStatistikActive(project.id)}</span>
                       </button>
 
                       <button className={`${styles.btnBlocked}`}>
                         <BlockedIcon />
                         <span className={styles.label}>Blocked:</span>
 
-                        <span className={styles.value}>{SetStatistikBlocked(project.title)}</span>
+                        <span className={styles.value}>{SetStatistikBlocked(project.id)}</span>
                       </button>
 
                       <button className={`${styles.btnOverdue}`}>
                         <OverdueIcon />
                         <span className={styles.label}>Overdue:</span>
-                        <span className={styles.value}>{SetStatistikOverdue(project.title)}</span>
+                        <span className={styles.value}>{SetStatistikOverdue(project.id)}</span>
                       </button>
                     </div>
                   </div>
@@ -401,11 +541,19 @@ export default function Home() {
                   className={styles.btnSecondary}
                   onClick={() => {
                     setSortBy('Risk');
+                    setIsSortRisk(!isSortRisk);
                   }}>
-                  Risk
+                  <p>Risk</p>
+                  {isSortRisk ? <ArrowDownIcon /> : <ArrowUpIcon />}
                 </button>
-                <button className={styles.btnSecondary} onClick={() => setSortBy('Dedline')}>
-                  Dedline
+                <button
+                  className={styles.btnSecondary}
+                  onClick={() => {
+                    setSortBy('Dedline');
+                    setIsSortDedline(!isSortDedline);
+                  }}>
+                  <p>Dedline</p>
+                  {isSortDedline ? <ArrowDownIcon /> : <ArrowUpIcon />}
                 </button>
               </div>
 
@@ -417,21 +565,21 @@ export default function Home() {
                 <div key={task.id}>
                   <div
                     className={
-                      task.risk === 'Low Risk'
+                      task.priority === 'low'
                         ? styles.Lowcardstatus
-                        : task.risk === 'Medium Risk'
+                        : task.priority === 'medium'
                         ? styles.Mediumcardstatus
-                        : task.risk === 'Low Hight'
+                        : task.priority === 'high'
                         ? styles.Hightcardstatus
                         : styles.Hightcardstatus
                     }>
-                    {task.risk}
+                    {task.priority}
                   </div>
                   <div className={styles.taskInfo}>
                     <p className={styles.taskName}>{task.name}</p>
                     <div className={styles.datesContainer}>
                       <p className={styles.taskCreatedAt}>{task.createdAt}</p>
-                      <p className={styles.taskDedline}>{task.dedline}</p>
+                      <p className={styles.taskDedline}>{task.deadline}</p>
                     </div>
                   </div>
                 </div>

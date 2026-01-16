@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 import { Tabs } from './tabs';
 import { Link } from 'react-router-dom';
-import { Projects } from '../Projects/Projects.Mockdata';
+import { ProjectsData } from '../Projects/Projects.Mockdata';
 import {
   LogoIcon,
   HomeIcon,
@@ -17,7 +17,7 @@ import {
 import { useTheme } from '../../context/Theme.tsx';
 
 export default function Header() {
-  const countOfProjects = Projects.length;
+  const countOfProjects = ProjectsData.length;
   const [tabs, setTabs] = useState(Tabs);
   const [active, setActive] = useState();
   const { theme, changeTheme } = useTheme();

@@ -24,4 +24,6 @@ export {
   LogoutIcon,
   MenuIcon,
   CloseIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from './Icon';
