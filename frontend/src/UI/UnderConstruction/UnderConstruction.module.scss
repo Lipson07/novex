@@ -1,0 +1,229 @@
+@import '../Styles/Variables.scss';
+
+.container {
+  min-height: 100vh;
+  background-color: $dracula-background;
+  color: $dracula-foreground;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  padding-left: 270px; // Отступ для сайдбара
+
+  @media (max-width: 1024px) {
+    padding-left: 20px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  width: 100%;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 32px;
+  background-color: $dracula-current-line;
+  border: 1px solid $dracula-selection;
+  border-radius: 12px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+  }
+}
+
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  background-color: $dracula-selection;
+  border: 1px solid $dracula-purple-rgba-01;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+  }
+}
+
+.mainIcon {
+  color: $dracula-purple;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  color: $dracula-foreground;
+  margin: 0;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 24px;
+  }
+}
+
+.subtitle {
+  font-size: 16px;
+  color: $dracula-comment;
+  margin: 0;
+  line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background-color: $dracula-current-line;
+  border: 1px solid $dracula-selection;
+  border-left: 3px solid $dracula-orange;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cardIcon {
+  color: $dracula-orange;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $dracula-foreground;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statusItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $dracula-selection;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+.statusLabel {
+  font-size: 14px;
+  color: $dracula-comment;
+  font-weight: 500;
+}
+
+.statusValue {
+  font-size: 14px;
+  color: $dracula-foreground;
+  font-weight: 600;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background-color: $dracula-current-line;
+  border: 1px solid $dracula-selection;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.actionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: $dracula-selection;
+  border: 1px solid $dracula-purple-rgba-01;
+  border-radius: 6px;
+  color: $dracula-purple;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.actionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.actionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $dracula-foreground;
+  line-height: 1.3;
+}
+
+.actionDescription {
+  font-size: 14px;
+  color: $dracula-comment;
+  line-height: 1.4;
+}
