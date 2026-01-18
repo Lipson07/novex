@@ -8,7 +8,7 @@ import { mockUsers } from '../MockData/UsersMock';
 
 export default function TaskPage() {
   const [tasks, setTasks] = useState(Tasks);
-  const [activeFilter, setActiveFilter] = useState(() => {
+  const [activeFilter, setActiveFilter] = useState<string>(() => {
     return localStorage.getItem('activeFilter') || 'All Tasks';
   });
   const [searchQuery, setSearchQuery] = useState('');

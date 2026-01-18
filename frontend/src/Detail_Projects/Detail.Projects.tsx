@@ -7,7 +7,7 @@ export default function DetailProject({ name }) {
   return (
     <div className={styles.allDetailProject}>
       {Projects.filter((proj) => proj.title === name).map((proj) => (
-        <div className={styles.DetailProjectHeader}>
+        <div key={proj.id} className={styles.DetailProjectHeader}>
           <ArrowRightIcon />
           <span>Projects</span>/<span>{proj.title}</span>
         </div>
