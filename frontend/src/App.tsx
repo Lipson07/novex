@@ -1,13 +1,13 @@
 // App.tsx
-import { Route, Routes } from 'react-router-dom';
-import Header from './UI/Header/Header';
-import Home from './UI/Home/HomePage.tsx';
-import './UI/Styles/app.scss';
-import { ThemeProvider } from './context/Theme.tsx';
+import { Route, Routes } from 'react-router-dom'
+import Header from './UI/Header/Header'
+import Home from './UI/Home/HomePage.tsx'
+import './UI/Styles/app.scss'
+import { ThemeProvider } from './context/Theme.tsx'
 
-import ProjectsPage from './UI/Projects/ProjectsPage.tsx';
-import TaskPage from './UI/Tasks/TaskPage.tsx';
-import UnderConstruction from './UI/UnderConstruction/UnderConstruction.tsx';
+import ProjectsPage from './UI/Projects/ProjectsPage.tsx'
+import TaskPage from './UI/Tasks/TaskPage.tsx'
+import UnderConstruction from './UI/UnderConstruction/UnderConstruction.tsx'
 function App() {
   return (
     <ThemeProvider>
@@ -23,7 +23,7 @@ function App() {
         </Routes>
       </div>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App

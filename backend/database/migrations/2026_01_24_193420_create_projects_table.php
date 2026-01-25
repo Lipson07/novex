@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->enum('status',['pending','reject','fullfiled','not_assigned'])->default('not_assigned');
-$table->enum('priority',['high','medium','low'])->default('medium');
+            $table->enum('priority',['high','medium','low'])->default('medium');
             $table->timestamps();
         });
     }
