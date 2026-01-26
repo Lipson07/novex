@@ -18,6 +18,20 @@ class UserController extends Controller {
         ]);
     }
 
+    public function getUser($id){
+            $user=User::find($id);
+            if(!$user){
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'пользователь не найден'
+                ],404);
+            }
+            return response()->json([
+                'success'=>true,
+                'data'=>$user
+            ]);
+    }
+
     public function register(Request $request) {
         try {
             $validated = $request->validate([
@@ -64,5 +78,33 @@ class UserController extends Controller {
 
             ]
         ]);
+    }
+    public function update(Request $request,$id){
+        $user=User::find($id);
+        if (!$user){
+            return response()->json(['error'=>'Пользователь не найден'],404);
+        }
+        $user->update($request->all());
+        return response()->json([
+            'message'=>'Пользователь обновлен',
+            'user'=>$user
+        ]);
+
+
+    }
+    public function deleteUser($id){
+        $user=User::find($id);
+        if(!$user){
+            return response()->json([
+                'success'=>false,
+                'message'=>'пользователь не найден'
+
+            ]);
+        }
+        $user->delete();
+        return response()->json([
+            'message'=>"Пользователь удален"
+        ]);
+
     }
 }
