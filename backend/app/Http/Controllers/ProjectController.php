@@ -16,6 +16,14 @@ class ProjectController extends Controller {
             "data" => $project,
         ]);
     }
+    public function getProject($id) {
+        $project = Ptoject::find($id);
+        return response()->json([
+            'success' => true,
+            'data' => $project
+
+        ]);
+    }
     public function create(Request $request) {
         try {
             $validate = $request->validate([
@@ -42,5 +50,31 @@ class ProjectController extends Controller {
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    public function update(Request $request, $id) {
+        $project = Ptoject::find($id);
+        if (!$project) {
+            return response()->json(['error' => 'Проект не найден'], 404);
+        }
+        $project->update($request->all());
+        return response()->json([
+            'success' => true,
+            'data' => $project
+
+        ]);
+    }
+    public function deleteProject($id) {
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Проект не найден'
+
+            ]);
+        }
+        $project->delete();
+        return response()->json([
+            'message' => "Проект удален"
+        ]);
     }
 }

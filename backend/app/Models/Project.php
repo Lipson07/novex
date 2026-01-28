@@ -20,4 +20,7 @@ class Project extends Model {
         'status' => ProjectStatus::class,
         'priority' => ProjectPriority::class,
     ];
+    public function users() {
+        return $this->belongsToMany(User::class, 'project_user')->withPivot('role')->withTimestamps();
+    }
 }

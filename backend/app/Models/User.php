@@ -28,7 +28,10 @@ class User extends Authenticatable
       'is_online'
 
     ];
+public function projects(){
+        return $this->belongsToMany(Project::class,'project_user')->withPivot('role')->withTimestamps()
 
+}
     /**
      * The attributes that should be hidden for serialization.
      *
