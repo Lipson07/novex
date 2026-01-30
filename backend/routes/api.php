@@ -19,3 +19,7 @@ Route::prefix('projects')->group(function () {
     Route::delete('/{id}', [ProjectController::class, 'deleteProject']);
     Route::put('{/{id}', [ProjectController::class, 'update']);
 });
+Route::prefix('project-users')->group(function () {
+    Route::post('/attach', [ProjectUserController::class, 'attach']);
+    Route::post('/detach', [ProjectUserController::class, 'detach']);
+});
