@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Models\Project;
@@ -20,6 +21,12 @@ Route::prefix('projects')->group(function () {
     Route::put('{/{id}', [ProjectController::class, 'update']);
 });
 Route::prefix('project-users')->group(function () {
+    Route::get('/', [ProjectUserController::class, 'show']);
+    Route::get('/user/{id}', [ProjectUserController::class, 'getUser']);
+    Route::get('/project/{id}', [ProjectUserController::class, 'getProject']);
     Route::post('/attach', [ProjectUserController::class, 'attach']);
-    Route::post('/detach', [ProjectUserController::class, 'detach']);
+    Route::post('/attach-multiple', [ProjectUserController::class, 'attachMultiple']);
+    Route::post('/detach', [ProjectUserController::class, 'dettach']);
+    Route::post('/detach-multiple', [ProjectUserController::class, 'detachMultiple']);
+    Route::post('/detach-all', [ProjectUserController::class, 'detachAll']);
 });
