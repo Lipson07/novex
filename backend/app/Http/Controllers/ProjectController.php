@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Projects\ProjectPriority;
-use App\Enums\Projects\ProjectStatus;
+use App\Enums\Base\Priority;
+use App\Enums\Base\Status;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +17,7 @@ class ProjectController extends Controller {
         ]);
     }
     public function getProject($id) {
-        $project = Ptoject::find($id);
+        $project = Project::find($id);
         return response()->json([
             'success' => true,
             'data' => $project
@@ -29,8 +29,8 @@ class ProjectController extends Controller {
             $validate = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
-                'status' => 'required|string|in:' . implode(',', ProjectStatus::values()),
-                'priority' => 'required|string|in:' . implode(',', ProjectPriority::values()),
+                'status' => 'required|string|in:' . implode(',', Status::values()),
+                'priority' => 'required|string|in:' . implode(',', Priority::values()),
             ]);
             $project = Project::create($validate);
             return response()->json([

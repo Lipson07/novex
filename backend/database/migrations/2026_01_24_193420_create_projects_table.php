@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
-            $table->enum('status', ['pending', 'reject', 'fullfilled', 'not_assigned'])->default('not_assigned');
+            $table->enum('status',["active", "completed" , "blocked" , "overdue"])->default('overdue');
             $table->enum('priority', ['high', 'medium', 'low'])->default('medium');
             $table->timestamps();
         });

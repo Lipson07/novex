@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectUserController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Models\Project;
@@ -20,6 +21,13 @@ Route::prefix('projects')->group(function () {
     Route::delete('/{id}', [ProjectController::class, 'deleteProject']);
     Route::put('{/{id}', [ProjectController::class, 'update']);
 });
+Route::prefix('tasks')->group(function(){
+    Route::get('/', [TaskController::class, 'show']);
+    Route::get('/{id}', [TaskController::class, 'getTask']);
+    Route::post('/create', [TaskController::class, 'create']);
+    Route::delete('/{id}', [TaskController::class, 'delete']);
+    Route::put('{/{id}', [TaskController::class, 'update']);
+});
 Route::prefix('project-users')->group(function () {
     Route::get('/', [ProjectUserController::class, 'show']);
     Route::get('/user/{id}', [ProjectUserController::class, 'getUser']);
@@ -30,3 +38,4 @@ Route::prefix('project-users')->group(function () {
     Route::post('/detach-multiple', [ProjectUserController::class, 'detachMultiple']);
     Route::post('/detach-all', [ProjectUserController::class, 'detachAll']);
 });
+ 

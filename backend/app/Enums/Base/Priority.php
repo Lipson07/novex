@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums\Projects;
+namespace App\Enums\Base;
 
 enum ProjectPriority: string {
     case HIGH = 'high';
